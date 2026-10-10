@@ -33,7 +33,10 @@ def clean_test_database(upgrade_test_schema):
     def clear_tables() -> None:
         with engine.begin() as connection:
             connection.execute(
-                text("TRUNCATE TABLE watchlist_items, stocks, watchlists RESTART IDENTITY CASCADE")
+                text(
+                    "TRUNCATE TABLE tool_audit_records, watchlist_items, stocks, watchlists "
+                    "RESTART IDENTITY CASCADE"
+                )
             )
 
     clear_tables()
