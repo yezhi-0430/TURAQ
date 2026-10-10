@@ -1,0 +1,34 @@
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: var(--space-lg);
+  color: var(--text-primary);
+}
+
+.placeholder {
+  background: var(--surface-1);
+  border-radius: var(--radius-md);
+  padding: var(--space-xl);
+  text-align: center;
+  color: var(--text-tertiary);
+}
+
+.placeholderIcon {
+  font-size: 4rem;
+  margin-bottom: var(--space-lg);
+}
+
+.placeholderText {
+  font-size: 1.125rem;
+  margin-bottom: var(--space-md);
+}
+
+.placeholderHint {
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+}

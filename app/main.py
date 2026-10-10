@@ -5,6 +5,7 @@ from typing import Annotated, Self
 
 from fastapi import APIRouter, FastAPI, HTTPException, Request, status
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, StringConstraints, model_validator
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
@@ -12,6 +13,7 @@ from sqlalchemy.exc import IntegrityError
 from app.database import DailyPrice, SessionLocal, Stock
 from app.json_requests import DecimalJSONRoute
 from app.risk_api import router as risk_router
+from app.agent_api import router as agent_router
 from app.watchlists.repository import (
     DuplicateStockInWatchlistError,
     StockNotInWatchlistError,
@@ -61,7 +63,18 @@ def create_app() -> FastAPI:
         title="A 股自选股风险监控 Agent",
         version="0.1.0",
     )
+
+    # 添加 CORS 中间件，允许前端跨域访问
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],  # 生产环境应该设置具体的域名
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
     application.include_router(risk_router)
+    application.include_router(agent_router)
     price_router = APIRouter(route_class=DecimalJSONRoute)
 
     @application.exception_handler(Exception)

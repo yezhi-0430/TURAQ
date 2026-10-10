@@ -1,117 +1,198 @@
-# A 股自选股风险监控与模拟交易 Agent
+# TURAQ - A 股智能研究平台
 
-面向个人投资者的金融信息研究工作台。系统维护多只自选股，扫描公告、财报和日线指标中的风险线索，生成带来源的研究报告，并在用户确认后执行模拟交易。
+## 项目概述
 
-## 当前进度
+TURAQ 是一个基于 AI Agent 的 A 股智能研究平台，集成了行情监控、风险分析、智能对话等功能。
 
-Day 1–7 已完成后端、自选股管理和日线导入查询。Day 8 已加入可切换的假模型与千问客户端，离线测试通过，并已在本地完成一次真实千问调用。第一版界面尚未完成。
+## 技术栈
 
-Day 9 已加入风险摘要结构校验与接口，20 条模拟输出验收通过，并完成一次真实千问结构化输出验证。格式校验不验证事实真伪。
+### 后端
+- **FastAPI** - Web 框架
+- **SQLAlchemy** - ORM
+- **Anthropic Claude / OpenAI** - LLM 服务
+- **Python 3.11+**
 
-Day 10 已完成技术验收、基础问答和本轮补充复盘：三个工具、执行前校验、调用日志和模型原生工具选择已连接。已用真实千问选择 `calculate_change`，再由 Python 计算 `10 → 9` 得到 `-10.0000`。工具参数的小数精度问题及整项目审查发现的 7 项问题已修复，最近全套测试 247 passed。列表与字典的区别仍需巩固，尚未验证独立编码能力。修复与数据库升级说明见 [项目审查修复记录](docs/project-review-fixes-2026-10-08.md)。
+### 前端
+- **纯 HTML/CSS/JavaScript** - 无框架依赖
+- **黑金配色设计**
+- **响应式布局**
 
-Day 11 技术验收和本轮基础口头复盘已完成：工具结果回传、自动多轮循环和最大轮数均已实现，得到有效回答时提前结束，达到上限则明确返回未完成。已用真实千问完成两轮“工具选择 → Python 计算 → 结果回传 → 最终回答”，用户也已亲自运行；最近全套 291 passed。基础编码练习仍需提示，继续巩固条件判断、变量名和列表方法。见 [Day 11 学习记录](docs/day-11-agent-loop.md)。
+## 快速开始
 
-Day 12 技术验收已完成：审计表、独立事务保存、循环接入、按运行编号分页查询及假模型完整演示均已实现。显式传入 `audit_writer=save_tool_execution` 启用审计，默认仍不启用数据库审计。全套 321 passed，Ruff 通过；已在测试数据库实际保存并查回成功、失败各一条记录。第三阶段口头复盘与独立编码尚未验收。见 [Day 12 学习记录](docs/day-12-tool-audit.md)。
+### 1. 后端启动
 
-## 项目原则
+```bash
+# 进入项目目录
+cd C:\Users\LENOVO\Documents\Codex\2026-09-20\n\outputs\a-share-risk-agent
 
-- 一级事实以交易所、巨潮资讯和上市公司正式披露为准。
-- 所有重要结论保留来源、发布时间和采集时间。
-- 模型负责理解、检索编排和解释；金额与指标由确定性代码计算。
-- Agent 不能直接交易，模拟操作必须经过用户确认。
-- 项目不构成投资建议，不接入真实券商账户。
+# 激活虚拟环境
+.venv\Scripts\activate
 
-## 本地运行
-
-要求 Python 3.11 或更高版本。
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -e ".[dev]"
-python -m app.schema_upgrade
-uvicorn app.main:app --reload
+# 启动服务
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-打开：
+详细说明见 [START_BACKEND.md](./START_BACKEND.md)
 
-- API 文档：<http://127.0.0.1:8000/docs>
-- 健康检查：<http://127.0.0.1:8000/health>
+### 2. 前端访问
 
-运行检查：
-
-```powershell
-pytest
-ruff check .
+直接用浏览器打开：
+```
+frontend/index.html
 ```
 
-模型客户端的配置、离线测试和手动验证方式见 [Day 8 学习记录](docs/day-08-model-api.md)。
-风险摘要的数据结构、接口与验证结果见 [Day 9 学习记录](docs/day-09-structured-output.md)。
-工具调用的学习进度与计算工具说明见 [Day 10 学习记录](docs/day-10-function-calling.md)。
-
-已有数据库也需运行一次 `python -m app.schema_upgrade`：该命令保留记录，将股票代码去除两端空白并转为大写，将成交量列升级为 BIGINT；若发现规范化后重复的代码，会回滚并报告冲突。建议在应用停止写入时运行，可重复执行。
-
-日线导入要求四个价格均为有限正数，整数部分最多 14 位、小数部分最多 4 位，并满足 `low <= open/close <= high`。JSON 数字与数字字符串均可使用；返回价格仍为字符串。成交量范围为 `0` 至 `9223372036854775807`。不合法输入返回 422。
-
-`MODEL_PROVIDER=fake` 时，风险摘要接口返回合法的离线占位摘要：评级为 `unknown`，并明确说明尚未分析输入，不生成事实或来源。
-
-运行 Day 10 离线工具演示（Windows 使用 UTF-8 输出）：
-
-```powershell
-.\.venv\Scripts\python.exe -X utf8 -m app.tools.demo
+或者使用简单的 HTTP 服务器：
+```bash
+cd frontend
+python -m http.server 3000
 ```
 
-演示计算 `10 → 9` 并拒绝 `0 → 9`；调用记录追加到 `data/private/day10-tool-calls.jsonl`。此演示不请求模型或数据库。
+然后访问 `http://localhost:3000`
 
-运行包含假模型调用请求的完整离线演示：
+## 核心功能
 
-```powershell
-.\.venv\Scripts\python.exe -X utf8 -m app.tool_calling_demo
+### ✅ 已实现
+
+1. **AI 研究助手**
+   - 自然语言对话
+   - 工具调用（计算变化率、查询股票、查询日线数据）
+   - 实时显示工具执行过程
+
+2. **自选股管理**
+   - 创建自选组
+   - 添加/删除股票
+   - 查询自选股列表
+
+3. **行情数据**
+   - 股票基本信息
+   - 日线数据导入/查询
+
+### 🚧 待完善
+
+1. **行情驾驶舱** - 实时行情监控面板
+2. **风险监控** - 风险指标计算和预警
+3. **模拟交易** - 回测和模拟交易功能
+4. **系统设置** - 用户偏好设置
+
+## API 文档
+
+启动后端后访问：
+- Swagger UI: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
+
+### 主要端点
+
+```
+POST /api/v1/agent/chat          # AI 对话
+GET  /api/v1/watchlists           # 获取自选组列表
+POST /api/v1/watchlists           # 创建自选组
+GET  /api/v1/stocks               # 搜索股票
+POST /api/v1/stocks/{symbol}/daily-prices  # 导入日线数据
 ```
 
-假模型返回预先配置的两个计算请求；程序经执行器校验后计算或拒绝，并用 `tool_call_id` 关联请求与日志。记录追加到同一私有 JSONL 文件。此演示不请求真实模型或数据库，尚不包含工具结果回传模型的自动循环。
+## 项目结构
 
-运行真实千问工具选择演示（使用本地 `.env` 中的模型、地址和 API Key）：
-
-```powershell
-.\.venv\Scripts\python.exe -X utf8 -m app.tool_calling_demo --provider qwen
+```
+a-share-risk-agent/
+├── app/
+│   ├── main.py              # FastAPI 应用入口
+│   ├── agent_api.py         # Agent 对话 API
+│   ├── agent_loop.py        # Agent 执行循环
+│   ├── llm_client.py        # LLM 客户端
+│   ├── database.py          # 数据库模型
+│   ├── tools/
+│   │   ├── market_data.py   # 市场数据工具
+│   │   ├── calculations.py  # 计算工具
+│   │   └── executor.py      # 工具执行器
+│   └── watchlists/          # 自选股模块
+├── frontend/
+│   └── index.html           # 单文件前端应用
+├── .env                     # 环境变量（需创建）
+└── START_BACKEND.md         # 后端启动指南
 ```
 
-真实模式发送虚构的昨日价格 10、今日价格 9 和三个工具定义，由模型选择工具，再交给 Python 执行。默认不加参数仍使用 fake，即使 `.env` 中的 `MODEL_PROVIDER=qwen` 也保持离线。
+## 环境配置
 
-运行 Day 11 完整循环演示（默认离线，即使 `.env` 选择了 qwen）：
+创建 `.env` 文件：
 
-```powershell
-.\.venv\Scripts\python.exe -X utf8 -m app.agent_loop_demo
+```env
+# 使用 Anthropic Claude
+ANTHROPIC_API_KEY=your_anthropic_api_key
+
+# 或者使用 OpenAI
+OPENAI_API_KEY=your_openai_api_key
 ```
 
-显式请求真实千问，使用本地 `.env` 配置：
+## 开发建议
 
-```powershell
-.\.venv\Scripts\python.exe -X utf8 -m app.agent_loop_demo --provider qwen
+### 前端开发
+1. 修改 `frontend/index.html`
+2. 刷新浏览器查看效果
+3. 使用浏览器开发者工具调试
+
+### 后端开发
+1. 修改 `app/` 目录下的 Python 文件
+2. FastAPI 会自动重载（使用 `--reload` 参数）
+3. 查看 Swagger 文档测试 API
+
+### 数据库
+```bash
+# 查看数据库
+sqlite3 data/watchlists.db
+
+# 常用命令
+.tables          # 查看所有表
+.schema stocks   # 查看表结构
+SELECT * FROM stocks;  # 查询数据
 ```
 
-输入为虚构价格 10 和 9，默认最多五轮。输出包含最终状态、回答、实际轮数和工具执行记录；日志追加至 `data/private/day11-tool-calls.jsonl`。离线模式的工具选择与回答逻辑由程序预设，真实模式由千问响应。
+## 设计特点
 
-## 目录
+### 黑金配色
+- **主色调**：#0A0A0A (纯黑)
+- **金色强调**：#D4AF37 (古典金)
+- **亮金色**：#FFD700
+- **表面层**：#141414, #1E1E1E
 
-运行 Day 12 保存与查询演示：
+### 交互效果
+- 80 个金色漂浮粒子
+- 径向渐变背景跟随鼠标
+- 网格背景缓慢移动动画
+- 标题呼吸灯发光效果
 
-```powershell
-.\.venv\Scripts\python.exe -X utf8 -m app.audit_demo
+## 部署建议
+
+### 后端部署
+```bash
+# 使用 gunicorn
+gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker
+
+# 使用 Docker
+docker build -t turaq-backend .
+docker run -p 8000:8000 turaq-backend
 ```
 
-固定使用假模型和 `a_share_risk_agent_test` 数据库；主机及凭据来自本地配置，测试库需已存在。演示创建缺失审计表、追加两条虚构计算记录，并按本次 `run_id` 每页一条查回；不清空历史，不请求真实模型。输出 `stored_records` 是数据库查询结果。后续运行 pytest 会清理测试库记录。
+### 前端部署
+- 静态文件托管（Nginx、Apache）
+- CDN 加速
+- 或集成到后端（FastAPI 静态文件服务）
 
-```text
-app/                 应用代码
-tests/               自动化测试
-docs/                架构和设计记录
-data/                 可公开的演示数据
-```
+## 贡献指南
 
-详细设计见：
+1. Fork 本项目
+2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 开启 Pull Request
 
-- [产品范围与用户故事](docs/product-scope.md)
-- [第一版架构](docs/architecture.md)
+## 许可证
+
+MIT License
+
+## 联系方式
+
+项目维护者：[Your Name]
+
+---
+
+**注意**：本项目仅供学习和研究使用，不构成任何投资建议。
