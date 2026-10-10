@@ -1,4 +1,4 @@
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -18,6 +18,8 @@ def run_tool_turn(
     client: ModelClient,
     messages: Sequence[Mapping[str, object]],
     session: Session | None = None,
+    *,
+    on_execution: Callable[[ToolExecutionRecord], object] | None = None,
 ) -> ToolTurnResult:
     reply = client.chat_with_tools(messages, tool_definitions())
     executions = []
@@ -28,5 +30,7 @@ def run_tool_turn(
             session=session,
             tool_call_id=call.id,
         )
+        if on_execution is not None:
+            on_execution(record)
         executions.append(record)
     return ToolTurnResult(reply=reply, executions=executions)
