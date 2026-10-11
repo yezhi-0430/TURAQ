@@ -28,6 +28,9 @@ cd C:\Users\LENOVO\Documents\Codex\2026-09-20\n\outputs\a-share-risk-agent
 # 激活虚拟环境
 .venv\Scripts\activate
 
+# 已有数据库先升级（Day 13 新增审计来源列；可重复运行）
+python -m app.schema_upgrade
+
 # 启动服务
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
