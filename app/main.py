@@ -1,4 +1,5 @@
 import logging
+from contextlib import asynccontextmanager
 from datetime import date
 from decimal import Decimal
 from typing import Annotated, Self
@@ -17,6 +18,8 @@ from app.database import DailyPrice, SessionLocal, Stock, Watchlist, WatchlistIt
 from app.json_requests import DecimalJSONRoute
 from app.market_api import router as market_router
 from app.risk_api import router as risk_router
+from app.stock_list_api import router as stock_list_router
+from app.tasks import start_scheduler, shutdown_scheduler
 from app.watchlists.metadata import resolve_stock
 from app.watchlists.repository import (
     DuplicateStockInWatchlistError,
@@ -65,16 +68,30 @@ class DailyPriceRequest(BaseModel):
         return self
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """应用生命周期管理"""
+    # 启动时
+    logger.info("应用启动...")
+    start_scheduler()
+    yield
+    # 关闭时
+    logger.info("应用关闭...")
+    shutdown_scheduler()
+
+
 def create_app() -> FastAPI:
     application = FastAPI(
         title="A 股自选股风险监控 Agent",
         version="0.1.0",
+        lifespan=lifespan,
     )
 
     application.include_router(auth_router)
     application.include_router(risk_router)
     application.include_router(agent_router)
     application.include_router(market_router)
+    application.include_router(stock_list_router)
     price_router = APIRouter(route_class=DecimalJSONRoute)
 
     @application.exception_handler(RequestValidationError)
