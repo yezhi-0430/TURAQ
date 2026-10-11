@@ -20,6 +20,9 @@ def env(monkeypatch):
     factory = sessionmaker(bind=engine)
     for module in ["app.main", "app.agent_api", "app.market_api"]:
         monkeypatch.setattr(module + ".SessionLocal", factory)
+    # Auth tests must never start the unrelated live market scheduler.
+    monkeypatch.setattr("app.main.start_scheduler", lambda: None)
+    monkeypatch.setattr("app.main.shutdown_scheduler", lambda: None)
     app = create_app()
     settings = Settings(site_base_url="http://testserver", auth_cookie_secure=False)
 

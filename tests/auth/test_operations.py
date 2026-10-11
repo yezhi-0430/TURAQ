@@ -342,7 +342,7 @@ def test_session_response_is_never_cached(env):
     assert response.headers.get("cache-control") == "no-store"
 
 
-def test_unexpected_auth_errors_do_not_log_secrets(env, caplog):
+def test_unexpected_background_errors_cannot_change_response_or_log_secrets(env, caplog):
     from fastapi.testclient import TestClient
 
     client, factory, mail = env
@@ -357,7 +357,7 @@ def test_unexpected_auth_errors_do_not_log_secrets(env, caplog):
             "/auth/register",
             {"email": "a@example.com", "password": "abcdef", "invite_code": invite(factory)},
         )
-    assert response.status_code == 500
+    assert response.status_code == 202
     assert "private-user@example.com" not in caplog.text
     assert "private-token" not in caplog.text
 

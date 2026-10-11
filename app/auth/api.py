@@ -3,9 +3,8 @@
 import logging
 from dataclasses import asdict
 
-from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, Response
 from sqlalchemy import select, update
-from sqlalchemy.exc import IntegrityError
 
 from app.auth.dependencies import (
     Actor,
@@ -15,6 +14,7 @@ from app.auth.dependencies import (
     require_csrf,
 )
 from app.auth.mail import MailUnavailable, get_mailer
+from app.auth.mail_jobs import process_mail_request
 from app.auth.models import ThrottleBucket, User
 from app.auth.schemas import (
     EmailRequest,
@@ -24,14 +24,10 @@ from app.auth.schemas import (
     VerifyRequest,
 )
 from app.auth.service import (
-    aware,
     check_password,
     digest,
-    issue_token,
     new_session,
-    register,
     reset_password,
-    utcnow,
     verify_email,
 )
 from app.auth.throttle import RateLimited, reserve
@@ -68,14 +64,6 @@ def mail_admission(request, payload, factory, mailer):
         mailer.check_available()
     except MailUnavailable as exc:
         raise HTTPException(503, "邮件服务暂不可用") from exc
-
-
-def deliver(mailer, email, purpose, token):
-    try:
-        mailer.send(email, purpose, token)
-    except MailUnavailable:
-        # Restricted operational signal; never emit address, token or supplier exception.
-        logger.warning("Authentication mail transport rejected a delivery")
 
 
 def session_json(db, row, mailer):
@@ -129,18 +117,12 @@ def session(
 def signup(
     payload: RegisterRequest,
     request: Request,
+    background_tasks: BackgroundTasks,
     factory=Depends(get_session_factory),
     mailer=Depends(get_mailer),
 ):
     mail_admission(request, payload, factory, mailer)
-    with factory() as db:
-        try:
-            user = register(db, payload.email, payload.password, payload.invite_code)
-            if user:
-                token = issue_token(db, user.id, "verify")
-                deliver(mailer, payload.email, "verify", token)
-        except IntegrityError:
-            db.rollback()
+    background_tasks.add_task(process_mail_request, "register", payload, factory, mailer)
     return ACCEPTED
 
 
@@ -148,20 +130,12 @@ def signup(
 def resend(
     payload: EmailRequest,
     request: Request,
+    background_tasks: BackgroundTasks,
     factory=Depends(get_session_factory),
     mailer=Depends(get_mailer),
 ):
     mail_admission(request, payload, factory, mailer)
-    with factory() as db:
-        user = db.scalar(select(User).where(User.email == payload.email).with_for_update())
-        if (
-            user
-            and not user.verified
-            and not user.disabled
-            and aware(user.pending_expires_at) > utcnow()
-        ):
-            token = issue_token(db, user.id, "verify")
-            deliver(mailer, payload.email, "verify", token)
+    background_tasks.add_task(process_mail_request, "resend-verification", payload, factory, mailer)
     return ACCEPTED
 
 
@@ -169,15 +143,12 @@ def resend(
 def forgot(
     payload: EmailRequest,
     request: Request,
+    background_tasks: BackgroundTasks,
     factory=Depends(get_session_factory),
     mailer=Depends(get_mailer),
 ):
     mail_admission(request, payload, factory, mailer)
-    with factory() as db:
-        user = db.scalar(select(User).where(User.email == payload.email).with_for_update())
-        if user and user.verified and not user.disabled:
-            token = issue_token(db, user.id, "reset")
-            deliver(mailer, payload.email, "reset", token)
+    background_tasks.add_task(process_mail_request, "forgot-password", payload, factory, mailer)
     return ACCEPTED
 
 
