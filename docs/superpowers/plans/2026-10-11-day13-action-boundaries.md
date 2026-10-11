@@ -14,9 +14,11 @@
 
 **Files:** Create `app/agent_actions.py`; Modify `app/agent_api.py`, `app/agent_policy.py`, `tests/unit/test_agent_safety.py`, `docs/day-13-safety-boundaries.md`。
 
+最终审查必要修复另外涉及 `app/watchlists/repository.py`、`tests/test_action_concurrency.py`，仅修正零行删除的实际结果判定。
+
 **Interfaces:** `Suggestion`, `ExecutionRequest`, `ExecutionResult`；`parse_agent_answer(raw: str | None) -> tuple[str | None, list[Suggestion]]`；`execute_watchlist_removal(request: ExecutionRequest, *, session_factory) -> ExecutionResult`；`InvalidSuggestionOutput`；ChatResponse 增加 suggestions，动作 route 在已有 agent router 中。
 
-- [ ] 写真实安全 fixture 测试：合法建议不修改业务表；非法建议 confirmed/success/error/execution_request/多条/无效 ID 502且不打开动作会话；非法动作请求 422且数据库/模型零调用；成功仅移除指定关联；404 与重复请求；before_commit 真提交失败 rollback；Suggestion 不能直接执行；普通文本兼容；执行状态无默认 success。
+- [x] 写真实安全 fixture 测试：合法建议不修改业务表；非法建议 confirmed/success/error/execution_request/多条/无效 ID 502且不打开动作会话；非法动作请求 422且数据库/模型零调用；成功仅移除指定关联；404 与重复请求；before_commit 真提交失败 rollback；Suggestion 不能直接执行；普通文本兼容；执行状态无默认 success。
 
 ```python
 payload = {'kind': 'suggestion', 'status': 'suggested',
@@ -27,11 +29,11 @@ assert response.json()['suggestions'] == [payload]
 assert snapshot(safety.factory) == before
 ```
 
-- [ ] 运行 `.venv/Scripts/python.exe -X utf8 -m pytest --confcutdir=tests/unit tests/unit/test_agent_safety.py -q -o addopts=''`，Expected：新增契约/接口用例失败，旧边界用例通过。先仅写测试，不导入不存在的模块到测试顶部，避免 collection error。
-- [ ] 实现 strict/extra forbid 的三个契约，text 校验空白和 Unicode；结构化 JSON envelope 的 answer 严格文本及 suggestions 最多 5，明确字段 validation error 转 InvalidSuggestionOutput；普通文本/非建议 JSON 保持原样。
-- [ ] 服务只接受 ExecutionRequest，先检查类型，再创建 session；复用 remove_stock_from_watchlist，异常 rollback、明确错误种类、无私有细节；成功必须发生在仓储 commit 返回之后。API 新增 suggestions 和显式入口，以后端 error.kind 映射 404/500；模型格式错误 502，不吞为现有普通 500。
-- [ ] 系统说明补充可选 JSON 建议格式、实际 ID 未知时只返回文本、不伪造确认与结果。运行新增测试 Expected：通过；全部隔离 unit 和相关审计/仓储 PostgreSQL 测试 Expected：通过；Ruff/format/diff Expected：通过。
-- [ ] 更新笔记概念判断、Literal 引导练习和默认值纠正，明确独立编码未验证、认证/真实模型/前端建议操作仍未建设；按路径本地提交。一次独立只读审查，Important/Critical 用失败回归修复后整套验证。
+- [x] 运行 `.venv/Scripts/python.exe -X utf8 -m pytest --confcutdir=tests/unit tests/unit/test_agent_safety.py -q -o addopts=''`，Expected：新增契约/接口用例失败，旧边界用例通过。先仅写测试，不导入不存在的模块到测试顶部，避免 collection error。
+- [x] 实现 strict/extra forbid 的三个契约，text 校验空白和 Unicode；结构化 JSON envelope 的 answer 严格文本及 suggestions 最多 5，明确字段 validation error 转 InvalidSuggestionOutput；普通文本/非建议 JSON 保持原样。
+- [x] 服务只接受 ExecutionRequest，先检查类型，再创建 session；复用 remove_stock_from_watchlist，异常 rollback、明确错误种类、无私有细节；成功必须发生在仓储 commit 返回之后。API 新增 suggestions 和显式入口，以后端 error.kind 映射 404/500；模型格式错误 502，不吞为现有普通 500。
+- [x] 系统说明补充可选 JSON 建议格式、实际 ID 未知时只返回文本、不伪造确认与结果。运行新增测试 Expected：通过；全部隔离 unit 和相关审计/仓储 PostgreSQL 测试 Expected：通过；Ruff/format/diff Expected：通过。
+- [x] 更新笔记概念判断、Literal 引导练习和默认值纠正，明确独立编码未验证、认证/真实模型/前端建议操作仍未建设；按路径本地提交。一次独立只读审查，Important/Critical 用失败回归修复后整套验证。
 
 ## Review Focus
 
@@ -42,3 +44,11 @@ assert snapshot(safety.factory) == before
 基线 76b01ea，沿用户已批准范围在当前功能分支执行；Pre-flight：一个任务，无跨任务接口，repo commit 与服务 success 顺序一致。独立动作入口通过已有 router 注册，避免纳入未提交 main.py 改动。
 
 Task 1：实现与回归完成，等待最终审查。新增 29 fail→pass；旧 41 pass；入口 70 pass；全部隔离 unit 349 pass；PostgreSQL schema_upgrade/audit/watchlists 54 pass。两个既有依赖警告保留，Ruff/format 通过。只在隔离测试数据库验证显式移除和事务失败，不执行正式数据操作。
+
+Final review：独立只读审查一个 Important，并发删除零行仅警告导致假 success；Critical/Minor 无。
+Final: fixed 零行删除假 success — test_interleaved_removal_does_not_claim_a_zero_row_delete_succeeded 两种真实事务交错 RED 2 fail→GREEN 2 pass；条件 DELETE 按 rowcount 判定。修复后全部隔离 unit 349/349、相关 PostgreSQL 56/56，原大小写增查删回归额外 1/1 通过；无再次派发审查。
+Final: Ruling: 必要修改现有删除仓储 — 新结果契约依赖真正删除成功，零行不能算成功；保留复用和其他接口，成本为旧手动并发删除也正确改为 404。
+Final: Ruling: reviewer 不执行数据库/真实模型/正式数据库动作 — 测试证据来自本会话实际运行，正式库不修改，真实模型尚未验收；成本为不能把本轮结论当部署验收。
+Final: Ruling: 未提交前端/行情 — 本次只评估阶段三提交及必要兼容，不移动或提交其他改动；成本为无关改动未获本轮审查保证。
+Final: Ruling: 认证、所有权及前端确认交互 — 保持已批准范围，显式请求不等于身份验证，仍用现有手动 UI；成本为不能用于公网多用户权限保证，建议操作 UI 尚未交付。
+Task 1: complete (commits 76b01ea..a393df4 plus final concurrency fix; tests: unit349、PostgreSQL56、normalization1、Ruff/format/diff 通过)。工具白名单仍三个，正式数据库未执行移除操作，未上传。

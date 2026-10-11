@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -96,5 +96,14 @@ def remove_stock_from_watchlist(
     if item is None:
         raise StockNotInWatchlistError
 
-    session.delete(item)
+    # A concurrent request may remove the row after our read. ORM deletion
+    # only warns on zero matches; inspect the atomic DELETE count instead.
+    deleted = session.execute(
+        delete(WatchlistItem)
+        .where(WatchlistItem.id == item.id)
+        .execution_options(synchronize_session=False)
+    )
+    if deleted.rowcount != 1:
+        session.rollback()
+        raise StockNotInWatchlistError
     session.commit()

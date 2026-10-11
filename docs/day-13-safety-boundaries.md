@@ -129,4 +129,8 @@ Literal 引导练习最初写为 `Literal["suggested", "error"]`，说明多允�
 
 新增 29 项测试先全部失败，旧入口/来源 41 项通过；实现后入口套件 70 passed。最终全部隔离 unit 为 349 passed；PostgreSQL schema_upgrade、审计、现有 watchlist 仓储/接口为 54 passed。两条既有依赖弃用警告保留；Ruff、format 检查通过。commit 失败用真实 SQLAlchemy before_commit 事件，验证关联未删除、状态 error、秘密不回显；模型为离线脚本，正式数据库未改动，也没有真实模型调用。
 
-三阶段代码已实现，第三阶段独立只读审查待完成。尚不宣称独立编码掌握、原 Day 12 会话闭环、真实模型验收、前端结构化建议操作、认证/额度或模拟交易引擎完成。
+第三阶段独立只读审查发现一个 Important：并发删除时，ORM 对 DELETE 零行仅警告，仓储仍 commit，导致错误返回 success。用隔离 PostgreSQL 的两个真实事务在加载关联后、执行删除前交错，覆盖另一请求删除，以及删除后重新添加两种情况；两项测试先复现 success（失败），再改为条件 DELETE 并检查实际 rowcount。零行 rollback 并抛出 StockNotInWatchlistError，客户端得到 error/404，重新添加的关联保留。原手动接口也复用同一修复，股票资料和其他分组不受影响。
+
+修复后完整隔离 unit 349 passed，相关 PostgreSQL schema/audit/watchlists/concurrency 56 passed；另单独验证原大小写规范化添加/查询/移除回归 1 passed。Ruff、format、diff 检查通过，两个既有依赖警告保留。按技能的一次修复流程用 RED→GREEN 和相关整套回归验证，没有再次派发审查，没有延期 Minor 项。
+
+Day 13 用户批准的三阶段技术基线已完成；基础概念和小代码练习完成，最后口述复盘及独立编写完整请求/接口/事务代码尚未验证。本地按路径提交，未上传；正式数据库仍需先执行第二阶段记录的 schema_upgrade 命令。尚不宣称原 Day 12 会话闭环、真实模型验收、前端结构化建议操作、认证/额度或模拟交易引擎完成。
