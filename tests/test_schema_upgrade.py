@@ -12,7 +12,7 @@ def test_upgrade_preserves_existing_records_and_is_idempotent():
         connection.execute(text("ALTER TABLE daily_prices ALTER COLUMN volume TYPE INTEGER"))
     with SessionLocal() as session:
         stock = Stock(symbol="000001.sz", name="保留名称")
-        group = Watchlist(name="保留自选组")
+        group = Watchlist(owner_id=1, name="保留自选组")
         session.add_all([stock, group])
         session.flush()
         stock_id, group_id = stock.id, group.id

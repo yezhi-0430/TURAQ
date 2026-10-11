@@ -16,6 +16,7 @@ from sqlalchemy.pool import StaticPool
 
 from app import agent_api
 from app.audit.repository import list_tool_executions, save_tool_execution
+from app.auth.dependencies import Actor, require_actor
 from app.database import Base, DailyPrice, Stock, ToolAuditRecord, Watchlist, WatchlistItem
 from app.llm_types import ToolReply
 
@@ -44,7 +45,7 @@ def safety(monkeypatch):
     factory = sessionmaker(bind=engine)
     with factory() as session:
         stock = Stock(symbol="000001.SZ", name="测试股票")
-        group = Watchlist(name="不可由模型删除")
+        group = Watchlist(owner_id=1, name="不可由模型删除")
         session.add_all([stock, group])
         session.flush()
         session.add(WatchlistItem(stock_id=stock.id, watchlist_id=group.id))
@@ -69,6 +70,7 @@ def safety(monkeypatch):
         agent_api, "save_tool_execution", partial(save_tool_execution, session_factory=open_session)
     )
     application = FastAPI()
+    application.dependency_overrides[require_actor] = lambda: Actor(1, "unit@example.com", True)
     application.include_router(agent_api.router)
     # The local ASGI transport remains usable; actual HTTP network transports are blocked.
     with TestClient(application) as client:
@@ -192,7 +194,7 @@ def test_tool_source_reaches_model_http_and_reloaded_audit(safety, has_price):
     feedback = json.loads(safety.model.requests[1]["messages"][-1]["content"])
     assert feedback["source"] == source
     assert json.loads(execution["result"]) == feedback["result"]
-    audits = list_tool_executions(body["run_id"], session_factory=safety.factory)
+    audits = list_tool_executions(body["run_id"], session_factory=safety.factory, actor_id=1)
     assert len(audits) == 1
     assert audits[0].model_dump(mode="json")["source"] == source
     assert audits[0].result == feedback["result"]
@@ -223,7 +225,7 @@ def snapshot(factory):
         return {
             table.name: list(session.execute(select(table).order_by(table.c.id)))
             for table in Base.metadata.sorted_tables
-            if table.name != "tool_audit_records"
+            if table.name in {"watchlists", "watchlist_items", "stocks", "daily_prices"}
         }
 
 
@@ -453,7 +455,7 @@ def test_explicit_request_removes_only_the_requested_association(safety):
     with safety.factory() as session:
         stock = session.scalar(select(Stock))
         other = Stock(symbol="600000.SH", name="保留股票")
-        group = Watchlist(name="保留分组")
+        group = Watchlist(owner_id=1, name="保留分组")
         session.add_all([other, group])
         session.flush()
         session.add_all(
@@ -533,7 +535,7 @@ def test_suggestion_object_cannot_enter_execution_service(safety):
         pytest.fail("建议对象不能打开动作数据库")
 
     with pytest.raises(TypeError, match="ExecutionRequest"):
-        actions.execute_watchlist_removal(suggestion, session_factory=no_database)
+        actions.execute_watchlist_removal(suggestion, session_factory=no_database, actor_id=1)
 
 
 def test_suggestion_defaults_to_suggested_and_result_requires_real_status(safety):

@@ -1,3 +1,4 @@
+from app.auth.dependencies import Actor, require_actor
 from concurrent.futures import ThreadPoolExecutor
 from threading import Barrier
 
@@ -139,7 +140,7 @@ def test_stock_codes_are_normalized_across_add_query_and_remove(client):
 @pytest.mark.parametrize("same_group", [False, True])
 def test_concurrent_stock_adds_do_not_return_internal_error(monkeypatch, same_group):
     with SessionLocal() as session:
-        session.add_all([Watchlist(id=1, name="甲"), Watchlist(id=2, name="乙")])
+        session.add_all([Watchlist(owner_id=1, id=1, name="甲"), Watchlist(owner_id=1, id=2, name="乙")])
         if same_group:
             session.add(Stock(symbol="000001.SZ", name="测试股票"))
         session.commit()
@@ -160,6 +161,7 @@ def test_concurrent_stock_adds_do_not_return_internal_error(monkeypatch, same_gr
 
     monkeypatch.setattr(main, "SessionLocal", sessionmaker(bind=engine, class_=RacingSession))
     application = main.create_app()
+    application.dependency_overrides[require_actor] = lambda: Actor(1, "test-owner@example.com", True)
 
     def add(group):
         with TestClient(application, raise_server_exceptions=False) as client:

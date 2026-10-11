@@ -72,7 +72,7 @@ def test_lists_watchlists(client: TestClient) -> None:
 
 def test_lists_saved_watchlist(client: TestClient) -> None:
     with SessionLocal() as session:
-        watchlist = Watchlist(name="风险观察")
+        watchlist = Watchlist(owner_id=1, name="风险观察")
         session.add(watchlist)
         session.commit()
         session.refresh(watchlist)

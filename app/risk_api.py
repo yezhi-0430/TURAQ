@@ -3,8 +3,9 @@ from typing import Annotated
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
+from app.auth.dependencies import require_actor
 from app.config import Settings
 from app.llm_client import ModelClient, create_model_client
 from app.risk_summary import (
@@ -13,10 +14,11 @@ from app.risk_summary import (
     generate_risk_summary,
 )
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(require_actor)])
 
 
 class RiskSummaryRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     input_text: str = Field(min_length=1)
 
 

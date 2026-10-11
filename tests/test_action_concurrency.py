@@ -12,7 +12,7 @@ from app.database import SessionLocal, Stock, Watchlist, WatchlistItem, engine
 def test_interleaved_removal_does_not_claim_a_zero_row_delete_succeeded(recreate):
     with SessionLocal() as session:
         stock = Stock(symbol="000001.SZ", name="保留股票资料")
-        group = Watchlist(name="交错删除测试")
+        group = Watchlist(owner_id=1, name="交错删除测试")
         session.add_all([stock, group])
         session.flush()
         stock_id, group_id = stock.id, group.id
@@ -48,6 +48,7 @@ def test_interleaved_removal_does_not_claim_a_zero_row_delete_succeeded(recreate
             stock_code="000001.SZ",
         ),
         session_factory=factory,
+        actor_id=1,
     )
     assert removed == [old_item_id]
     assert result.status == "error"

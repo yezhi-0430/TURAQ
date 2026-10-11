@@ -16,9 +16,10 @@ def save_tool_execution(
     record: ToolExecutionRecord,
     *,
     session_factory: Callable[[], Session] = SessionLocal,
+    actor_id: int | None = None,
 ) -> int:
     """Return the committed row ID; rollback and propagate any storage failure."""
-    row = ToolAuditRecord(run_id=run_id, **record.model_dump(mode="json"))
+    row = ToolAuditRecord(run_id=run_id, actor_id=actor_id, **record.model_dump(mode="json"))
     with session_factory() as session, session.begin():
         session.add(row)
         session.flush()
@@ -42,6 +43,7 @@ def list_tool_executions(
     after_id: int = 0,
     limit: int = 20,
     session_factory: Callable[[], Session] = SessionLocal,
+    actor_id: int | None = None,
 ) -> list[AuditRecord]:
     """Read one bounded page for a run, excluding the last seen row ID."""
     if type(limit) is not int or not 1 <= limit <= 100:
@@ -50,7 +52,11 @@ def list_tool_executions(
         raise ValueError("after_id 必须为非负整数")
     statement = (
         select(ToolAuditRecord)
-        .where(ToolAuditRecord.run_id == run_id, ToolAuditRecord.id > after_id)
+        .where(
+            ToolAuditRecord.run_id == run_id,
+            ToolAuditRecord.id > after_id,
+            ToolAuditRecord.actor_id == actor_id,
+        )
         .order_by(ToolAuditRecord.id)
         .limit(limit)
     )

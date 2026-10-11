@@ -11,7 +11,7 @@ from app.database import (
 
 def test_watchlist_persists_across_sessions() -> None:
     with SessionLocal() as write_session:
-        watchlist = Watchlist(name="持久化测试")
+        watchlist = Watchlist(owner_id=1, name="持久化测试")
         write_session.add(watchlist)
         write_session.commit()
         watchlist_id = watchlist.id
@@ -38,7 +38,7 @@ def test_watchlist_persists_across_sessions() -> None:
 
 def test_rejects_duplicate_stock_in_same_watchlist() -> None:
     with SessionLocal() as session:
-        watchlist = Watchlist(name="重复约束测试")
+        watchlist = Watchlist(owner_id=1, name="重复约束测试")
         stock = Stock(
             symbol="600519.SH",
             name="贵州茅台",

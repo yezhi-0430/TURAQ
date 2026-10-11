@@ -3,12 +3,14 @@ import json
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
+from app.auth.dependencies import Actor, require_actor
 from app.llm_client import FakeModelClient
 from app.risk_api import get_model_client, router
 
 
 def test_returns_502_for_invalid_model_reply() -> None:
     application = FastAPI()
+    application.dependency_overrides[require_actor] = lambda: Actor(1, "unit@example.com", True)
     application.include_router(router)
     application.dependency_overrides[get_model_client] = lambda: FakeModelClient(reply="不是JSON")
 
@@ -32,6 +34,7 @@ def test_returns_valid_risk_summary() -> None:
     }
 
     application = FastAPI()
+    application.dependency_overrides[require_actor] = lambda: Actor(1, "unit@example.com", True)
     application.include_router(router)
     application.dependency_overrides[get_model_client] = lambda: FakeModelClient(
         reply=json.dumps(expected, ensure_ascii=False)
@@ -50,6 +53,7 @@ def test_returns_valid_risk_summary() -> None:
 def test_default_fake_provider_returns_valid_offline_summary(stock_session, monkeypatch) -> None:
     monkeypatch.setenv("MODEL_PROVIDER", "fake")
     application = FastAPI()
+    application.dependency_overrides[require_actor] = lambda: Actor(1, "unit@example.com", True)
     application.include_router(router)
     with TestClient(application) as client:
         response = client.post("/api/v1/risk-summary", json={"input_text": "昨日10元，今日9元"})

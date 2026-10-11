@@ -5,7 +5,7 @@ FastAPI 路由：为前端提供 Agent 对话接口
 import json
 
 import httpx
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, TypeAdapter
 from pydantic_core import PydanticSerializationError
@@ -22,6 +22,7 @@ from app.agent_loop import run_agent_loop
 from app.agent_policy import ChatMessage as ChatMessage
 from app.agent_policy import ChatRequest, build_agent_messages
 from app.audit.repository import save_tool_execution
+from app.auth.dependencies import Actor, require_actor
 from app.config import Settings
 from app.database import SessionLocal
 from app.llm_client import ModelClient, create_model_client
@@ -82,7 +83,7 @@ def display_tool_arguments(raw: str) -> dict | str:
 
 
 @router.post("/chat")
-async def chat(request: ChatRequest) -> ChatResponse:
+async def chat(request: ChatRequest, actor: Actor = Depends(require_actor)) -> ChatResponse:
     """
     接收前端消息，运行 Agent 循环，返回结果和工具调用记录
     """
@@ -100,7 +101,9 @@ async def chat(request: ChatRequest) -> ChatResponse:
                 messages=messages,
                 session=session,
                 max_rounds=request.max_rounds,
-                audit_writer=save_tool_execution,
+                audit_writer=lambda run_id, record: save_tool_execution(
+                    run_id, record, actor_id=actor.id, session_factory=SessionLocal
+                ),
             )
 
         answer, suggestions = parse_agent_answer(result.answer)
@@ -134,13 +137,15 @@ async def chat(request: ChatRequest) -> ChatResponse:
     except InvalidSuggestionOutput as e:
         raise HTTPException(status_code=502, detail="模型建议格式无效") from e
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Agent 执行失败: {str(e)}") from e
+        raise HTTPException(status_code=500, detail="Agent 执行失败，请稍后重试") from e
 
 
 @router.post("/actions/remove-stock", response_model=ExecutionResult)
-def execute_requested_removal(request: ExecutionRequest) -> JSONResponse:
+def execute_requested_removal(
+    request: ExecutionRequest, actor: Actor = Depends(require_actor)
+) -> JSONResponse:
     """Receive a separate client action; this handler is never exposed as a model tool."""
-    result = execute_watchlist_removal(request, session_factory=SessionLocal)
+    result = execute_watchlist_removal(request, session_factory=SessionLocal, actor_id=actor.id)
     status_code = 200
     if result.error is not None:
         status_code = 500 if result.error.kind == "execution_error" else 404

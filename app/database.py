@@ -38,6 +38,7 @@ class Watchlist(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(40))
+    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
 
 
 class Stock(Base):
@@ -91,6 +92,7 @@ class ToolAuditRecord(Base):
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    actor_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), index=True)
     run_id: Mapped[str] = mapped_column(String(36), index=True)
     tool_call_id: Mapped[str | None] = mapped_column(Text)
     tool_name: Mapped[str] = mapped_column(Text)
@@ -107,3 +109,7 @@ class ToolAuditRecord(Base):
 
 def create_tables() -> None:
     Base.metadata.create_all(engine)
+
+
+# Register identity tables for explicit create/upgrade commands.
+from app.auth import models as auth_models  # noqa: E402, F401

@@ -1,0 +1,1 @@
+"""Invitation-only email authentication."""

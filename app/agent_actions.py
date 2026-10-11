@@ -8,6 +8,8 @@ from typing import Literal, Self
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator, model_validator
 from sqlalchemy.orm import Session
 
+from app.auth.models import ActionAuditRecord
+from app.auth.service import utcnow
 from app.tools.market_data import StockProfileArguments
 from app.watchlists.repository import (
     StockNotInWatchlistError,
@@ -102,6 +104,7 @@ def execute_watchlist_removal(
     request: ExecutionRequest,
     *,
     session_factory: Callable[[], Session],
+    actor_id: int,
 ) -> ExecutionResult:
     """Only this explicit request path invokes writes; success follows repository commit."""
     if not isinstance(request, ExecutionRequest):
@@ -110,7 +113,24 @@ def execute_watchlist_removal(
     try:
         with session_factory() as session:
             try:
-                remove_stock_from_watchlist(session, request.watchlist_id, request.stock_code)
+                remove_stock_from_watchlist(
+                    session,
+                    request.watchlist_id,
+                    request.stock_code,
+                    actor_id=actor_id,
+                    commit=False,
+                )
+                session.add(
+                    ActionAuditRecord(
+                        actor_id=actor_id,
+                        operation=request.operation,
+                        watchlist_id=request.watchlist_id,
+                        stock_code=request.stock_code,
+                        status="success",
+                        created_at=utcnow(),
+                    )
+                )
+                session.commit()
             except Exception:
                 session.rollback()
                 raise
@@ -126,5 +146,20 @@ def execute_watchlist_removal(
         status="error" if error else "success",
         error=error,
     )
-    logger.info(result.model_dump_json())
+    if error:
+        try:
+            with session_factory() as audit_session, audit_session.begin():
+                audit_session.add(
+                    ActionAuditRecord(
+                        actor_id=actor_id,
+                        operation=request.operation,
+                        watchlist_id=request.watchlist_id,
+                        stock_code=request.stock_code,
+                        status="error",
+                        error_kind=error.kind,
+                        created_at=utcnow(),
+                    )
+                )
+        except Exception:
+            logger.error("Failed to persist unsuccessful action audit")
     return result
