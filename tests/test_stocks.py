@@ -7,7 +7,7 @@ from app.database import DailyPrice, SessionLocal, Stock
 from app.main import app
 
 
-def test_get_stock_returns_normalized_symbol() -> None:
+def test_get_stock_returns_normalized_symbol(client) -> None:
     async def request_stock() -> httpx.Response:
         transport = httpx.ASGITransport(app=app)
 
@@ -22,7 +22,11 @@ def test_get_stock_returns_normalized_symbol() -> None:
     assert response.status_code == 200
     assert response.json() == {"symbol": "600519.SH"}
 
-def test_searches_stocks_by_name() -> None:
+def test_searches_stocks_by_name(client) -> None:
+    with SessionLocal() as session:
+        session.add(Stock(symbol="000001.SZ", name="平安银行"))
+        session.commit()
+
     async def request_stocks() -> httpx.Response:
         transport = httpx.ASGITransport(app=app)
 
