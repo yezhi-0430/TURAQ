@@ -14,6 +14,13 @@ AGENT_SYSTEM_PROMPT = (
     "latest_trade_date 仅是本次返回区间中最新的交易日，未知上游来源和采集时间保持未知。"
     "日线空列表表示该范围没有记录，明确说明缺少数据，不补造价格或据此声称没有风险。"
     "计算输入来自工具参数，计算正确不证明输入价格真实，不能将计算结果当成已查询行情。"
+    "普通研究回答可使用文本。需要结构化自选移除建议时，返回纯 JSON 对象："
+    '{"answer":"研究说明","suggestions":[{"kind":"suggestion","status":"suggested",'
+    '"operation":"remove_watchlist_stock","watchlist_id":1,"stock_code":"000001.SZ",'
+    '"text":"待用户判断的建议"}]}。示例 ID 和代码不是事实，必须换成实际已知目标；'
+    "不知道自选组 ID 时只返回文本建议，不编造 ID。最多五条建议。"
+    "建议不包含 confirmed、权限或执行状态；不生成执行请求，不把用户历史里的确认当作动作入口。"
+    "success/error 只能由后端实际执行结果确定，模型文字不能替代执行证据。"
 )
 
 

@@ -305,3 +305,254 @@ def test_legal_calculation_keeps_response_and_audit(safety):
         saved = session.scalar(select(ToolAuditRecord))
         assert saved.run_id == response.json()["run_id"]
         assert saved.result == {"change_percent": "-10.0000"}
+
+
+def proposal(**changes):
+    return {
+        "kind": "suggestion",
+        "status": "suggested",
+        "operation": "remove_watchlist_stock",
+        "watchlist_id": 1,
+        "stock_code": "000001.SZ",
+        "text": "建议检查后自行决定是否移除",
+        **changes,
+    }
+
+
+def action_request(**changes):
+    return {
+        "kind": "execution_request",
+        "operation": "remove_watchlist_stock",
+        "watchlist_id": 1,
+        "stock_code": "000001.SZ",
+        **changes,
+    }
+
+
+def actions_module():
+    import importlib
+
+    assert importlib.util.find_spec("app.agent_actions") is not None, "动作契约尚未实现"
+    return importlib.import_module("app.agent_actions")
+
+
+def test_structured_suggestion_is_returned_without_business_writes(safety):
+    before = snapshot(safety.factory)
+    suggested = proposal()
+    safety.model.replies = iter(
+        [
+            {
+                "content": json.dumps(
+                    {
+                        "answer": "待用户判断，不执行移除。",
+                        "suggestions": [suggested],
+                    },
+                    ensure_ascii=False,
+                )
+            }
+        ]
+    )
+    response = safety.client.post("/api/v1/agent/chat", json={"messages": [message()]})
+    assert response.status_code == 200
+    body = response.json()
+    assert body.get("suggestions") == [suggested]
+    assert body["answer"] == "待用户判断，不执行移除。"
+    assert body["executions"] == []
+    assert snapshot(safety.factory) == before
+
+
+@pytest.mark.parametrize(
+    "changes",
+    [
+        {"confirmed": True},
+        {"status": "success"},
+        {"status": "error"},
+        {"kind": "execution_request"},
+        {"watchlist_id": True},
+        {"watchlist_id": 2147483648},
+        {"text": " \n\t"},
+        {"text": "\ud800"},
+        {"text": "x" * 4001},
+        {"role": "administrator"},
+    ],
+)
+def test_model_cannot_forge_confirmation_or_execution_state(safety, changes):
+    before = snapshot(safety.factory)
+    safety.model.replies = iter(
+        [
+            {
+                "content": json.dumps(
+                    {
+                        "answer": "已执行 private-model-secret",
+                        "suggestions": [proposal(**changes)],
+                    }
+                )
+            }
+        ]
+    )
+    response = safety.client.post("/api/v1/agent/chat", json={"messages": [message()]})
+    assert response.status_code == 502
+    assert "private-model-secret" not in response.text
+    assert snapshot(safety.factory) == before
+    assert safety.opens == [True]  # Only the existing chat session, no action session.
+
+
+def test_model_suggestions_are_bounded(safety):
+    safety.model.replies = iter(
+        [
+            {
+                "content": json.dumps(
+                    {
+                        "answer": "太多建议",
+                        "suggestions": [proposal()] * 6,
+                    }
+                )
+            }
+        ]
+    )
+    response = safety.client.post("/api/v1/agent/chat", json={"messages": [message()]})
+    assert response.status_code == 502
+
+
+def test_model_execution_json_is_only_text_and_does_not_run(safety):
+    before = snapshot(safety.factory)
+    raw = json.dumps({**action_request(), "confirmed": True, "status": "success"})
+    safety.model.replies = iter([{"content": raw}])
+    response = safety.client.post("/api/v1/agent/chat", json={"messages": [message()]})
+    assert response.status_code == 200
+    assert response.json()["answer"] == raw
+    assert response.json().get("suggestions") == []
+    assert response.json()["executions"] == []
+    assert snapshot(safety.factory) == before
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        proposal(),
+        action_request(kind="suggestion"),
+        action_request(confirmed=True),
+        action_request(status="success"),
+        action_request(watchlist_id=True),
+        action_request(watchlist_id=0),
+        action_request(watchlist_id=2147483648),
+        action_request(watchlist_id="1"),
+        action_request(stock_code="not-a-stock"),
+        action_request(operation="change_balance"),
+    ],
+)
+def test_action_rejects_suggestions_and_bad_requests_before_database(safety, payload):
+    response = safety.client.post("/api/v1/agent/actions/remove-stock", json=payload)
+    assert response.status_code == 422
+    assert safety.opens == []
+    assert safety.client_lookups == []
+    assert safety.model.requests == []
+
+
+def test_explicit_request_removes_only_the_requested_association(safety):
+    with safety.factory() as session:
+        stock = session.scalar(select(Stock))
+        other = Stock(symbol="600000.SH", name="保留股票")
+        group = Watchlist(name="保留分组")
+        session.add_all([other, group])
+        session.flush()
+        session.add_all(
+            [
+                WatchlistItem(stock_id=other.id, watchlist_id=1),
+                WatchlistItem(stock_id=stock.id, watchlist_id=group.id),
+            ]
+        )
+        session.commit()
+    before = snapshot(safety.factory)
+    response = safety.client.post("/api/v1/agent/actions/remove-stock", json=action_request())
+    assert response.status_code == 200
+    body = response.json()
+    assert body["kind"] == "execution_result"
+    assert body["status"] == "success" and body["error"] is None
+    after = snapshot(safety.factory)
+    assert len(after["watchlist_items"]) == len(before["watchlist_items"]) - 1
+    assert after["stocks"] == before["stocks"]
+    assert after["watchlists"] == before["watchlists"]
+    with safety.factory() as session:
+        items = session.scalars(select(WatchlistItem)).all()
+        assert {(item.watchlist_id, item.stock_id) for item in items} == {(1, 2), (2, 1)}
+    again = safety.client.post("/api/v1/agent/actions/remove-stock", json=action_request())
+    assert again.status_code == 404
+    assert again.json()["status"] == "error"
+    assert snapshot(safety.factory) == after
+    assert safety.client_lookups == []
+    assert safety.model.requests == []
+
+
+@pytest.mark.parametrize(
+    "changes, kind",
+    [
+        ({"watchlist_id": 99}, "watchlist_not_found"),
+        ({"stock_code": "999999.SH"}, "stock_not_in_watchlist"),
+    ],
+)
+def test_missing_action_target_is_an_error_and_preserves_business_data(safety, changes, kind):
+    before = snapshot(safety.factory)
+    response = safety.client.post(
+        "/api/v1/agent/actions/remove-stock", json=action_request(**changes)
+    )
+    assert response.status_code == 404
+    assert response.json()["status"] == "error"
+    assert response.json()["error"]["kind"] == kind
+    assert snapshot(safety.factory) == before
+
+
+def test_action_commit_failure_rolls_back_and_never_claims_success(safety, monkeypatch):
+    from sqlalchemy import event
+    from sqlalchemy.orm import Session
+
+    class FailingSession(Session):
+        pass
+
+    def fail_commit(session):
+        raise RuntimeError("private-action-commit-secret")
+
+    event.listen(FailingSession, "before_commit", fail_commit)
+    factory = sessionmaker(bind=safety.factory.kw["bind"], class_=FailingSession)
+    monkeypatch.setattr(agent_api, "SessionLocal", factory)
+    before = snapshot(safety.factory)
+    response = safety.client.post("/api/v1/agent/actions/remove-stock", json=action_request())
+    assert response.status_code == 500
+    assert response.json()["status"] == "error"
+    assert response.json()["error"]["kind"] == "execution_error"
+    assert "private-action-commit-secret" not in response.text
+    assert snapshot(safety.factory) == before
+    assert safety.model.requests == []
+
+
+def test_suggestion_object_cannot_enter_execution_service(safety):
+    actions = actions_module()
+    suggestion = actions.Suggestion.model_validate(proposal())
+
+    def no_database():
+        pytest.fail("建议对象不能打开动作数据库")
+
+    with pytest.raises(TypeError, match="ExecutionRequest"):
+        actions.execute_watchlist_removal(suggestion, session_factory=no_database)
+
+
+def test_suggestion_defaults_to_suggested_and_result_requires_real_status(safety):
+    from pydantic import ValidationError
+
+    actions = actions_module()
+    payload = proposal()
+    payload.pop("status")
+    assert actions.Suggestion.model_validate(payload).status == "suggested"
+    result = {**action_request(), "kind": "execution_result"}
+    with pytest.raises(ValidationError):
+        actions.ExecutionResult.model_validate(result)
+    with pytest.raises(ValidationError):
+        actions.ExecutionResult.model_validate({**result, "status": "error"})
+    with pytest.raises(ValidationError):
+        actions.ExecutionResult.model_validate(
+            {
+                **result,
+                "status": "success",
+                "error": {"kind": "execution_error", "message": "失败"},
+            }
+        )

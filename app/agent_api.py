@@ -6,9 +6,18 @@ import json
 
 import httpx
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel, TypeAdapter
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field, TypeAdapter
 from pydantic_core import PydanticSerializationError
 
+from app.agent_actions import (
+    ExecutionRequest,
+    ExecutionResult,
+    InvalidSuggestionOutput,
+    Suggestion,
+    execute_watchlist_removal,
+    parse_agent_answer,
+)
 from app.agent_loop import run_agent_loop
 from app.agent_policy import ChatMessage as ChatMessage
 from app.agent_policy import ChatRequest, build_agent_messages
@@ -55,6 +64,7 @@ class ChatResponse(BaseModel):
     answer: str | None
     rounds: int
     executions: list[ToolExecution]
+    suggestions: list[Suggestion] = Field(default_factory=list)
 
 
 def display_tool_arguments(raw: str) -> dict | str:
@@ -93,6 +103,7 @@ async def chat(request: ChatRequest) -> ChatResponse:
                 audit_writer=save_tool_execution,
             )
 
+        answer, suggestions = parse_agent_answer(result.answer)
         # 转换工具执行记录
         executions = [
             ToolExecution(
@@ -114,10 +125,23 @@ async def chat(request: ChatRequest) -> ChatResponse:
         return ChatResponse(
             run_id=result.run_id,
             status=result.status,
-            answer=result.answer,
+            answer=answer,
             rounds=result.rounds,
             executions=executions,
+            suggestions=suggestions,
         )
 
+    except InvalidSuggestionOutput as e:
+        raise HTTPException(status_code=502, detail="模型建议格式无效") from e
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Agent 执行失败: {str(e)}") from e
+
+
+@router.post("/actions/remove-stock", response_model=ExecutionResult)
+def execute_requested_removal(request: ExecutionRequest) -> JSONResponse:
+    """Receive a separate client action; this handler is never exposed as a model tool."""
+    result = execute_watchlist_removal(request, session_factory=SessionLocal)
+    status_code = 200
+    if result.error is not None:
+        status_code = 500 if result.error.kind == "execution_error" else 404
+    return JSONResponse(status_code=status_code, content=result.model_dump(mode="json"))
