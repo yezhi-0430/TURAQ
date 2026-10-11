@@ -1,22 +1,28 @@
 """
 FastAPI 路由：为前端提供 Agent 对话接口
 """
+
 import json
+
 import httpx
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, TypeAdapter
+from pydantic_core import PydanticSerializationError
 
 from app.agent_loop import run_agent_loop
+from app.agent_policy import ChatMessage as ChatMessage
+from app.agent_policy import ChatRequest, build_agent_messages
+from app.audit.repository import save_tool_execution
 from app.config import Settings
 from app.database import SessionLocal
-from app.llm_client import create_model_client, ModelClient
-from app.audit.repository import save_tool_execution
+from app.llm_client import ModelClient, create_model_client
 
 router = APIRouter(prefix="/api/v1/agent", tags=["agent"])
 
 # 全局 HTTP 客户端和模型客户端缓存
 _http_client: httpx.Client | None = None
 _model_client: ModelClient | None = None
+_argument_serializer = TypeAdapter(dict)
 
 
 def get_client() -> ModelClient:
@@ -32,19 +38,9 @@ def get_client() -> ModelClient:
     return _model_client
 
 
-class ChatMessage(BaseModel):
-    role: str
-    content: str
-
-
-class ChatRequest(BaseModel):
-    messages: list[ChatMessage]
-    max_rounds: int = 5
-
-
 class ToolExecution(BaseModel):
     tool_name: str
-    arguments: dict
+    arguments: dict | str
     result: str | None = None
     error: str | None = None
     status: str
@@ -59,16 +55,27 @@ class ChatResponse(BaseModel):
     executions: list[ToolExecution]
 
 
+def display_tool_arguments(raw: str) -> dict | str:
+    """Keep rejected malformed/non-object arguments visible in the response."""
+    try:
+        decoded = json.loads(raw)
+        # Reject NaN/Infinity before Pydantic can turn non-finite floats into null.
+        json.dumps(decoded, allow_nan=False)
+        if isinstance(decoded, dict):
+            # Match the response serializer's Unicode and nesting constraints.
+            _argument_serializer.dump_json(decoded)
+    except (ValueError, RecursionError, PydanticSerializationError):
+        return raw
+    return decoded if isinstance(decoded, dict) else raw
+
+
 @router.post("/chat")
 async def chat(request: ChatRequest) -> ChatResponse:
     """
     接收前端消息，运行 Agent 循环，返回结果和工具调用记录
     """
-    if not request.messages:
-        raise HTTPException(status_code=400, detail="消息列表不能为空")
-
     # 转换为标准消息格式
-    messages = [{"role": msg.role, "content": msg.content} for msg in request.messages]
+    messages = build_agent_messages(request)
 
     try:
         # 获取 LLM 客户端
@@ -88,9 +95,13 @@ async def chat(request: ChatRequest) -> ChatResponse:
         executions = [
             ToolExecution(
                 tool_name=exec.tool_name,
-                arguments=json.loads(exec.arguments),
-                result=json.dumps(exec.result) if exec.status == "success" and exec.result else None,
-                error=json.dumps(exec.error.model_dump()) if exec.status == "error" and exec.error else None,
+                arguments=display_tool_arguments(exec.arguments),
+                result=json.dumps(exec.result)
+                if exec.status == "success" and exec.result
+                else None,
+                error=json.dumps(exec.error.model_dump())
+                if exec.status == "error" and exec.error
+                else None,
                 status=exec.status,
                 duration_ms=exec.duration_ms,
             )
@@ -106,4 +117,4 @@ async def chat(request: ChatRequest) -> ChatResponse:
         )
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Agent 执行失败: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Agent 执行失败: {str(e)}") from e
