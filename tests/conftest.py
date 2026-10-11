@@ -41,7 +41,8 @@ def clean_test_database(upgrade_test_schema, monkeypatch):
         with engine.begin() as connection:
             connection.execute(
                 text(
-                    "TRUNCATE TABLE users, invites, auth_throttle_buckets, tool_audit_records, "
+                    "TRUNCATE TABLE users, invites, auth_throttle_buckets, model_budgets, "
+                    "tool_audit_records, "
                     "watchlist_items, stocks, watchlists "
                     "RESTART IDENTITY CASCADE"
                 )

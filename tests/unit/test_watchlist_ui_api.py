@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app import main
-from app.auth.dependencies import Actor, require_actor
+from app.auth.dependencies import Actor, get_session_factory, require_actor
 from app.database import Base, Stock
 
 
@@ -23,6 +23,7 @@ def watch_client(monkeypatch):
         )
         db.commit()
     application = main.create_app()
+    application.dependency_overrides[get_session_factory] = lambda: factory
     application.dependency_overrides[require_actor] = lambda: Actor(1, "unit@example.com", True)
     with TestClient(application) as client:
         yield client

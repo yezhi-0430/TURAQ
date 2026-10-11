@@ -19,6 +19,8 @@ from app.audit.repository import list_tool_executions, save_tool_execution
 from app.auth.dependencies import Actor, require_actor
 from app.database import Base, DailyPrice, Stock, ToolAuditRecord, Watchlist, WatchlistItem
 from app.llm_types import ToolReply
+from app.model_limits import model_admission
+from tests.unit.admission import offline_admission
 
 
 class ScriptedModel:
@@ -71,6 +73,7 @@ def safety(monkeypatch):
     )
     application = FastAPI()
     application.dependency_overrides[require_actor] = lambda: Actor(1, "unit@example.com", True)
+    application.dependency_overrides[model_admission] = offline_admission
     application.include_router(agent_api.router)
     # The local ASGI transport remains usable; actual HTTP network transports are blocked.
     with TestClient(application) as client:

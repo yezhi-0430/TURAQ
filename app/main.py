@@ -17,9 +17,10 @@ from app.auth.dependencies import Actor, require_actor, require_admin
 from app.database import DailyPrice, SessionLocal, Stock, Watchlist, WatchlistItem
 from app.json_requests import DecimalJSONRoute
 from app.market_api import router as market_router
+from app.model_limits import market_admission
 from app.risk_api import router as risk_router
 from app.stock_list_api import router as stock_list_router
-from app.tasks import start_scheduler, shutdown_scheduler
+from app.tasks import shutdown_scheduler, start_scheduler
 from app.watchlists.metadata import resolve_stock
 from app.watchlists.repository import (
     DuplicateStockInWatchlistError,
@@ -130,10 +131,6 @@ def create_app() -> FastAPI:
     async def health() -> dict[str, str]:
         return {"status": "ok"}
 
-    @application.get("/api/v1/stocks/{symbol}", tags=["stocks"])
-    async def get_stock(symbol: str, actor: Actor = Depends(require_actor)) -> dict[str, str]:
-        return {"symbol": symbol.upper()}
-
     @price_router.post("/api/v1/stocks/{symbol}/daily-prices", status_code=201)
     def import_daily_price(
         symbol: str,
@@ -171,7 +168,8 @@ def create_app() -> FastAPI:
 
     application.include_router(price_router)
 
-    @application.get("/api/v1/stocks/{symbol}/daily-prices")
+    @application.get("/api/v1/stocks/{symbol}/daily-prices",
+                     dependencies=[Depends(market_admission)])
     def get_daily_prices(
         symbol: str, actor: Actor = Depends(require_actor)
     ) -> list[dict[str, object]]:
@@ -199,7 +197,8 @@ def create_app() -> FastAPI:
                 for item in daily_prices
             ]
 
-    @application.get("/api/v1/stocks", tags=["stocks"])
+    @application.get("/api/v1/stocks", tags=["stocks"],
+                     dependencies=[Depends(market_admission)])
     def search_stocks(query: str, actor: Actor = Depends(require_actor)) -> list[dict[str, str]]:
         query = query.strip()
         if not query:

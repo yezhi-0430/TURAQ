@@ -25,7 +25,16 @@ from app.audit.repository import save_tool_execution
 from app.auth.dependencies import Actor, require_actor
 from app.config import Settings
 from app.database import SessionLocal
-from app.llm_client import ModelClient, create_model_client
+from app.llm_client import ModelClient, ModelTimeoutError, create_model_client
+from app.model_limits import (
+    Admission,
+    LimitsUnavailable,
+    ModelDeadlineExceeded,
+    RateLimited,
+    bind_model,
+    model_admission,
+    public_error,
+)
 from app.tools.provenance import ToolSource
 
 router = APIRouter(prefix="/api/v1/agent", tags=["agent"])
@@ -38,15 +47,11 @@ _argument_serializer = TypeAdapter(dict)
 
 def get_client() -> ModelClient:
     """获取或创建 ModelClient 实例（单例）"""
-    global _http_client, _model_client
+    global _http_client
 
-    if _model_client is None:
-        settings = Settings()
-        if _http_client is None:
-            _http_client = httpx.Client()
-        _model_client = create_model_client(settings, _http_client)
-
-    return _model_client
+    if _http_client is None:
+        _http_client = httpx.Client()
+    return create_model_client(Settings(), _http_client)
 
 
 class ToolExecution(BaseModel):
@@ -66,6 +71,7 @@ class ChatResponse(BaseModel):
     rounds: int
     executions: list[ToolExecution]
     suggestions: list[Suggestion] = Field(default_factory=list)
+    model_mode: str = "fake"
 
 
 def display_tool_arguments(raw: str) -> dict | str:
@@ -83,7 +89,8 @@ def display_tool_arguments(raw: str) -> dict | str:
 
 
 @router.post("/chat")
-async def chat(request: ChatRequest, actor: Actor = Depends(require_actor)) -> ChatResponse:
+def chat(request: ChatRequest, actor: Actor = Depends(require_actor),
+         admission: Admission = Depends(model_admission)) -> ChatResponse:
     """
     接收前端消息，运行 Agent 循环，返回结果和工具调用记录
     """
@@ -92,7 +99,7 @@ async def chat(request: ChatRequest, actor: Actor = Depends(require_actor)) -> C
 
     try:
         # 获取 LLM 客户端
-        client = get_client()
+        client = bind_model(get_client(), admission)
 
         # 运行 Agent 循环
         with SessionLocal() as session:
@@ -102,9 +109,12 @@ async def chat(request: ChatRequest, actor: Actor = Depends(require_actor)) -> C
                 session=session,
                 max_rounds=request.max_rounds,
                 audit_writer=lambda run_id, record: save_tool_execution(
-                    run_id, record, actor_id=actor.id, session_factory=SessionLocal
+                    run_id, record, actor_id=actor.id, session_factory=SessionLocal,
+                    before_work=admission.bound_database_work,
                 ),
+                check_deadline=lambda: admission.bound_database_work(session),
             )
+        admission.remaining()
 
         answer, suggestions = parse_agent_answer(result.answer)
         # 转换工具执行记录
@@ -115,7 +125,7 @@ async def chat(request: ChatRequest, actor: Actor = Depends(require_actor)) -> C
                 result=json.dumps(exec.result)
                 if exec.status == "success" and exec.result is not None
                 else None,
-                error=json.dumps(exec.error.model_dump())
+                error=json.dumps(exec.error.model_dump(exclude={"details"}))
                 if exec.status == "error" and exec.error
                 else None,
                 status=exec.status,
@@ -132,8 +142,13 @@ async def chat(request: ChatRequest, actor: Actor = Depends(require_actor)) -> C
             rounds=result.rounds,
             executions=executions,
             suggestions=suggestions,
+            model_mode=admission.settings.model_mode,
         )
 
+    except (RateLimited, LimitsUnavailable, ModelDeadlineExceeded) as e:
+        raise public_error(e) from e
+    except ModelTimeoutError as e:
+        raise HTTPException(504, "模型请求超时，请稍后重试") from e
     except InvalidSuggestionOutput as e:
         raise HTTPException(status_code=502, detail="模型建议格式无效") from e
     except Exception as e:

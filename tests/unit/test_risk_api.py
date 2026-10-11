@@ -5,11 +5,14 @@ from fastapi.testclient import TestClient
 
 from app.auth.dependencies import Actor, require_actor
 from app.llm_client import FakeModelClient
+from app.model_limits import model_admission
 from app.risk_api import get_model_client, router
+from tests.unit.admission import offline_admission
 
 
 def test_returns_502_for_invalid_model_reply() -> None:
     application = FastAPI()
+    application.dependency_overrides[model_admission] = offline_admission
     application.dependency_overrides[require_actor] = lambda: Actor(1, "unit@example.com", True)
     application.include_router(router)
     application.dependency_overrides[get_model_client] = lambda: FakeModelClient(reply="不是JSON")
@@ -34,6 +37,7 @@ def test_returns_valid_risk_summary() -> None:
     }
 
     application = FastAPI()
+    application.dependency_overrides[model_admission] = offline_admission
     application.dependency_overrides[require_actor] = lambda: Actor(1, "unit@example.com", True)
     application.include_router(router)
     application.dependency_overrides[get_model_client] = lambda: FakeModelClient(
@@ -53,6 +57,7 @@ def test_returns_valid_risk_summary() -> None:
 def test_default_fake_provider_returns_valid_offline_summary(stock_session, monkeypatch) -> None:
     monkeypatch.setenv("MODEL_PROVIDER", "fake")
     application = FastAPI()
+    application.dependency_overrides[model_admission] = offline_admission
     application.dependency_overrides[require_actor] = lambda: Actor(1, "unit@example.com", True)
     application.include_router(router)
     with TestClient(application) as client:

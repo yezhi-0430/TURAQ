@@ -31,6 +31,7 @@ from app.auth.service import (
     verify_email,
 )
 from app.auth.throttle import RateLimited, reserve
+from app.model_limits import client_ip, read_limit
 
 
 def no_store(response: Response):
@@ -66,7 +67,7 @@ def mail_admission(request, payload, factory, mailer):
         raise HTTPException(503, "邮件服务暂不可用") from exc
 
 
-def session_json(db, row, mailer):
+def session_json(db, row, mailer, settings):
     user = db.get(User, row.user_id) if row.user_id else None
     actor = (
         Actor(user.id, user.email, user.is_admin)
@@ -77,6 +78,7 @@ def session_json(db, row, mailer):
         "user": asdict(actor) if actor else None,
         "csrf_token": row.csrf_token,
         "mail_configured": mailer.configured,
+        "model_mode": settings.model_mode,
     }
 
 
@@ -107,10 +109,13 @@ def session(
             row.revoked = True
             db.commit()
             row = None
+        if row is None or row.user_id is None:
+            read_limit(factory, "bootstrap-ip:" + client_ip(request),
+                       settings.bootstrap_ip_minute_limit)
         if row is None:
             raw, row = new_session(db)
             set_cookie(response, raw, settings)
-        return session_json(db, row, mailer)
+        return session_json(db, row, mailer, settings)
 
 
 @router.post("/register", status_code=202)
@@ -207,7 +212,7 @@ def login(
             previous.revoked = True
         raw, row = new_session(db, user.id)
         set_cookie(response, raw, settings)
-        return session_json(db, row, mailer)
+        return session_json(db, row, mailer, settings)
 
 
 @router.post("/logout")
@@ -224,4 +229,4 @@ def logout(
             previous.revoked = True
         raw, row = new_session(db)
         set_cookie(response, raw, settings)
-        return session_json(db, row, mailer)
+        return session_json(db, row, mailer, settings)

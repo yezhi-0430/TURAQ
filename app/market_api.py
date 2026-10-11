@@ -7,8 +7,10 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.auth.dependencies import Actor, require_actor
 from app.database import SessionLocal, Stock, Watchlist, WatchlistItem
 from app.market import INDICES, MarketService
+from app.model_limits import market_admission
 
-router = APIRouter(prefix="/api/v1/market", tags=["market"], dependencies=[Depends(require_actor)])
+router = APIRouter(prefix="/api/v1/market", tags=["market"],
+                   dependencies=[Depends(market_admission)])
 service = MarketService()
 
 

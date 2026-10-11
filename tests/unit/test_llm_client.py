@@ -34,6 +34,7 @@ def test_qwen_client_sends_messages_and_reads_reply() -> None:
         assert json.loads(request.content) == {
             "model": "qwen-plus",
             "messages": messages,
+            "max_tokens": 1024,
         }
         return httpx.Response(
             200,

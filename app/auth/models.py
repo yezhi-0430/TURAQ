@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from sqlalchemy import CheckConstraint, DateTime, ForeignKey, String, Text
+from sqlalchemy import JSON, CheckConstraint, DateTime, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -67,3 +67,11 @@ class ActionAuditRecord(Base):
     status: Mapped[str] = mapped_column(String(10))
     error_kind: Mapped[str | None] = mapped_column(String(40))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class ModelBudget(Base):
+    __tablename__ = "model_budgets"
+    key: Mapped[str] = mapped_column(String(80), primary_key=True)
+    events: Mapped[list[float]] = mapped_column(JSON, default=list)
+    lease_token: Mapped[str | None] = mapped_column(String(36))
+    lease_expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

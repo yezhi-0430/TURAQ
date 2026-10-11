@@ -25,7 +25,9 @@ from sqlalchemy.orm import (
 from app.config import Settings
 
 settings = Settings()
-engine = create_engine(settings.database_url)
+engine = create_engine(
+    settings.database_url, pool_timeout=3, connect_args={"connect_timeout": 3}
+)
 SessionLocal = sessionmaker(bind=engine)
 
 

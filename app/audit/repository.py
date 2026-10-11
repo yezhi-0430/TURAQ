@@ -17,10 +17,13 @@ def save_tool_execution(
     *,
     session_factory: Callable[[], Session] = SessionLocal,
     actor_id: int | None = None,
+    before_work: Callable[[Session], object] | None = None,
 ) -> int:
     """Return the committed row ID; rollback and propagate any storage failure."""
     row = ToolAuditRecord(run_id=run_id, actor_id=actor_id, **record.model_dump(mode="json"))
     with session_factory() as session, session.begin():
+        if before_work is not None:
+            before_work(session)
         session.add(row)
         session.flush()
         record_id = row.id

@@ -1,4 +1,5 @@
 from collections.abc import Mapping, Sequence
+from copy import copy
 from typing import Protocol
 
 import httpx
@@ -70,6 +71,12 @@ class QwenModelClient:
         self.http_client = http_client
         self.model_name = model_name
         self.chat_url = f"{base_url.rstrip('/')}/chat/completions"
+        self.admission = None
+
+    def with_admission(self, admission):
+        client = copy(self)
+        client.admission = admission
+        return client
 
     def chat(self, messages: Sequence[Mapping[str, object]]) -> str:
         message = self._request_message(messages)
@@ -93,17 +100,29 @@ class QwenModelClient:
     def _request_message(
         self, messages: Sequence[Mapping[str, object]], tools: list[dict[str, object]] | None = None
     ) -> dict[str, object]:
-        payload: dict[str, object] = {"model": self.model_name, "messages": messages}
+        payload: dict[str, object] = {"model": self.model_name, "messages": messages,
+                                    "max_tokens": self.admission.settings.model_max_output_tokens
+                                    if self.admission else 1024}
         if tools is not None:
             payload.update({"tools": tools, "tool_choice": "auto"})
         for attempt in range(2):
             try:
-                response = self.http_client.post(
-                    self.chat_url,
-                    headers={"Authorization": f"Bearer {self.api_key}"},
-                    json=payload,
-                    timeout=10.0,
-                )
+                headers = {"Authorization": f"Bearer {self.api_key}"}
+                if self.admission is not None:
+                    from app.model_limits import deadline_post
+
+                    timeout = self.admission.before_attempt()
+                    # MockTransport is an explicit isolated test transport, never live HTTP.
+                    transport = self.http_client._transport
+                    response = deadline_post(
+                        self.chat_url, headers, payload, timeout,
+                        deadline=self.admission.deadline,
+                        transport=transport if isinstance(transport, httpx.MockTransport) else None,
+                    )
+                else:
+                    response = self.http_client.post(
+                        self.chat_url, headers=headers, json=payload, timeout=10.0,
+                    )
                 break
             except httpx.ConnectError as exc:
                 if attempt == 1:

@@ -20,10 +20,13 @@ def run_tool_turn(
     session: Session | None = None,
     *,
     on_execution: Callable[[ToolExecutionRecord], object] | None = None,
+    check_deadline: Callable[[], object] | None = None,
 ) -> ToolTurnResult:
     reply = client.chat_with_tools(messages, tool_definitions())
     executions = []
     for call in reply.tool_calls:
+        if check_deadline is not None:
+            check_deadline()
         record = execute_tool(
             call.function.name,
             call.function.arguments,

@@ -29,6 +29,7 @@ def run_agent_loop(
     *,
     max_rounds: int = 5,
     audit_writer: Callable[[str, ToolExecutionRecord], object] | None = None,
+    check_deadline: Callable[[], object] | None = None,
 ) -> AgentLoopResult:
     """Count model requests, execute calls, and stop on an answer or the round limit."""
     if type(max_rounds) is not int or max_rounds < 1:
@@ -43,7 +44,12 @@ def run_agent_loop(
     history: list[dict[str, object]] = deepcopy([dict(message) for message in messages])
     executions: list[ToolExecutionRecord] = []
     for round_number in range(1, max_rounds + 1):
-        turn = run_tool_turn(client, history, session, on_execution=save_execution)
+        if check_deadline is not None:
+            check_deadline()
+        turn = run_tool_turn(client, history, session, on_execution=save_execution,
+                             check_deadline=check_deadline)
+        if check_deadline is not None:
+            check_deadline()
         executions.extend(turn.executions)
         require_answer_or_calls(turn.reply)
         if not turn.reply.tool_calls:
