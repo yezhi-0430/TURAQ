@@ -19,6 +19,7 @@ def tool_result_messages(turn: ToolTurnResult) -> list[dict[str, object]]:
             "status": record.status,
             "result": record.result,
             "error": record.error.model_dump(exclude={"details"}) if record.error else None,
+            "source": record.source.model_dump(mode="json") if record.source else None,
         }
         messages.append(
             {

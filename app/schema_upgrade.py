@@ -10,6 +10,9 @@ def upgrade_database(target_engine: Engine) -> None:
         raise ValueError("数据库升级仅支持 PostgreSQL")
     with target_engine.begin() as connection:
         Base.metadata.create_all(connection)
+        connection.execute(
+            text("ALTER TABLE tool_audit_records ADD COLUMN IF NOT EXISTS source JSON NULL")
+        )
         # Keep the collision check and normalization atomic with concurrent writers.
         connection.execute(text("LOCK TABLE stocks IN SHARE ROW EXCLUSIVE MODE"))
         normalized = func.upper(func.trim(Stock.symbol))
@@ -32,7 +35,7 @@ def upgrade_database(target_engine: Engine) -> None:
 
 def main() -> None:
     upgrade_database(engine)
-    print("数据库升级完成：股票代码已规范化，成交量列为 BIGINT。")
+    print("数据库升级完成：股票代码已规范化，成交量列为 BIGINT，审计来源列已就绪。")
 
 
 if __name__ == "__main__":

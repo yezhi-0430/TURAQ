@@ -56,3 +56,35 @@ def test_upgrade_reports_case_collisions_without_merging_records():
         schema_upgrade.upgrade_database(engine)
     with SessionLocal() as session:
         assert set(session.scalars(select(Stock.symbol))) == {"000001.sz", "000001.SZ"}
+
+
+def test_upgrade_adds_nullable_source_without_inventing_legacy_provenance():
+    with engine.begin() as connection:
+        connection.execute(text("ALTER TABLE tool_audit_records DROP COLUMN IF EXISTS source"))
+        connection.execute(
+            text("""
+            INSERT INTO tool_audit_records
+                (run_id, tool_name, arguments, status, result, duration_ms, created_at)
+            VALUES ('legacy', 'calculate_change', '{}', 'success',
+                    '{"change_percent":"-10.0000"}', 1, now())
+        """)
+        )
+    try:
+        schema_upgrade.upgrade_database(engine)
+        schema_upgrade.upgrade_database(engine)
+        columns = inspect(engine).get_columns("tool_audit_records")
+        source = next((column for column in columns if column["name"] == "source"), None)
+        assert source is not None, "旧审计表必须升级来源列"
+        assert source["nullable"]
+        with engine.connect() as connection:
+            row = connection.execute(
+                text("SELECT result, source FROM tool_audit_records WHERE run_id='legacy'")
+            ).one()
+            assert row.result == {"change_percent": "-10.0000"}
+            assert row.source is None
+    finally:
+        # Keep this isolated test database usable even after an expected RED failure.
+        with engine.begin() as connection:
+            connection.execute(
+                text("ALTER TABLE tool_audit_records ADD COLUMN IF NOT EXISTS source JSON NULL")
+            )

@@ -16,6 +16,7 @@ from app.audit.repository import save_tool_execution
 from app.config import Settings
 from app.database import SessionLocal
 from app.llm_client import ModelClient, create_model_client
+from app.tools.provenance import ToolSource
 
 router = APIRouter(prefix="/api/v1/agent", tags=["agent"])
 
@@ -45,6 +46,7 @@ class ToolExecution(BaseModel):
     error: str | None = None
     status: str
     duration_ms: float
+    source: ToolSource | None = None
 
 
 class ChatResponse(BaseModel):
@@ -97,13 +99,14 @@ async def chat(request: ChatRequest) -> ChatResponse:
                 tool_name=exec.tool_name,
                 arguments=display_tool_arguments(exec.arguments),
                 result=json.dumps(exec.result)
-                if exec.status == "success" and exec.result
+                if exec.status == "success" and exec.result is not None
                 else None,
                 error=json.dumps(exec.error.model_dump())
                 if exec.status == "error" and exec.error
                 else None,
                 status=exec.status,
                 duration_ms=exec.duration_ms,
+                source=exec.source,
             )
             for exec in result.executions
         ]

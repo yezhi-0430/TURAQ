@@ -2,6 +2,7 @@
 
 import json
 from copy import deepcopy
+from datetime import date
 from functools import partial
 from types import SimpleNamespace
 
@@ -14,8 +15,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app import agent_api
-from app.audit.repository import save_tool_execution
-from app.database import Base, Stock, ToolAuditRecord, Watchlist, WatchlistItem
+from app.audit.repository import list_tool_executions, save_tool_execution
+from app.database import Base, DailyPrice, Stock, ToolAuditRecord, Watchlist, WatchlistItem
 from app.llm_types import ToolReply
 
 
@@ -141,6 +142,80 @@ def call(name, arguments, call_id="attempt_1"):
         "type": "function",
         "function": {"name": name, "arguments": arguments},
     }
+
+
+@pytest.mark.parametrize("has_price", [True, False])
+def test_tool_source_reaches_model_http_and_reloaded_audit(safety, has_price):
+    if has_price:
+        with safety.factory() as session:
+            stock = session.scalar(select(Stock))
+            session.add(
+                DailyPrice(
+                    stock_id=stock.id,
+                    trade_date=date(2026, 10, 9),
+                    open="9",
+                    high="9",
+                    low="9",
+                    close="9",
+                    volume=100,
+                )
+            )
+            session.commit()
+    safety.model.replies = iter(
+        [
+            {
+                "tool_calls": [
+                    call(
+                        "get_daily_prices",
+                        json.dumps(
+                            {
+                                "stock_code": "000001.SZ",
+                                "start_date": "2026-10-01",
+                                "end_date": "2026-10-11",
+                            }
+                        ),
+                    )
+                ]
+            },
+            {"content": "查看工具返回的来源和日期"},
+        ]
+    )
+    response = safety.client.post("/api/v1/agent/chat", json={"messages": [message()]})
+    assert response.status_code == 200
+    body = response.json()
+    execution = body["executions"][0]
+    source = execution.get("source")
+    assert source is not None
+    assert source["kind"] == "local_database"
+    assert source["latest_trade_date"] == ("2026-10-09" if has_price else None)
+    assert source["record_count"] == (1 if has_price else 0)
+    feedback = json.loads(safety.model.requests[1]["messages"][-1]["content"])
+    assert feedback["source"] == source
+    assert json.loads(execution["result"]) == feedback["result"]
+    audits = list_tool_executions(body["run_id"], session_factory=safety.factory)
+    assert len(audits) == 1
+    assert audits[0].model_dump(mode="json")["source"] == source
+    assert audits[0].result == feedback["result"]
+
+
+def test_legacy_audit_has_unknown_source(safety):
+    with safety.factory() as session:
+        session.add(
+            ToolAuditRecord(
+                run_id="legacy",
+                tool_name="calculate_change",
+                tool_call_id=None,
+                arguments='{"previous_close":10,"current_close":9}',
+                status="success",
+                result={"change_percent": "-10.0000"},
+                error=None,
+                duration_ms=1,
+            )
+        )
+        session.commit()
+    legacy = list_tool_executions("legacy", session_factory=safety.factory)[0]
+    assert "source" in legacy.model_dump()
+    assert legacy.source is None
 
 
 def snapshot(factory):

@@ -63,7 +63,11 @@ def test_http_feedback_contains_real_result_and_original_call():
             assert history[-2] == {"role": "assistant", **initial}
             assert history[-1]["role"] == "tool"
             assert history[-1]["tool_call_id"] == call["id"]
-            assert json.loads(history[-1]["content"]) == {
+            feedback = json.loads(history[-1]["content"])
+            source = feedback.pop("source")
+            assert source["kind"] == "python_calculation"
+            assert source["inputs_origin"] == "tool_arguments"
+            assert feedback == {
                 "status": "success",
                 "result": {"change_percent": "-10.0000"},
                 "error": None,

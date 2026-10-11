@@ -98,6 +98,7 @@ class ToolAuditRecord(Base):
     status: Mapped[str] = mapped_column(String(7))
     result: Mapped[dict | list | None] = mapped_column(JSON(none_as_null=True))
     error: Mapped[dict | None] = mapped_column(JSON(none_as_null=True))
+    source: Mapped[dict | None] = mapped_column(JSON(none_as_null=True))
     duration_ms: Mapped[float] = mapped_column(Float)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC)

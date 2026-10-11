@@ -1,5 +1,6 @@
 import json
 import logging
+from datetime import UTC, datetime
 from decimal import Decimal
 from time import perf_counter
 from typing import Literal, cast
@@ -16,6 +17,7 @@ from app.tools.market_data import (
     get_daily_prices,
     get_stock_profile,
 )
+from app.tools.provenance import ToolSource, build_tool_source
 from app.tools.registry import TOOL_ARGUMENT_MODELS
 
 logger = logging.getLogger(__name__)
@@ -37,6 +39,7 @@ class ToolExecutionRecord(BaseModel):
     result: ToolResult | None
     error: ToolExecutionError | None
     duration_ms: float = Field(ge=0)
+    source: ToolSource | None = None
 
 
 def _run_query(tool_name: str, arguments: BaseModel, session: Session) -> ToolResult:
@@ -101,6 +104,9 @@ def execute_tool(
         result=result,
         error=error,
         duration_ms=round((perf_counter() - started) * 1000, 3),
+        source=build_tool_source(tool_name, result, datetime.now(UTC))
+        if error is None and result is not None
+        else None,
     )
     logger.info(record.model_dump_json())
     return record
