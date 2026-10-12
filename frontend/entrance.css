@@ -4,8 +4,8 @@
 .intro-candle{opacity:0;transform-box:fill-box;transform-origin:50% 100%;color:#e4c36f}
 .intro-candle.down{color:#8f9688}
 .intro-body{fill:currentColor}.intro-wick{stroke:currentColor;stroke-width:1.4}
-.intro-running .intro-candle{animation:intro-candle-grow .65s cubic-bezier(.16,1,.3,1) var(--candle-delay) both}
-.intro-running .intro-graph{animation:intro-chart-settle 1.7s ease 3.55s both}
+.intro-running .intro-candle{animation:intro-candle-grow .35s cubic-bezier(.16,1,.3,1) var(--candle-delay) both}
+.intro-running .intro-graph{animation:intro-chart-settle 1s ease 1.9s both}
 @keyframes intro-candle-grow{from{opacity:0;transform:scaleY(.02)}to{opacity:1;transform:scaleY(1)}}
 @keyframes intro-chart-settle{from{opacity:1}to{opacity:.25}}
 .intro-header{position:absolute;z-index:5;top:32px;left:42px;right:42px;display:flex;align-items:center;justify-content:space-between;pointer-events:none}
@@ -15,14 +15,14 @@
 .intro-entry{position:absolute;inset:0;z-index:3;width:100%;height:100%;padding:0;border:0;background:transparent;display:grid;place-items:center;color:inherit;text-align:center;cursor:pointer;transition:opacity .45s ease}
 .intro-entry:focus-visible{outline:none}.intro-entry:focus-visible .intro-identity{outline:1px solid #d2ba85;outline-offset:24px;border-radius:4px}
 .intro-identity{opacity:0;display:flex;flex-direction:column;align-items:center;transform:translateY(-15px)}
-.intro-running .intro-identity{animation:intro-identity-in 1.25s cubic-bezier(.2,.8,.2,1) 3.7s both}
-.intro-mark{display:grid;place-items:center;width:57px;height:65px;border:1px solid #c9ad6466;transform:rotate(-8deg);font:46px/1 Georgia,serif;color:#e3ca8f;margin-bottom:26px;box-shadow:inset 0 0 24px #c2a85d08;transition:transform .5s ease,border-color .5s,box-shadow .5s}
-.intro-entry:hover .intro-mark,.intro-entry:focus-visible .intro-mark{transform:rotate(0);border-color:#d8bf7c;box-shadow:0 0 30px #c9ad6414}
+.intro-running .intro-identity{animation:intro-identity-in .8s cubic-bezier(.2,.8,.2,1) 2s both}
+.intro-mark{display:grid;place-items:center;width:57px;height:65px;border:1px solid #c9ad6466;transform:none;font:46px/1 Georgia,serif;color:#8d9688;margin-bottom:26px;box-shadow:inset 0 0 24px #c2a85d00;transition:color .3s ease,border-color .3s,box-shadow .3s}
+.intro-entry:hover .intro-mark,.intro-entry:focus-visible .intro-mark{color:#e3ca8f;border-color:#d8bf7c;box-shadow:0 0 30px #c9ad6414}
 .intro-wordmark{font:400 clamp(42px,5vw,76px)/1.15 Georgia,'Times New Roman',serif;letter-spacing:.24em;padding-left:.24em;text-shadow:0 0 35px #efe4bd10}
 .intro-tagline{margin-top:23px;font:10px/1.5 var(--font);letter-spacing:.48em;padding-left:.48em;color:#d1b971}
 .intro-invitation{margin-top:48px;font-size:11px;letter-spacing:2px;color:#a4aa99;display:flex;gap:13px;align-items:center}
 .intro-invitation .icon{width:15px;height:15px;color:#d4bc80}
-.intro-running .intro-invitation{animation:intro-invitation-in 1.2s ease 4.2s both}
+.intro-running .intro-invitation{animation:intro-invitation-in .8s ease 2.2s both}
 @keyframes intro-identity-in{from{opacity:0;transform:translateY(3px);filter:blur(6px)}to{opacity:1;transform:translateY(-15px);filter:blur(0)}}
 @keyframes intro-invitation-in{from{opacity:0}to{opacity:.8}}
 .intro-complete .intro-candle{animation:none;opacity:1;transform:none}

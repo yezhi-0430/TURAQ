@@ -56,7 +56,7 @@
  ];
  candles.forEach(([open,close,low,high],index)=>{
   const outer=svgElement('g',{transform:`translate(${78+index*62},0)`});
-  const shape=svgElement('g',{class:`intro-candle ${close<open?'up':'down'}`,style:`--candle-delay:${(index*.123).toFixed(3)}s`});
+  const shape=svgElement('g',{class:`intro-candle ${close<open?'up':'down'}`,style:`--candle-delay:${(index*.065).toFixed(3)}s`});
   shape.append(svgElement('line',{x1:0,x2:0,y1:high,y2:low,class:'intro-wick'}),svgElement('rect',{x:-10,y:Math.min(open,close),width:20,height:Math.max(7,Math.abs(open-close)),rx:1.5,class:'intro-body'}));
   outer.append(shape);chart.append(outer);
  });
