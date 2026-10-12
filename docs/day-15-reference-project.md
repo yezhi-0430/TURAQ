@@ -109,3 +109,34 @@ Hello! 👋 How can I help you today?
 - 展示入口、Agent Loop / Runner、Providers、Tools 和 Session 的职责表后，用户介绍“nanobot是组织工具，qwen负责生成回复，nanobot显示回复”。能说出部分职责，但尚未明确它是 Agent 程序及其组织整个请求流程的作用。
 
 接下来的口述练习围绕三点：项目帮助用户通过对话使用模型与工具；入口接收并分发命令；Nanobot 协调模型、工具和会话，Qwen 生成回答或工具请求。此处是讲解提纲，不是用户独立回答或三分钟介绍通过的证据。
+
+## 真实读取与总结示例
+
+用户对读取后回传模型的原因回答“这个不知道”。讲解使用虚构会议记录区分工具获取原文和模型按要求总结；用户随后回答“好的”。为使两个环节可观察，同日在已有学习实例中运行一次真实工具示例。
+
+创建 `workspace/meeting-notes.txt`，内容为：
+
+```text
+[学习用虚构会议记录]
+小王周三完成接口开发。
+小李周四进行测试。
+周五一起验收。
+```
+
+单独复制配置为 `read-demo-config.json`，只将 `tools.file.enable` 改为 true，保留学习目录限制、shell 关闭、2 次工具循环上限等配置。原 Hello 配置保留。文件工具组同时提供上游的读写能力；本轮只观察到 read_file 调用，不能由此宣称整个实例只有读取权限。
+
+运行上游 CLI 的新会话 `cli:day15-read`，要求读取样例后用一句中文总结，不修改文件或做其他操作。CLI 和外层脚本均退出码 0，耗时 7.54 秒，运行前后样例内容一致。输出保存为 `nanobot-day15/read-demo-output.txt`。
+
+核对真实会话 JSONL 的消息顺序：
+
+```text
+user → assistant(tool_calls) → tool → assistant(最终回答)
+```
+
+第一轮 Qwen 请求 `read_file`，参数为 `{"path":"meeting-notes.txt"}`。工具返回四行原文和行号。第二轮 Qwen 返回：
+
+```text
+接下来的安排是：小王周三完成接口开发，小李周四测试，周五双方共同验收。
+```
+
+上游 usage 报告 `request_count=2`、输入 13497 tokens、输出 43 tokens、总计 13540 tokens，来源 `reported`。本轮只执行该示例一次，未重复请求；与 Hello 合计两次运行、三次已报告模型请求。完成读取、回传和总结的技术观察，不等于用户已经能独立解释整个过程，学习复盘仍待继续。
