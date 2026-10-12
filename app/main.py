@@ -11,6 +11,7 @@ from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_vali
 from sqlalchemy import delete, or_, select
 from sqlalchemy.exc import IntegrityError
 
+from app.admin.api import router as admin_router
 from app.agent_api import router as agent_router
 from app.auth.api import router as auth_router
 from app.auth.dependencies import Actor, require_actor, require_admin
@@ -89,6 +90,7 @@ def create_app() -> FastAPI:
     )
 
     application.include_router(auth_router)
+    application.include_router(admin_router)
     application.include_router(risk_router)
     application.include_router(agent_router)
     application.include_router(market_router)

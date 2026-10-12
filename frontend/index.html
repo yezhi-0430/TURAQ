@@ -55,10 +55,12 @@ html{scrollbar-gutter:stable}
 </style>
 <link rel="stylesheet" href="./market.css">
 <link rel="stylesheet" href="./auth.css">
+<link rel="stylesheet" href="./admin.css">
 <link rel="stylesheet" href="./entrance.css">
 <script src="./entrance.js" defer></script>
 <script src="./api.js" defer></script>
 <script src="./auth.js" defer></script>
+<script src="./admin.js" defer></script>
 <script src="./actions.js" defer></script>
 <link rel="stylesheet" href="./market-detail.css">
 <link rel="stylesheet" href="./stock-search.css">
@@ -82,8 +84,18 @@ html{scrollbar-gutter:stable}
 </section>
 <div class="workspace" id="app" hidden>
 <header class="topbar"><button class="brand home-button" data-home aria-label="返回首页"><span class="brand-mark">T</span>TURAQ</button><div class="topbar-right"><span class="pill" id="model-mode">检查模型状态…</span><div class="account-meta"><small id="account-email">未登录</small><button class="btn" type="button" id="account-button">登录</button></div></div></header>
-<aside class="sidebar"><div class="side-label">WORKSPACE</div><nav aria-label="工作台导航"><button class="nav-button" data-page="dashboard"><svg class="icon"><use href="#i-grid"/></svg>行情驾驶舱</button><button class="nav-button" data-page="watchlist"><svg class="icon"><use href="#i-list"/></svg>自选管理</button><button class="nav-button active" data-page="agent" aria-current="page"><svg class="icon"><use href="#i-spark"/></svg>AI 研究助手</button><button class="nav-button" data-page="risk"><svg class="icon"><use href="#i-shield"/></svg>风险监控<small>筹备中</small></button><button class="nav-button" data-page="trading"><svg class="icon"><use href="#i-chart"/></svg>模拟交易<small>筹备中</small></button><button class="nav-button" data-page="settings"><svg class="icon"><use href="#i-sliders"/></svg>系统设置<small>筹备中</small></button></nav><div class="side-bottom"><button class="home-button" data-home>← 返回首页</button><p>以研究理解市场。<br>以独立判断面对不确定性。</p><div class="eyebrow" style="font-size:8px">TURAQ / RESEARCH FIRST</div></div></aside>
+<aside class="sidebar"><div class="side-label">WORKSPACE</div><nav aria-label="工作台导航"><button class="nav-button" data-page="dashboard"><svg class="icon"><use href="#i-grid"/></svg>行情驾驶舱</button><button class="nav-button" data-page="watchlist"><svg class="icon"><use href="#i-list"/></svg>自选管理</button><button class="nav-button active" data-page="agent" aria-current="page"><svg class="icon"><use href="#i-spark"/></svg>AI 研究助手</button><button class="nav-button" data-page="risk"><svg class="icon"><use href="#i-shield"/></svg>风险监控<small>筹备中</small></button><button class="nav-button" data-page="trading"><svg class="icon"><use href="#i-chart"/></svg>模拟交易<small>筹备中</small></button><button class="nav-button" data-page="settings"><svg class="icon"><use href="#i-sliders"/></svg>系统设置<small>筹备中</small></button><div class="side-label admin-section" id="admin-label" hidden>ADMIN</div>
+<button class="nav-button admin-nav" data-page="admin-dashboard" id="admin-dashboard-nav" hidden><svg class="icon"><use href="#i-grid"/></svg>管理仪表盘</button>
+<button class="nav-button admin-nav" data-page="admin-users" id="admin-users-nav" hidden><svg class="icon"><use href="#i-list"/></svg>用户管理</button>
+<button class="nav-button admin-nav" data-page="admin-invites" id="admin-invites-nav" hidden><svg class="icon"><use href="#i-shield"/></svg>邀请码管理</button></nav><div class="side-bottom"><button class="home-button" data-home>← 返回首页</button><p>以研究理解市场。<br>以独立判断面对不确定性。</p><div class="eyebrow" style="font-size:8px">TURAQ / RESEARCH FIRST</div></div></aside>
 <main class="main"><div class="page-heading"><div><div class="eyebrow">YOUR RESEARCH COPILOT</div><h1 id="page-title">AI 研究助手</h1><p id="page-description">从一个问题开始，让研究过程清晰可见。</p></div><button class="btn" id="new-chat"><svg class="icon"><use href="#i-plus"/></svg>新建对话</button></div>
+<section id="admin-page" hidden aria-label="管理后台">
+<div class="admin-toolbar"><p class="admin-note">管理账号与邀请名额，查看可核对的使用记录。</p><button class="btn" type="button" id="admin-refresh">刷新数据 ↻</button></div>
+<p id="admin-status" class="admin-status" role="status" aria-live="polite"></p>
+<div id="admin-tab-dashboard"><div id="admin-overview" class="admin-grid"></div><p class="admin-note">研究请求与模型 HTTP 尝试来自近24小时额度记录；工具统计包含失败尝试，不代表模型调用次数或费用。7日活动依据现存会话记录。Token 和实际账单未记录。</p><p id="admin-as-of" class="admin-as-of"></p><div id="admin-usage" class="admin-usage"></div></div>
+<div id="admin-tab-users" hidden><section class="admin-card"><h2>账号列表</h2><form id="admin-user-search" class="admin-form"><label>搜索邮箱<input type="search" id="admin-user-query" maxlength="320" placeholder="输入邮箱片段"></label><label>账号状态<select id="admin-user-filter"><option value="">全部</option><option value="false">未禁用</option><option value="true">已禁用</option></select></label><button class="btn" type="submit">查询</button></form><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>ID</th><th>邮箱</th><th>状态</th><th>角色</th><th>注册时间</th><th>最近会话活动</th><th>操作</th></tr></thead><tbody id="admin-users-body"></tbody></table></div><div class="admin-pager"><span id="admin-user-page-note"></span><button id="admin-user-previous" class="btn admin-small" type="button">上一页</button><button id="admin-user-next" class="btn admin-small" type="button">下一页</button></div><p class="admin-note">注册时间尚未记录。禁用会撤销账号全部登录会话；管理员账号受保护。</p></section></div>
+<div id="admin-tab-invites" hidden><section class="admin-card"><h2>生成邀请码</h2><form id="admin-create-invite" class="admin-form"><label>可激活账号数<input id="admin-invite-uses" type="number" min="1" max="10000" step="1" value="50" required></label><label>有效天数<input id="admin-invite-days" type="number" min="1" max="3650" step="1" value="7" required></label><button id="admin-create-button" class="btn primary" type="submit">生成邀请码</button></form><div id="admin-code-box" class="admin-code-box" hidden><p class="admin-note">请立即复制保存。原码只展示一次，离开此页后清空，历史列表无法找回。</p><code id="admin-new-code"></code></div><p class="admin-note">原码不存浏览器缓存；数据库只保存哈希。名额在邮箱验证激活成功时占用。</p></section><section class="admin-card"><h2>邀请码列表</h2><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>邀请 ID</th><th>已用 / 上限</th><th>有效期（上海时间）</th><th>状态</th><th>操作</th></tr></thead><tbody id="admin-invites-body"></tbody></table></div><div class="admin-pager"><span id="admin-invite-page-note"></span><button id="admin-invite-previous" class="btn admin-small" type="button">上一页</button><button id="admin-invite-next" class="btn admin-small" type="button">下一页</button></div></section></div>
+</section>
 <section id="watchlist-page" hidden aria-label="自选管理">
 <div class="watch-status" id="watch-status" role="status" aria-live="polite"></div>
 <div class="watch-layout"><aside class="watch-panel"><h2>我的自选分组</h2><form class="watch-form" id="watch-create"><input id="watch-group-name" aria-label="新分组名称" placeholder="新分组名称" maxlength="40" required><button class="btn" type="submit">＋ 创建</button></form><div class="watch-groups" id="watch-groups"></div><p class="watch-hint">分组与成员保存到数据库。<br>同一只股票可加入不同分组。</p><button class="btn" id="watch-reload">刷新列表 ↻</button></aside>
@@ -130,10 +142,14 @@ html{scrollbar-gutter:stable}
  <p class="auth-status" id="auth-status" role="status" aria-live="polite"></p><div class="auth-links"><button data-auth-mode="login" type="button">登录</button><button data-auth-mode="register" type="button">邀请码注册</button><button data-auth-mode="forgot" type="button">忘记密码</button><button data-auth-mode="verify" type="button">验证邮箱</button><button data-auth-mode="resend" type="button">重发验证</button><button data-auth-mode="reset" type="button">重置密码</button></div>
 </dialog>
 <dialog id="action-dialog" class="auth-dialog" aria-labelledby="action-title"><h2 id="action-title">确认移除自选股</h2><p id="action-description" class="auth-note"></p><p class="auth-note">仅移除该分组关联，保留股票资料和其他分组。</p><div class="watch-dialog-actions"><button id="action-cancel" class="btn" type="button">取消</button><button id="action-confirm" class="btn primary" type="button">确认移除</button></div></dialog>
+<dialog id="admin-confirm-dialog" class="auth-dialog" aria-labelledby="admin-confirm-title"><h2 id="admin-confirm-title">确认管理操作</h2><p id="admin-confirm-description" class="auth-note"></p><div class="watch-dialog-actions"><button id="admin-confirm-cancel" class="btn" type="button">取消</button><button id="admin-confirm-button" class="btn primary" type="button">确认操作</button></div></dialog>
 <script>
 'use strict';
 const $ = id => document.getElementById(id);
 const pages = {
+ 'admin-dashboard': ['管理仪表盘','账号、邀请名额与研究工具使用概览。'],
+ 'admin-users': ['用户管理','查看账号状态与会话活动，管理账号可用性。'],
+ 'admin-invites': ['邀请码管理','生成与撤销邀请码，核对有效期和激活名额。'],
  dashboard: ['行情驾驶舱', '市场概览界面正在筹备，行情数据尚未接入。你可以先在研究助手中查询已入库的股票资料与日线。'],
  watchlist: ['自选管理', '自选分组的页面操作尚未接入。当前可通过后端接口管理自选股。'],
  risk: ['风险监控', '公告与财报风险摘要的页面正在筹备，当前页面不展示未经分析的风险评级。'],
@@ -148,15 +164,18 @@ async function enterWorkspace(){
  else{$('auth-dialog').close();$('landing').hidden=true;$('app').hidden=false;}
  window.scrollTo({top:0,behavior:'instant'});
  window.marketDashboard?.setVisible(activePage==='dashboard');window.watchlistManager?.setVisible(activePage==='watchlist');
+ if(activePage.startsWith('admin-')&&!window.adminPanel?.allowed()){applyPage('agent');activePage='agent';}
+ window.adminPanel?.setVisible(activePage.startsWith('admin-')?activePage:null);
 }
 window.addEventListener('account-login',enterWorkspace);
-window.addEventListener('private-session-cleared',()=>{window.siteEntrance?.cancelTransition();chatRevision++;pageTransitionVersion++;pageTransition?.cancel();messages=[];isThinking=false;actionInDialog=null;$('action-dialog').close();$('app').hidden=true;$('landing').hidden=false;$('input-box').value='';$('session-meta').textContent='尚未开始';$('chat-status').textContent='请登录';$('send-button').disabled=false;$('new-chat').disabled=false;window.marketDashboard?.reset();window.watchlistManager?.reset();window.marketDetail?.reset();window.StockSearch?.hide();renderMessages();});
+window.addEventListener('private-session-cleared',()=>{window.siteEntrance?.cancelTransition();chatRevision++;pageTransitionVersion++;pageTransition?.cancel();messages=[];isThinking=false;actionInDialog=null;$('action-dialog').close();$('app').hidden=true;$('landing').hidden=false;$('input-box').value='';$('session-meta').textContent='尚未开始';$('chat-status').textContent='请登录';$('send-button').disabled=false;$('new-chat').disabled=false;window.marketDashboard?.reset();window.watchlistManager?.reset();window.marketDetail?.reset();window.StockSearch?.hide();window.adminPanel?.reset();applyPage('agent');activePage='agent';renderMessages();});
 let activePage = 'agent';
 const pageScrollPositions = new Map();
 let pageTransition = null;
 let pageTransitionVersion = 0;
 async function selectPage(page){
  if(!await window.account.requireLogin())return;
+ if(page.startsWith('admin-')&&!window.adminPanel?.allowed())return;
  window.StockSearch?.hide();
  if(page !== 'agent' && !Object.hasOwn(pages, page)) return;
  const version = ++pageTransitionVersion;
@@ -192,20 +211,23 @@ async function selectPage(page){
 }
 function applyPage(page){
  const agent = page === 'agent';
+ const admin = page.startsWith('admin-') && window.adminPanel?.allowed();
+ $('admin-page').hidden = !admin;
+ window.adminPanel?.setVisible(admin?page:null);
  const dashboard = page === 'dashboard';
  const watchlist = page === 'watchlist';
  $('watchlist-page').hidden = !watchlist;
- window.watchlistManager?.setVisible(watchlist);
+ window.watchlistManager?.setVisible?.(watchlist);
  $('dashboard-page').hidden = !dashboard;
- window.marketDashboard?.setVisible(dashboard);
+ window.marketDashboard?.setVisible?.(dashboard);
  document.querySelectorAll('[data-page]').forEach(button => { const active = button.dataset.page === page; button.classList.toggle('active', active); if(active) button.setAttribute('aria-current','page'); else button.removeAttribute('aria-current'); });
- $('agent-page').hidden = !agent; $('unavailable').hidden = agent || dashboard || watchlist; $('new-chat').hidden = !agent;
+ $('agent-page').hidden = !agent; $('unavailable').hidden = agent || dashboard || watchlist || admin; $('new-chat').hidden = !agent;
  $('page-title').textContent = agent ? 'AI 研究助手' : pages[page][0];
- $('page-description').textContent = agent ? '从一个问题开始，让研究过程清晰可见。' : dashboard ? '连接真实市场，让每一次观察都有数据依据。' : watchlist ? '整理关注的公司，把观察转化为持续研究。' : '你的研究工作台，正在逐步完善。';
- if(!agent){ $('unavailable-title').textContent = pages[page][0] + ' · 筹备中'; $('unavailable-description').textContent = pages[page][1]; }
+ $('page-description').textContent = agent ? '从一个问题开始，让研究过程清晰可见。' : dashboard ? '连接真实市场，让每一次观察都有数据依据。' : watchlist ? '整理关注的公司，把观察转化为持续研究。' : admin ? pages[page][1] : '你的研究工作台，正在逐步完善。';
+ if(!agent&&!admin){ $('unavailable-title').textContent = pages[page][0] + ' · 筹备中'; $('unavailable-description').textContent = pages[page][1]; }
 }
 document.querySelectorAll('[data-enter]').forEach(b => b.addEventListener('click',async()=>{await window.account.ready;window.account.show('login');}));
-document.querySelectorAll('[data-home]').forEach(b => b.addEventListener('click',()=>{ window.siteEntrance?.cancelTransition();$('app').hidden=true; $('landing').hidden=false; window.marketDashboard?.setVisible(false); window.watchlistManager?.setVisible(false); window.scrollTo({top:0,behavior:'instant'}); }));
+document.querySelectorAll('[data-home]').forEach(b => b.addEventListener('click',()=>{ window.siteEntrance?.cancelTransition();$('app').hidden=true; $('landing').hidden=false; window.marketDashboard?.setVisible(false); window.watchlistManager?.setVisible(false); window.adminPanel?.setVisible(null); window.scrollTo({top:0,behavior:'instant'}); }));
 document.querySelectorAll('[data-page]').forEach(b => b.addEventListener('click',()=>selectPage(b.dataset.page)));
 document.querySelector('[data-research]').addEventListener('click',()=>selectPage('agent'));
 $('new-chat').addEventListener('click',()=>{if(isThinking)return;messages=[];$('session-meta').textContent='尚未开始';$('chat-status').textContent='等待提问';$('input-box').value='';renderMessages();$('input-box').focus();});
@@ -260,6 +282,7 @@ window.researchStock = async stock => {
  $('input-box').value = `请查询 ${stock.name}（${stock.symbol}）的股票资料和已入库日线数据，并说明缺失的信息。`;
  $('input-box').focus();
 };
+window.selectWorkspacePage=selectPage;
 renderMessages();
 </script>
 <dialog id="stock-detail" class="stock-detail" aria-labelledby="detail-name">
