@@ -60,4 +60,44 @@ uv pip check --python .venv\Scripts\python.exe
 
 三个命令均退出码 0：版本显示 `nanobot v0.3.5`，帮助列出消息/会话/工作目录/配置参数，依赖检查显示 92 个包兼容。这只证明安装及命令入口可用。
 
-本轮尚未创建模型配置或请求真实模型，官方最小对话尚未跑通。用户三分钟项目介绍尚未验收，Day15 仍在进行中。源码下载与安装没有修改 A 股项目业务代码或数据库。
+安装阶段尚未创建模型配置或请求真实模型；后续最小对话结果见下文。源码下载与安装没有修改 A 股项目业务代码或数据库。
+
+## 虚拟环境复盘
+
+用户最初将虚拟环境隔离的对象选为数据库股票数据；讲解后，再问只升级 Nanobot 环境中的 Pydantic 是否会影响 A 股项目时，回答“会”。随后解释两个环境各有一份库、只升级其中一份不会升级另一份，用户回答“好”。已完成讲解，尚未独立解释或用操作验证，不能记录为独立掌握。两个环境仍可能通过数据库配置连接到同一数据库，虚拟环境本身不隔离业务数据。
+
+## 配置 Qwen 并运行最小对话
+
+用户同意继续后，沿用主项目现有 Qwen 配置，在独立目录 `C:\Users\LENOVO\Documents\Codex\2026-09-20\n\outputs\nanobot-day15` 创建学习实例：
+
+- `config.json`：配置 `provider=dashscope`、`model=qwen-plus`，API 地址从主项目模型配置读取。
+- `workspace/`：参考项目自己的学习工作目录；配置路径也决定该实例的日志与会话目录。
+- API Key 字段仅保存 `${DASHSCOPE_API_KEY}` 环境变量引用，实际凭据由启动进程在本机读取并传给子进程，不写入配置、学习记录或 Git。
+- 最大输出 256 tokens，工具迭代上限 2，关闭 Dream/heartbeat 及文件、shell、自省工具；开启工作目录限制。没有启用网关、聊天平台或 MCP。
+
+先用上游 `load_config`、`resolve_config_env_vars`、`validate_provider_setup` 核对配置，退出码 0，不请求模型。随后在继承了本机 `DASHSCOPE_API_KEY` 的子进程里执行官方单次消息路径，等价命令为：
+
+```powershell
+# 在 nanobot-0.3.5 目录运行；启动进程须先在本机设置 DASHSCOPE_API_KEY。
+.\.venv\Scripts\nanobot.exe agent --config ..\nanobot-day15\config.json --workspace ..\nanobot-day15\workspace --session cli:day15-hello --message 'Hello!' --no-markdown
+```
+
+2026-10-12 22:32（Asia/Shanghai），保存的 CLI 输出和会话记录都包含正常回复：
+
+```text
+Hello! 👋 How can I help you today?
+```
+
+会话包含 user 和 assistant 消息，assistant 没有工具调用。上游保存的 `_last_usage` 报告 `request_count=1`、输入 4753 tokens、输出 11 tokens、总计 4764 tokens，来源 `reported`。这证明一次真实 Qwen 最小对话完成；没有重复发出研究问题或用假模型替代。
+
+最小消息很短，但实际输入包含 Nanobot 构造的系统与工具等上下文，输入 token 数并不等于用户消息长度。详细提示构造和工具循环留待 Day16–17 追踪。
+
+### 终端显示问题
+
+子进程输出已经以 UTF-8 保存到 `nanobot-day15/hello-output.txt`，之后外层验证脚本打印输出时默认使用 GBK，猫咪 emoji 导致 `UnicodeEncodeError`，外层脚本退出码为 1。因打印中断，未捕获展示该次子进程的退出码，不能声称整个验证命令退出码为 0。
+
+后续只读取现有输出与 JSONL 会话，先将验证脚本 stdout 设置为 UTF-8；读取核对退出码 0，成功显示原回复和 usage，没有再次请求真实模型。已验证问题发生在外层显示阶段，不能把它记为模型请求失败。
+
+## 当前验收状态
+
+选择项目、独立安装、入口初步核对、官方命令行最小对话和安装/显示问题记录已完成。用户尚未用自己的话介绍 Nanobot 的目标、入口和模块，三分钟学习验收仍待进行；Day15 不标记为全部完成。本轮没有改动参考项目源码或 A 股业务数据库。
