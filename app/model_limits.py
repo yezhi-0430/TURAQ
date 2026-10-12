@@ -278,7 +278,11 @@ def deadline_post(url, headers, payload, timeout, *, transport=None, deadline=No
                     if size > 1048576:
                         raise ModelDeadlineExceeded("模型响应超出限制")
                     chunks.append(chunk)
-                return httpx.Response(response.status_code, headers=response.headers,
+                # aiter_bytes already decoded the body; discard wire encoding/framing.
+                decoded_headers = response.headers.copy()
+                for name in ("content-encoding", "content-length", "transfer-encoding"):
+                    decoded_headers.pop(name, None)
+                return httpx.Response(response.status_code, headers=decoded_headers,
                                       content=b"".join(chunks))
 
     try:

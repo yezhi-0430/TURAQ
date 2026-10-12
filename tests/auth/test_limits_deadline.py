@@ -1,12 +1,71 @@
 """A local slow response verifies cancellation closes work before lease release."""
 
 import asyncio
+import gzip
 import time
+import zlib
 
 import httpx
 import pytest
 
 from tests.auth.test_limits import limits
+
+
+@pytest.mark.parametrize("encoding,compress", [("gzip", gzip.compress), ("deflate", zlib.compress)])
+@pytest.mark.parametrize("status_code", [200, 429])
+def test_compressed_response_is_decoded_once(encoding, compress, status_code):
+    m = limits()
+    body = b'{"message":"compressed response"}'
+    compressed = compress(body)
+    closed = []
+
+    class CompressedStream(httpx.AsyncByteStream):
+        async def __aiter__(self):
+            for offset in range(0, len(compressed), 7):
+                yield compressed[offset:offset + 7]
+
+        async def aclose(self):
+            closed.append(True)
+
+    async def respond(request):
+        return httpx.Response(status_code, headers={
+            "Content-Encoding": encoding,
+            "Content-Length": str(len(compressed)),
+            "Content-Type": "application/json",
+            "Retry-After": "17",
+        }, stream=CompressedStream())
+
+    response = m.deadline_post("http://isolated/", {}, {}, 1,
+                               transport=httpx.MockTransport(respond))
+    assert response.status_code == status_code
+    assert response.json() == {"message": "compressed response"}
+    assert response.content == body
+    assert "content-encoding" not in response.headers
+    assert int(response.headers["content-length"]) == len(body)
+    assert response.headers["content-type"] == "application/json"
+    assert response.headers["retry-after"] == "17"
+    assert closed == [True]
+
+
+def test_compressed_response_limit_uses_decoded_size():
+    m = limits()
+    compressed = gzip.compress(b"x" * 1048577)
+    closed = []
+
+    class LargeStream(httpx.AsyncByteStream):
+        async def __aiter__(self):
+            yield compressed
+
+        async def aclose(self):
+            closed.append(True)
+
+    async def respond(request):
+        return httpx.Response(200, headers={"Content-Encoding": "gzip"}, stream=LargeStream())
+
+    with pytest.raises(m.ModelDeadlineExceeded, match="模型响应超出限制"):
+        m.deadline_post("http://isolated/", {}, {}, 1,
+                        transport=httpx.MockTransport(respond))
+    assert closed == [True]
 
 
 def test_total_http_deadline_cancels_trickle_response():

@@ -55,3 +55,32 @@ test('catalog strings stay text; clearing search ignores delayed results',async(
 test('registration/reset use the same untrimmed Unicode password rule and auth CSRF',async()=>{const f=fixture({mail:true});await f.context.window.account.ready;f.modes[1].listeners.click();f.get('auth-email').value='synthetic@example.test';f.get('auth-invite').value='fixture-invitation-123456';f.get('auth-password').value='12345';await f.get('auth-form').listeners.submit(event);assert(!f.requests.some(([url])=>url.endsWith('/register')));f.get('auth-password').value='😀'.repeat(6);await f.get('auth-form').listeners.submit(event);const registration=f.requests.find(([url])=>url.endsWith('/register'));assert.equal(JSON.parse(registration[1].body).password,'😀'.repeat(6));assert.equal(registration[1].headers['X-CSRF-Token'],'anon-csrf');f.modes[3].listeners.click();f.get('auth-token').value='fixture-reset-token-123456';f.get('auth-password').value='1234567890123456';await f.get('auth-form').listeners.submit(event);assert(!f.requests.some(([url])=>url.endsWith('/reset-password')));f.get('auth-password').value=' abcde';await f.get('auth-form').listeners.submit(event);assert.equal(JSON.parse(f.requests.find(([url])=>url.endsWith('/reset-password'))[1].body).password,' abcde');});
 test('401 clears private UI, opens login and stops further private requests',async()=>{const f=fixture({initialUser:{id:1,email:'a@example.test'}});await f.context.window.account.ready;await f.entry.listeners.click();let privateCalls=0;f.context.fetch=async()=>{privateCalls++;return f.res({detail:'expired'},401);};await assert.rejects(f.context.window.apiClient.request('/watchlists'));assert.equal(f.get('app').hidden,true);assert.equal(f.get('auth-dialog').open,true);await assert.rejects(f.context.window.apiClient.request('/market/watchlist'));assert.equal(privateCalls,1);});
 test('suggestion UI shows exact owned target, cancel sends no action and final doubleclick sends once',async()=>{const f=fixture({initialUser:{id:1,email:'a@example.test'},suggestions:[{kind:'suggestion',operation:'remove_watchlist_stock',watchlist_id:1,stock_code:'000001.SZ',text:'Synthetic proposal',confirmed:true}]});await f.context.window.account.ready;f.get('input-box').value='fixture proposal';await f.get('chatForm').listeners.submit(event);function pending(){return f.get('messages-area').children.at(-1).children.find(n=>n.className==='pending-action');}assert(pending().children[0].textContent.includes('尚未执行'));await pending().children[1].listeners.click();assert.equal(f.get('action-dialog').open,true);assert(f.get('action-description').textContent.includes('Synthetic owned group'));f.get('action-cancel').listeners.click();assert(!f.requests.some(([url])=>url.endsWith('/actions/remove-stock')));await pending().children[1].listeners.click();await Promise.all([f.get('action-confirm').listeners.click(),f.get('action-confirm').listeners.click()]);assert.equal(f.requests.filter(([url])=>url.endsWith('/actions/remove-stock')).length,1);assert(pending().children[0].textContent.includes('执行成功'));});
+
+function renderedText(node){return [node.textContent,...node.children.map(renderedText)].join('\n');}
+
+test('invalid tool arguments show the rejection and allow a later successful chat',async()=>{
+ const f=fixture({initialUser:{id:1,email:'qa@example.test'}});await f.context.window.account.ready;
+ const replies=[
+  {run_id:'error-run',status:'completed',rounds:2,answer:'前期价格为零，无法计算。',model_mode:'fake',executions:[{tool_name:'calculate_change',arguments:{previous_close:0,current_close:9},status:'error',result:null,error:JSON.stringify({kind:'invalid_arguments',message:'previous_close must be greater than 0'}),duration_ms:0.1,source:null}]},
+  {run_id:'recovered-run',status:'completed',rounds:2,answer:'下跌 10%',model_mode:'fake',executions:[{tool_name:'calculate_change',arguments:{previous_close:10,current_close:9},status:'success',result:JSON.stringify({change_percent:'-10.0000'}),error:null,duration_ms:0.1,source:null}]}
+ ];
+ f.context.fetch=async()=>f.res(replies.shift());
+ f.get('input-box').value='invalid';await f.get('chatForm').listeners.submit(event);
+ const failure=renderedText(f.get('messages-area'));
+ assert(failure.includes('执行失败'));assert(failure.includes('invalid_arguments'));assert(failure.includes('previous_close must be greater than 0'));
+ assert(!failure.includes('执行结果'));assert(!failure.includes('0%'));assert.equal(f.get('send-button').disabled,false);
+ f.get('input-box').value='valid';await f.get('chatForm').listeners.submit(event);
+ assert(renderedText(f.get('messages-area').children.at(-1)).includes('-10.0000'));
+ assert.equal(f.get('chat-status').textContent,'本次研究已完成');assert.equal(replies.length,0);
+});
+
+test('round exhaustion preserves five tool records and stays incomplete without an answer',async()=>{
+ const f=fixture({initialUser:{id:1,email:'qa@example.test'}});await f.context.window.account.ready;
+ f.context.fetch=async()=>f.res({run_id:'limited-run',status:'max_rounds_exceeded',rounds:5,answer:null,model_mode:'fake',executions:Array.from({length:5},()=>({tool_name:'calculate_change',arguments:{previous_close:10,current_close:9},status:'success',result:JSON.stringify({change_percent:'-10.0000'}),error:null,duration_ms:0.1,source:null}))});
+ f.get('input-box').value='repeat';await f.get('chatForm').listeners.submit(event);
+ const last=f.get('messages-area').children.at(-1);
+ assert(renderedText(last).includes('尚未形成最终答案'));
+ assert.equal(last.children.filter(node=>node.className==='tool-record').length,5);
+ assert.equal(f.get('chat-status').textContent,'本次研究未完成');assert(f.get('session-meta').textContent.includes('5 轮 · 未完成'));
+ assert.equal(f.get('send-button').disabled,false);assert.equal(f.get('new-chat').disabled,false);
+});
