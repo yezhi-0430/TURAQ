@@ -116,7 +116,7 @@ class QwenModelClient:
                     transport = self.http_client._transport
                     response = deadline_post(
                         self.chat_url, headers, payload, timeout,
-                        deadline=self.admission.deadline,
+                        deadline=self.admission.attempt_deadline,
                         transport=transport if isinstance(transport, httpx.MockTransport) else None,
                     )
                 else:

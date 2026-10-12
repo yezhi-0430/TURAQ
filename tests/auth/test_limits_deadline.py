@@ -102,3 +102,71 @@ def test_stale_http_deadline_rejects_before_transport():
         m.deadline_post("http://isolated/", {}, {}, 10,
                         deadline=time.monotonic() - 1, transport=httpx.MockTransport(respond))
     assert calls == []
+
+
+def test_delayed_admission_commit_does_not_restart_deadline(env):
+    from sqlalchemy import event
+
+    from tests.auth.test_limits import config
+
+    m = limits()
+
+    def paused_factory():
+        db = env[1]()
+        event.listen(db, "before_commit", lambda _: time.sleep(0.08))
+        return db
+
+    with pytest.raises(m.ModelDeadlineExceeded):
+        m.admit(paused_factory, 1, config(model_total_timeout_seconds=0.04))
+
+
+def test_admission_preserves_deadline_captured_before_factory(env, monkeypatch):
+    from tests.auth.test_limits import config
+
+    m = limits()
+    clock = [100.0]
+    monkeypatch.setattr(m.time, "monotonic", lambda: clock[0])
+
+    def delayed_factory():
+        clock[0] += 8
+        return env[1]()
+
+    admission = m.admit(delayed_factory, 1, config())
+    assert admission.deadline == 160.0
+    assert admission.remaining() == 52.0
+    admission.factory = env[1]
+    admission.release()
+
+
+def test_transport_startup_delay_cannot_dispatch_after_lease_deadline(env, monkeypatch):
+    from datetime import timedelta
+
+    from sqlalchemy import update
+
+    from app.auth.models import ModelBudget
+    from app.llm_client import QwenModelClient
+    from tests.auth.test_limits import config
+
+    m = limits()
+    admission = m.admit(env[1], 1, config())
+    with env[1]() as db, db.begin():
+        db.execute(update(ModelBudget).where(ModelBudget.key == "user:1").values(
+            lease_expires_at=m.utcnow() + timedelta(seconds=1.4)
+        ))
+    original = m.deadline_post
+    calls = []
+
+    def delayed_post(*args, **kwargs):
+        time.sleep(1.5)
+        return original(*args, **kwargs)
+
+    async def respond(request):
+        calls.append(True)
+        return httpx.Response(200, json={"choices": [{"message": {"content": "ok"}}]})
+
+    monkeypatch.setattr(m, "deadline_post", delayed_post)
+    with httpx.Client(transport=httpx.MockTransport(respond)) as client:
+        with pytest.raises(m.ModelDeadlineExceeded):
+            QwenModelClient("test-only", client).with_admission(admission).chat([])
+    assert calls == []
+    admission.release()

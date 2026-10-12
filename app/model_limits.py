@@ -10,7 +10,7 @@ from uuid import uuid4
 
 import httpx
 from fastapi import Depends, HTTPException, Request
-from sqlalchemy import func, select, text, update
+from sqlalchemy import event, func, select, text, update
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.exc import SQLAlchemyError
@@ -36,6 +36,7 @@ def db_now(db):
     if db.bind.dialect.name == "postgresql":
         # Bound lock waits too; quota-service outages cannot leave requests hanging.
         db.execute(text("SET LOCAL statement_timeout = '3000ms'"))
+        db.execute(text("SET LOCAL lock_timeout = '3000ms'"))
         return db.scalar(select(func.clock_timestamp()))
     return utcnow()
 
@@ -53,14 +54,69 @@ def check_window(events, limit, seconds, stamp):
     return active
 
 
+def bind_database_deadline(db, remaining, *, max_seconds=None):
+    """Bound every tool/audit SQL statement, including ORM flushes.
+
+    Hooks belong only to this Session/Connection. Transaction completion removes
+    the connection hook and its deadline state before the pool can reuse it.
+    """
+    state_key = "model_deadline"
+    if not db.info.get("model_deadline_hooks"):
+        def after_begin(session, transaction, connection):
+            state = session.info.get(state_key)
+            if state is None or connection in state["connections"]:
+                return
+
+            def before_cursor_execute(conn, cursor, statement, parameters, context, executemany):
+                seconds = state["remaining"]()
+                if state["max_seconds"] is not None:
+                    seconds = min(seconds, state["max_seconds"])
+                milliseconds = max(1, math.floor(seconds * 1000))
+                # Use this cursor directly: no recursive SQLAlchemy execution event.
+                cursor.execute(
+                    "SELECT set_config('statement_timeout', %s, true), "
+                    "set_config('lock_timeout', %s, true)",
+                    (str(milliseconds), str(min(milliseconds, 3000))),
+                )
+                state["remaining"]()
+
+            event.listen(connection, "before_cursor_execute", before_cursor_execute)
+            state["connections"][connection] = before_cursor_execute
+
+        def after_transaction_end(session, transaction):
+            if transaction.parent is None:
+                state = session.info.pop(state_key, None)
+                if state:
+                    for connection, hook in state["connections"].items():
+                        event.remove(connection, "before_cursor_execute", hook)
+
+        def before_commit(session):
+            state = session.info.get(state_key)
+            if state:
+                state["remaining"]()
+
+        event.listen(db, "after_begin", after_begin)
+        event.listen(db, "after_transaction_end", after_transaction_end)
+        event.listen(db, "before_commit", before_commit)
+        db.info["model_deadline_hooks"] = after_begin
+
+    state = db.info.setdefault(state_key, {"connections": {}})
+    state.update(remaining=remaining, max_seconds=max_seconds)
+    connection = db.connection()
+    db.info["model_deadline_hooks"](db, db.get_transaction(), connection)
+    remaining()  # Pool/connect time is part of the same absolute processing budget.
+
+
 class Admission:
-    def __init__(self, factory, actor_id, settings, token, expires_at):
+    def __init__(self, factory, actor_id, settings, token, expires_at, *, deadline=None):
         self.factory = factory
         self.actor_id = actor_id
         self.settings = settings
         self.token = token
         self.expires_at = expires_at
-        self.deadline = time.monotonic() + settings.model_total_timeout_seconds
+        self.deadline = (time.monotonic() + settings.model_total_timeout_seconds
+                         if deadline is None else deadline)
+        self.attempt_deadline = self.deadline
 
     def remaining(self):
         seconds = self.deadline - time.monotonic()
@@ -68,11 +124,10 @@ class Admission:
             raise ModelDeadlineExceeded("研究处理超时")
         return seconds
 
-    def bound_database_work(self, db):
-        remaining = self.remaining()
+    def bound_database_work(self, db, *, max_seconds=None):
+        self.remaining()
         if db.bind.dialect.name == "postgresql":
-            milliseconds = max(1, math.floor(remaining * 1000))
-            db.execute(select(func.set_config("statement_timeout", str(milliseconds), True)))
+            bind_database_deadline(db, self.remaining, max_seconds=max_seconds)
 
     def before_attempt(self, *, now=None):
         self.remaining()
@@ -80,8 +135,14 @@ class Admission:
             raise LimitsUnavailable("研究服务已暂停")
         try:
             with self.factory() as db, db.begin():
-                clock = now or db_now(db)
+                self.bound_database_work(db, max_seconds=3)
+                if now is None:
+                    db_now(db)
                 user = locked_budget(db, f"user:{self.actor_id}")
+                site = locked_budget(db, "site:attempts")
+                # Sample monotonic time BEFORE asking the DB clock, conservatively
+                # mapping the stored expiry after all reservation lock waits.
+                sampled_at = time.monotonic()
                 clock = now or db_now(db)
                 if (
                     user.lease_token != self.token
@@ -89,18 +150,19 @@ class Admission:
                     or aware(user.lease_expires_at) <= clock
                 ):
                     raise ModelDeadlineExceeded("研究处理超时")
-                site = locked_budget(db, "site:attempts")
                 events = check_window(
                     site.events, self.settings.model_site_daily_limit, 86400, clock.timestamp()
                 )
                 site.events = events + [clock.timestamp()]
                 lease_remaining = (aware(user.lease_expires_at) - clock).total_seconds() - 1
-                timeout = min(self.remaining(), self.settings.model_http_timeout_seconds,
-                              lease_remaining)
-                if timeout <= 0:
-                    raise ModelDeadlineExceeded("研究处理超时")
+                self.attempt_deadline = min(self.deadline, sampled_at + lease_remaining)
+                self.remaining()
             # Recompute after committing the reservation, before starting any network work.
-            return min(timeout, self.remaining())
+            timeout = min(self.settings.model_http_timeout_seconds, self.remaining(),
+                          self.attempt_deadline - time.monotonic())
+            if timeout <= 0:
+                raise ModelDeadlineExceeded("研究处理超时")
+            return timeout
         except SQLAlchemyError as exc:
             raise LimitsUnavailable("研究额度服务暂不可用") from exc
 
@@ -118,27 +180,35 @@ class Admission:
 
 
 def admit(factory, actor_id, settings, *, now=None):
+    deadline = time.monotonic() + settings.model_total_timeout_seconds
     if not settings.model_enabled:
         raise LimitsUnavailable("研究服务已暂停")
     token = str(uuid4())
+    admission = Admission(factory, actor_id, settings, token, None, deadline=deadline)
     try:
         with factory() as db, db.begin():
-            clock = now or db_now(db)
+            admission.bound_database_work(db, max_seconds=3)
+            if now is None:
+                db_now(db)
             user = locked_budget(db, f"user:{actor_id}")
+            # Keep the same lock order in admission and attempt reservations.
+            site = locked_budget(db, "site:attempts")
             clock = now or db_now(db)
+            remaining = admission.remaining()
             if user.lease_token and aware(user.lease_expires_at) > clock:
                 raise RateLimited(math.ceil((aware(user.lease_expires_at) - clock).total_seconds()))
             stamp = clock.timestamp()
             events = check_window(user.events, settings.model_user_daily_limit, 86400, stamp)
             check_window(events, settings.model_user_minute_limit, 60, stamp)
             # Reject an already-exhausted site budget before client construction too.
-            site = locked_budget(db, "site:attempts")
             check_window(site.events, settings.model_site_daily_limit, 86400, stamp)
             user.events = events + [stamp]
             user.lease_token = token
-            expiry = clock + timedelta(seconds=settings.model_total_timeout_seconds + 5)
+            expiry = clock + timedelta(seconds=remaining + 5)
             user.lease_expires_at = expiry
-        return Admission(factory, actor_id, settings, token, expiry)
+            admission.expires_at = expiry
+        admission.remaining()
+        return admission
     except SQLAlchemyError as exc:
         raise LimitsUnavailable("研究额度服务暂不可用") from exc
 
@@ -158,7 +228,7 @@ def model_admission(
 ) -> Iterator[Admission]:
     try:
         admission = admit(factory, actor.id, settings)
-    except (RateLimited, LimitsUnavailable) as exc:
+    except (RateLimited, LimitsUnavailable, ModelDeadlineExceeded) as exc:
         raise public_error(exc) from exc
     try:
         yield admission
