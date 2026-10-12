@@ -14,4 +14,8 @@ data/raw/
 data/private/
 .idea/
 .vscode/
+node_modules/
+frontend/dist/
+.local-backups/
+.superpowers/
 

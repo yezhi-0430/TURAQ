@@ -9,7 +9,7 @@ TURAQ 是一个基于 AI Agent 的 A 股智能研究平台，集成了行情监�
 ### 后端
 - **FastAPI** - Web 框架
 - **SQLAlchemy** - ORM
-- **Anthropic Claude / OpenAI** - LLM 服务
+- **Qwen / 隔离假模型** - 由后端 `MODEL_PROVIDER` 选择，页面明确显示模式
 - **Python 3.11+**
 
 ### 前端
@@ -21,36 +21,34 @@ TURAQ 是一个基于 AI Agent 的 A 股智能研究平台，集成了行情监�
 
 ### 1. 后端启动
 
-```bash
+```powershell
 # 进入项目目录
 cd C:\Users\LENOVO\Documents\Codex\2026-09-20\n\outputs\a-share-risk-agent
 
-# 激活虚拟环境
-.venv\Scripts\activate
+# 安装项目依赖（包含调度器）
+.\.venv\Scripts\python.exe -m pip install -e '.[dev]'
 
-# 已有数据库先升级（Day 13 新增审计来源列；可重复运行）
-python -m app.schema_upgrade
+# 首次启用账号时，先备份数据库，再显式升级；存在历史分组时需指定已验证所有者
+# .\.venv\Scripts\python.exe -m app.schema_upgrade --help
 
-# 启动服务
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+# 本地 HTTP 开发，必须与浏览器访问地址一致
+$env:SITE_BASE_URL = 'http://localhost:3000'
+$env:AUTH_COOKIE_SECURE = 'false'
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8888
 ```
 
-详细说明见 [START_BACKEND.md](./START_BACKEND.md)
+账号、数据库升级与验收说明见 [本地验收记录](docs/auth-local-acceptance.md)。数据库使用 PostgreSQL；配置字段见 `.env.example`。本地 HTTP 的 Cookie 设置仅用于开发，正式站点使用 HTTPS 和 Secure Cookie。
 
 ### 2. 前端访问
 
-直接用浏览器打开：
-```
-frontend/index.html
-```
-
-或者使用简单的 HTTP 服务器：
-```bash
+另开终端运行 Vite，让页面和 API 使用同一个站点：
+```powershell
 cd frontend
-python -m http.server 3000
+npm install
+npm run dev
 ```
 
-然后访问 `http://localhost:3000`
+然后访问 `http://localhost:3000`，点击“进入工作台”登录。不能直接打开 HTML 或用不代理 API 的静态服务器。邮件服务尚未配置时，已有已验证账号可登录，公开注册和找回密码暂不可用。完整前端说明见 [frontend/README.md](frontend/README.md)。
 
 ## 核心功能
 
@@ -69,19 +67,25 @@ python -m http.server 3000
 3. **行情数据**
    - 股票基本信息
    - 日线数据导入/查询
+   - 行情驾驶舱、分钟分时与独立 K 线详情；公开源失联时保留旧数据并标记
+
+4. **账号与操作边界**
+   - 邮箱密码登录、可复用邀请码及邮箱验证流程
+   - 用户自选分组隔离、CSRF 防护、调用额度与有限超时
+   - AI 建议需用户确认，执行结果与审计由后端记录
 
 ### 🚧 待完善
 
-1. **行情驾驶舱** - 实时行情监控面板
-2. **风险监控** - 风险指标计算和预警
-3. **模拟交易** - 回测和模拟交易功能
-4. **系统设置** - 用户偏好设置
+1. **风险监控** - 风险指标计算和预警
+2. **模拟交易** - 回测和模拟交易功能
+3. **系统设置** - 用户偏好设置
+4. **公开注册上线** - 真实邮件送达、服务器及 HTTPS 配置仍待验收
 
 ## API 文档
 
 启动后端后访问：
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
+- Swagger UI: http://localhost:8888/docs
+- ReDoc: http://localhost:8888/redoc
 
 ### 主要端点
 
@@ -109,22 +113,14 @@ a-share-risk-agent/
 │   │   └── executor.py      # 工具执行器
 │   └── watchlists/          # 自选股模块
 ├── frontend/
-│   └── index.html           # 单文件前端应用
+│   └── index.html           # 页面入口；脚本/CSS 由 Vite 打包
 ├── .env                     # 环境变量（需创建）
-└── START_BACKEND.md         # 后端启动指南
+└── docs/auth-local-acceptance.md # 本地账号与验收说明
 ```
 
 ## 环境配置
 
-创建 `.env` 文件：
-
-```env
-# 使用 Anthropic Claude
-ANTHROPIC_API_KEY=your_anthropic_api_key
-
-# 或者使用 OpenAI
-OPENAI_API_KEY=your_openai_api_key
-```
+按 `.env.example` 填写 PostgreSQL 和模型配置。实际支持 `MODEL_PROVIDER=fake` 或 `qwen`；Qwen 使用 `DASHSCOPE_API_KEY`。`MODEL_ENABLED=false` 可停止研究调用而保留自选和行情。密钥只保存在本机配置中，不提交 Git。真实邮件与服务器配置留待最后验收。
 
 ## 开发建议
 
@@ -135,19 +131,11 @@ OPENAI_API_KEY=your_openai_api_key
 
 ### 后端开发
 1. 修改 `app/` 目录下的 Python 文件
-2. FastAPI 会自动重载（使用 `--reload` 参数）
+2. 开发时可添加 `--reload`，普通启动需重启后应用改动
 3. 查看 Swagger 文档测试 API
 
 ### 数据库
-```bash
-# 查看数据库
-sqlite3 data/watchlists.db
-
-# 常用命令
-.tables          # 查看所有表
-.schema stocks   # 查看表结构
-SELECT * FROM stocks;  # 查询数据
-```
+正式开发数据使用 PostgreSQL，连接配置以 `.env.example` 为准。SQLite 仅用于隔离测试夹具；测试数据库与日常开发数据库分开。升级前备份，历史分组归属由操作者显式指定。
 
 ## 设计特点
 
