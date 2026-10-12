@@ -20,7 +20,7 @@
  api.subscribe(update);
  ready=api.bootstrap().then(session=>{update(session);return session;}).catch(error=>{$('auth-status').textContent=error.message;return null;});
  window.account={async requireLogin(){await ready;if(api.session.user)return true;show();return false;},show,ready};
- $('account-button').addEventListener('click',async()=>{if(busy)return;if(!api.session.user){show();return;}busy=true;try{await api.authenticate('logout');$('landing').hidden=false;show();}catch(error){$('auth-status').textContent=error.message;show();}finally{busy=false;}});
+ $('account-button').addEventListener('click',async()=>{if(busy)return;if(!api.session.user){show();return;}busy=true;try{await api.authenticate('logout');show();}catch(error){show();$('auth-status').textContent='本机工作台已清除；服务端退出结果未确认。'+error.message;}finally{busy=false;$('auth-submit').disabled=!api.session.mail_configured&&['register','forgot','resend'].includes(mode);}});
  $('auth-close').addEventListener('click',()=>$('auth-dialog').close());
  document.querySelectorAll('[data-auth-mode]').forEach(button=>button.addEventListener('click',()=>{if(!busy)show(button.dataset.authMode);}));
  $('auth-form').addEventListener('submit',async event=>{

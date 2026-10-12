@@ -1,6 +1,6 @@
 /* A proposal is data. Only the explicit confirmation sends an execution request. */
 (() => {
- window.describeSource=source=>source ? ({local_database:'本地数据库',python_calculation:'Python 计算'}[source.kind]||'来源类型未知')+' · 工具执行时间 '+(source.executed_at||'未知')+' · 最新交易日 '+(source.latest_trade_date||'未知')+' · '+(source.record_count??'未知')+' 条记录 · '+(source.upstream_source||'上游未知')+' · 采集时间 '+(source.collected_at||'未知')+(source.inputs_origin==='tool_arguments'?' · 输入来自工具参数':'') : '来源信息未提供；不推定数据日期。';
+ window.describeSource=source=>source ? ({local_database:'本地数据库',python_calculation:'Python 计算'}[source.kind]||'来源类型未知')+' · 工具执行时间 '+(source.executed_at||'未知')+' · 本次返回数据的最新交易日 '+(source.latest_trade_date||'未知')+' · '+(source.record_count??'未知')+' 条记录 · '+(source.upstream_source||'上游未知')+' · 采集时间 '+(source.collected_at||'未知')+(source.inputs_origin==='tool_arguments'?' · 输入来自工具参数':'') : '来源信息未提供；不推定数据日期。';
  class ExecutionConfirmation {
   constructor(api,suggestion){this.api=api;this.target={kind:'execution_request',operation:suggestion.operation,watchlist_id:suggestion.watchlist_id,stock_code:suggestion.stock_code};this.state='suggested';this.error='';}
   async prepare(){

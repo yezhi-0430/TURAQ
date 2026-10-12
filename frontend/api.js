@@ -3,6 +3,11 @@
  'use strict';
  function createAPIClient(fetcher = (...args) => fetch(...args)) {
   let session = {user:null,csrf_token:null,mail_configured:false,model_mode:'disabled'}, revision = 0;
+  // A tab-local intent flag prevents an unrevoked server cookie restoring the workspace.
+  const logoutIntentKey='turaq.logout-intent';let logoutIntent=false;
+  try{logoutIntent=window.sessionStorage?.getItem(logoutIntentKey)==='1';}catch{}
+  function setLogoutIntent(value){logoutIntent=value;try{if(value)window.sessionStorage?.setItem(logoutIntentKey,'1');else window.sessionStorage?.removeItem(logoutIntentKey);}catch{}}
+  const localSession=next=>logoutIntent?{...next,user:null}:next;
   const listeners = new Set(), controllers = new Set();
   const stale = () => Object.assign(new Error('账号已变化，已忽略旧响应。'),{name:'StaleResponseError'});
   function change(next) {
@@ -24,8 +29,9 @@
    try {
     const headers = {...options.headers};
     if(writing)headers['X-CSRF-Token']=session.csrf_token;
-    if(options.body !== undefined)headers['Content-Type']='application/json';
-    const response = await fetcher(url,{method,credentials:'same-origin',headers,body:options.body === undefined ? undefined : JSON.stringify(options.body),signal:controller.signal});
+    const body=options.body===undefined&&writing?{}:options.body;
+    if(body !== undefined)headers['Content-Type']='application/json';
+    const response = await fetcher(url,{method,credentials:'same-origin',headers,body:body === undefined ? undefined : JSON.stringify(body),signal:controller.signal});
     if(mine !== revision)throw stale();
     let data; try{data=response.status===204?null:await response.json();}catch{throw Object.assign(Error('服务响应格式无效。'),{unknownOutcome:writing});}
     if(mine !== revision)throw stale();
@@ -46,8 +52,13 @@
    }finally{clearTimeout(timer);options.signal?.removeEventListener('abort',onAbort);controllers.delete(controller);}
   }
   return {request, get session(){return session;},get revision(){return revision;}, subscribe(fn){listeners.add(fn);return()=>listeners.delete(fn);},
-   async bootstrap(){const next=await request('/auth/session');change(next);return next;},
-   async authenticate(path,body){const next=await request('/auth/'+path,{method:'POST',body});change(next);return next;},
+   async bootstrap(){const next=localSession(await request('/auth/session'));change(next);return next;},
+   async authenticate(path,body){
+    if(path==='logout'){setLogoutIntent(true);change({...session,user:null});}
+    const next=await request('/auth/'+path,{method:'POST',body});
+    if(path==='login'&&next.user)setLogoutIntent(false);
+    const current=localSession(next);change(current);return current;
+   },
    invalidate(){change({...session,user:null,csrf_token:null});}
   };
  }

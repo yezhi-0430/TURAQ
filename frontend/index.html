@@ -141,7 +141,7 @@ const pages = {
  settings: ['系统设置', '界面配置功能正在筹备。模型和数据源仍由后端配置管理。']
 };
 let messages = [], isThinking = false, chatRevision=0, actionInDialog=null;
-async function enterWorkspace(){ if(!await window.account.requireLogin())return; $('landing').hidden = true; $('app').hidden = false; window.scrollTo({top:0,behavior:'instant'}); window.marketDashboard?.setVisible(activePage === 'dashboard'); window.watchlistManager?.setVisible(activePage === 'watchlist'); }
+async function enterWorkspace(){ if(!await window.account.requireLogin())return; if($('chat-status').textContent==='请登录')$('chat-status').textContent='等待提问'; $('landing').hidden = true; $('app').hidden = false; window.scrollTo({top:0,behavior:'instant'}); window.marketDashboard?.setVisible(activePage === 'dashboard'); window.watchlistManager?.setVisible(activePage === 'watchlist'); }
 window.addEventListener('account-login',enterWorkspace);
 window.addEventListener('private-session-cleared',()=>{chatRevision++;pageTransitionVersion++;pageTransition?.cancel();messages=[];isThinking=false;actionInDialog=null;$('action-dialog').close();$('app').hidden=true;$('landing').hidden=false;$('input-box').value='';$('session-meta').textContent='尚未开始';$('chat-status').textContent='请登录';$('send-button').disabled=false;$('new-chat').disabled=false;window.marketDashboard?.reset();window.watchlistManager?.reset();window.marketDetail?.reset();window.StockSearch?.hide();renderMessages();});
 let activePage = 'agent';

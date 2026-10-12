@@ -48,8 +48,10 @@
   await mutate(async()=>{const g=await request('/watchlists','POST',{name});$('watch-group-name').value='';await loadGroups(g.id);},'分组已保存。');
  });
  function canonical(value){let s=value.trim().toLowerCase();if(/^\d{6}\.(sh|sz|bj)$/.test(s))s=s.slice(-2)+s.slice(0,6);if(/^\d{6}$/.test(s)){const prefix=s.startsWith('92')||/^[48]/.test(s)?'bj':/^6/.test(s)?'sh':/^[03]/.test(s)?'sz':null;if(!prefix)return null;s=prefix+s;}return /^(sh|sz|bj)\d{6}$/.test(s)?s:null;}
+ function clearSearch(){searchVersion++;$('watch-results').replaceChildren();$('watch-search-note').textContent='';}
+ $('watch-query').addEventListener('input',clearSearch);
  $('watch-search').addEventListener('submit',async e=>{
-  e.preventDefault();const query=$('watch-query').value.trim();if(!query)return;
+  e.preventDefault();const query=$('watch-query').value.trim();if(!query){clearSearch();return;}
   const version=++searchVersion;const code=canonical(query);$('watch-results').replaceChildren();$('watch-search-note').textContent='正在搜索…';
   try{
    const catalog=await request('/stocks/search?q='+encodeURIComponent(query));
