@@ -31,7 +31,7 @@
   if(['register','verify'].includes(mode)&&$('auth-invite').value.trim())body.invite_code=$('auth-invite').value.trim();if(['reset','verify'].includes(mode))body.token=$('auth-token').value.trim();
   try{
    await ready;if(!api.session.csrf_token)await api.bootstrap();
-   if(mode==='login'){await api.authenticate('login',body);$('auth-password').value='';$('auth-dialog').close();window.dispatchEvent(new CustomEvent('account-login'));}
+   if(mode==='login'){await api.authenticate('login',body);$('auth-password').value='';window.dispatchEvent(new CustomEvent('account-login'));}
    else{const path={register:'register',forgot:'forgot-password',reset:'reset-password',verify:'verify-email',resend:'resend-verification'}[mode];const data=await api.request('/auth/'+path,{method:'POST',body});$('auth-password').value='';$('auth-status').textContent=data?.detail||'请求已受理；请检查邮箱并完成后续步骤。';if(['reset','verify'].includes(mode))await api.bootstrap();}
   }catch(error){$('auth-status').textContent=error.message;}
   finally{busy=false;if(mode===submission)$('auth-submit').disabled=!api.session.mail_configured&&['register','forgot','resend'].includes(mode);}
