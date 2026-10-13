@@ -153,3 +153,120 @@ ctx.history = session.get_history(extend_to_user=is_subagent)
 `nanobot/session/manager.py:344` 的 get_history 处理可回放消息、摘要检查点和合法的工具消息边界，不应简单描述为不加筛选地回传全部历史。细节在后续会话专题展开，本节先理解旧对话与新消息会一起用于准备本轮请求。
 
 下一步消息准备的对应位置已找到：`nanobot/agent/loop.py:720` 的 `_build_transcript_input` 将 history 与 current_message 等输入分开保存；第 725 行的当前文字来自 ctx.msg.content。请求消息组装的课堂阅读尚未进行。
+
+用户在“连续追问复用同一编号 / 每次换新编号”中选择 A，会话连续性的引导判断正确。
+
+## 第七节：组装模型输入消息
+
+已核对实际消息构造器为 `nanobot/agent/context.py:276` 的 build_transcript。该方法第 286–297 行建立系统消息并追加 transcript.history，第 301–307 行构造本次消息并追加到列表，第 308 行返回 messages。
+
+当前消息构造器 `build_current_message` 从第 310 行开始，默认 current_role 为 user；文字可附加运行上下文或显式技能上下文，所以 API 输入不一定是只有用户原文的字符串。课堂用简化的“系统说明＋可用历史＋当前消息”理解组成，不将示例字典视为真实请求的完整内容。
+
+`nanobot/agent/context.py:231` 的 build_messages 是兼容包装方法，可能合并相邻同角色消息。当前核心路径在 `nanobot/agent/loop.py:1120` 将 build_transcript 包装为 transcript_builder，并在第 1177 行交给 Runner；不应把两种构造接口误写为必然依次调用。
+
+Day15 的 Hello 示例用户文字很短，但真实 usage 报告输入 4753 tokens，说明输入量不能只按用户的 Hello 计算。本节只读源码，不重新生成或请求真实模型消息。
+
+问连续追问需要带什么，用户回答“带上上一轮用户问题”。这是历史的一部分；随后补充还需要相关的上一轮模型回答，用“周五验收”例子说明缺少回答就缺少先前已给出的信息。用户回答“好的”，尚未独立完整说明历史的组成。
+
+## 第八节：Runner 通过 provider 请求模型
+
+目前核对的核心衔接：
+
+| 位置（均在 nanobot 目录内） | 动作 |
+|---|---|
+| `agent/loop.py:1981` | `_run_turn` 调用 `_run_agent_loop` |
+| `agent/loop.py:1170` | 将运行说明 AgentRunSpec 交给 self.runner.run |
+| `agent/runner.py:308` | Runner 入口；第 310 行准备初始消息，第 318 行进入 `_run_core` |
+| `agent/context_governance.py:147` | 初始消息准备时调用 transcript_builder，实际消息构造回调指向 ContextBuilder.build_transcript |
+| `agent/runner.py:435` | 在最大迭代次数内执行循环 |
+| `agent/runner.py:448` | 本轮调用 `_request_model` |
+| `agent/runner.py:876` | 获取工具定义；第 877 行准备请求上下文，第 884 行生成请求参数 |
+| `agent/runner.py:846` | `_build_request_kwargs` 将 messages、tools、model 及生成配置放到字典中 |
+| `agent/runner.py:984` | 流式显示分支调用 provider.chat_stream_with_retry；无显示回调分支在第 993 行也使用该接口 |
+| `providers/base.py:1443` | 处理流式调用与重试；实际请求继续到适配器 |
+| `providers/openai_compat_provider.py:2015` | chat_stream 接口；第 2029 行准备 SDK 客户端 |
+| `providers/openai_compat_provider.py:2129` | Chat Completions 分支调用 `client.chat.completions.create(**kwargs)` |
+
+Day15 的 dashscope / qwen-plus 配置对应 OpenAICompatProvider。该类也支持其他供应商的 Responses 分支，不能将其所有模型都描述为固定采用 Chat Completions；选择逻辑在 `providers/openai_compat_provider.py:1106`。本节课堂关注学习配置所用的 Chat Completions 请求位置。
+
+第 2129 行调用后，流式结果还需在后续代码中逐段接收和解析，不能将此处 await 描述为已经得到完整最终文字。Runner 最终还要判断有无工具请求、如何结束，再把结果交给外层保存与显示。
+
+本节只读追踪请求边界，没有再次发送真实模型请求；回复与工具分支的源码尚待展开。
+
+问 `client.chat.completions.create(**kwargs)` 是读取本地历史还是请求模型，用户回答“向模型服务发送请求”，请求边界的引导判断正确。
+
+## 第九节：判断工具请求或正常回答
+
+`nanobot/providers/openai_compat_provider.py:2133` 取得响应流迭代器，第 2134 行开始消费响应流，第 2188 行检查是否收到完成原因；第 2190 行将收集的 chunks 交给解析函数。模型响应整理后交回 Runner。
+
+Runner 在 `nanobot/agent/runner.py:482` 判断：
+
+```python
+if response.should_execute_tools:
+```
+
+属性定义在 `nanobot/providers/base.py:603`，要求确实存在工具调用，且 finish_reason 是 tool_calls、function_call 或 stop。不能把 refusal、content_filter 或 error 下的工具字段当成可执行授权，也不能只靠“有文字/没有文字”判断是否要工具。
+
+需要工具时，Runner 先将模型的工具请求记录为 assistant 消息（第 497 行），再于第 512 行进入 execute_tool_calls。本轮工具细节仍在继续阅读，课堂先辨认分支。
+
+普通有效文字且无工具请求时，Runner 在后续分支保存最终文字并退出循环；该正常回答分支位于第 756–789 行。错误、空回答、长度恢复和新输入注入等另有处理，不能把 should_execute_tools 为 False 一概描述为成功结束。Day15 的正常 Hello 回复没有工具请求，可作为本节正常结束示例。
+
+问正常问好、没有工具请求时是否还需要调用工具，用户回答“不需要”，普通直接回答分支的引导判断正确。
+
+## 第十节：返回结果、保存会话与显示
+
+普通正常回答分支在 `nanobot/agent/runner.py:785` 设置 final_content，第 789 行 break 退出循环；第 825 行将最终文字、消息、用量和结束原因等包装成 AgentRunResult 返回。第 791 行的 max_iterations 是循环耗尽的另一个分支，不适用于本次正常提前结束。
+
+AgentLoop 在 `nanobot/agent/loop.py:1997` 取得 result.final_content，第 1998 行取得本次消息列表。保存阶段第 2037 行将本轮消息合入会话，第 2054 行调用：
+
+```python
+self.sessions.save(session)
+```
+
+实际存储入口在 `nanobot/session/manager.py:1786`，由配置的会话存储实现持久化。Day15 学习实例已实际生成 JSONL 会话文件；不能只凭屏幕显示文字就认定会话持久化成功。用户输入在正常用户轮次还有提前保存机制，最终保存不是本轮第一次可能写入用户消息的位置。
+
+显示由 CLI 的 renderer 负责，`nanobot/cli/agent.py:250` 传入 on_stream 回调，`nanobot/cli/stream.py:187` 的 on_delta 可在模型生成时逐段显示内容。若没有流式显示，第 253–263 行才按返回对象的 response.content 打印完整回复。不能把实际流式过程画成严格“保存完成以后才首次显示任何文字”。
+
+正常 Hello 请求的保存/返回/显示路径已完成源码核对；课堂正在讲解持久化与显示的区别，工具回传分支与三种图仍需完成。
+
+问只显示、没有保存到会话文件时，退出程序再启动是否能从文件恢复本轮回答，用户回答“不会”。本轮持久化作用的引导判断正确。
+
+## 第十一节：实际执行 read_file
+
+切换到 Day15 已验证的文件总结案例。Qwen 返回 read_file 工具请求，参数含 path=meeting-notes.txt；这只是请求，文件读取由 Nanobot 工具代码完成。
+
+`nanobot/agent/runner.py:512` 调用工具执行模块；`nanobot/agent/tools/execution.py:142` 通过注册表准备调用和检查参数，第 172 行实际调用已取得的工具对象：
+
+```python
+result = await tool.execute(**params)
+```
+
+注册表的通用 execute 接口在 `nanobot/agent/tools/registry.py:187`，它也先 prepare_call，再调用工具 execute。当前执行模块能取得准备好的工具对象时直接调用它，第 174 行的注册表 execute 是另一个路径；不能把两次 execute 画成当前成功分支必然连续执行。
+
+read_file 实现在 `nanobot/agent/tools/filesystem.py:270` 的 ReadFileTool。第 281 行给出工具名，第 294 行定义 execute，第 311 行解析受工作目录约束的路径；普通文本分支第 338 行读取字节，后续处理文本与行号。Day15 得到的四行文本是这个工具的实际返回结果，不是模型凭空编写的文件内容。
+
+本节只读源码，没有重新运行文件工具或请求真实 Qwen。模型请求与工具执行的区别仍需用户结合代码判断。
+
+问模型刚返回 read_file 请求、程序还未执行工具时是否已经读取文件，用户回答“没有”，请求与执行的引导区分正确。
+
+## 第十二节：工具结果加入消息并继续循环
+
+`nanobot/agent/runner.py:533` 将工具结果包装为 tool_message，其中第 534 行的 role 为 tool，第 535 行用 tool_call_id 对应模型请求，第 537 行整理工具结果格式；第 544 行追加到 messages：
+
+```python
+messages.append(tool_message)
+```
+
+模型提出的请求此前已经作为 assistant 消息追加（第 497 行），实际工具结果才是 tool 消息。第 579 行 continue 回到第 435 行的循环，在迭代余量允许时于第 448 行再次请求模型；下一次消息包含刚才的工具结果。Day15 文件示例据此先读取，再由第二次 Qwen 调用总结。
+
+### 迭代上限与实际请求次数
+
+核对过程中发现必须区分普通迭代次数与模型请求总数：学习配置 maxToolIterations=2 在 `nanobot/agent/loop.py:500` 映射为 max_iterations。普通循环耗尽后，`nanobot/agent/runner.py:791` 标记 max_iterations；第 804–812 行可进入额外的无工具收尾请求，第 1238 行是该收尾请求的 provider 调用。
+
+控制函数在 `nanobot/session/turn_continuation.py:86`，第 98–104 行返回 not(pending_queue_available and goal_continuation_available)。单次 CLI 没有 pending_queue，因此会允许无工具收尾。这意味着 max_iterations 不是所有模型 HTTP 请求的绝对上限；provider 内部重试、摘要等也需要另行计数。Day15 两个成功示例没有触发耗尽，本轮只读核对，没有用真实模型复现耗尽。
+
+## 三种图与技术准备状态
+
+已将普通单次 CLI 路径整理为独立的 [模块图、时序图与阶段状态图](day-16-architecture-diagrams.md)。每个图配有对应源码位置；图中的阶段名称是课堂描述，不声称它们都是源码枚举值。流式显示、循环耗尽收尾和省略的复杂分支均在图旁说明。
+
+至此主要正常返回与文件工具回传路径、三种图已完成技术准备。用户尚未阅读完工具结果回传小节和三种图，协调与通信的独立区分、完整路径口述和画图能力仍未验收；Day16 保持进行中。没有更改参考源码或 A 股业务代码，没有新增真实模型请求。
