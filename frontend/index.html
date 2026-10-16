@@ -53,6 +53,28 @@ html{scrollbar-gutter:stable}
  .unavailable{height:calc(100dvh - 270px);min-height:510px}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* 公告按钮和对话框样式 */
+.announcement-btn{position:absolute;top:0;right:0;background:none;border:1px solid var(--line);border-radius:5px;padding:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all .2s ease}
+.announcement-btn:hover{background:var(--raised);color:var(--gold);border-color:var(--gold)}
+.announcement-btn .icon{width:18px;height:18px}
+.announcement-dialog{border:none;border-radius:12px;background:var(--panel);color:var(--text);padding:0;max-width:800px;width:90vw;max-height:85vh;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.announcement-dialog::backdrop{background:rgba(0,0,0,.7);backdrop-filter:blur(4px)}
+.announcement-content{display:flex;flex-direction:column;height:100%}
+.announcement-header{display:flex;align-items:center;justify-content:space-between;padding:24px 28px;border-bottom:1px solid var(--line)}
+.announcement-header h2{margin:0;font-size:20px;font-weight:600}
+.announcement-close{background:none;border:none;padding:8px;border-radius:5px;color:var(--muted)}
+.announcement-close:hover{background:var(--raised);color:var(--text)}
+.announcement-body{padding:28px;overflow-y:auto;line-height:1.8}
+.announcement-body h3{font-size:18px;font-weight:600;margin:28px 0 16px;color:var(--gold);border-bottom:1px solid var(--line);padding-bottom:8px}
+.announcement-body h4{font-size:15px;font-weight:600;margin:20px 0 12px;color:var(--text)}
+.announcement-body p{margin:12px 0;color:var(--muted)}
+.announcement-body code{background:var(--raised);padding:3px 8px;border-radius:4px;font-size:13px;color:var(--green);font-family:Consolas,Monaco,monospace}
+.announcement-body strong{color:var(--text);font-weight:600}
+.announcement-body li{margin:8px 0;color:var(--muted);list-style:none;padding-left:24px;position:relative}
+.announcement-body li:before{content:"•";position:absolute;left:8px;color:var(--gold)}
+.announcement-body li.check{color:var(--green)}
+.announcement-body li.check:before{content:""}
 </style>
 <link rel="preload" href="./entrance.css" as="style">
 <link rel="preload" href="./entrance.js" as="script">
@@ -66,6 +88,7 @@ html{scrollbar-gutter:stable}
 <script src="./entrance.js" defer></script>
 <script src="./api.js" defer></script>
 <script src="./auth.js" defer></script>
+<script src="./announcement.js" type="module" defer></script>
 <script src="./admin.js" defer></script>
 <script src="./actions.js" defer></script>
 <script src="./conversation.js" defer></script>
