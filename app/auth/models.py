@@ -18,6 +18,7 @@ class User(Base):
     is_admin: Mapped[bool] = mapped_column(default=False)
     pending_expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     invite_id: Mapped[int | None] = mapped_column(ForeignKey("invites.id"))
+    registration_method: Mapped[str] = mapped_column(String(12), default="invite")
 
 
 class Invite(Base):

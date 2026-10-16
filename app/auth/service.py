@@ -67,34 +67,49 @@ def issue_token(db, user_id: int, purpose: str):
     return raw
 
 
-def register(db, email, password, invite_code):
+def register(db, email, password, invite_code=None):
+    """
+    注册用户，支持两种方式：
+    1. 有邀请码：需要验证邀请码有效性
+    2. 无邀请码：直接注册（registration_method='email'）
+    """
     now = utcnow()
     user = db.scalar(select(User).where(User.email == email).with_for_update())
     # None, not an error: the caller sends the same generic response for every outcome.
     if user and (user.verified or aware(user.pending_expires_at) > now):
         return None
-    invitation = db.scalar(
-        select(Invite).where(
-            Invite.digest == digest(invite_code),
-            Invite.revoked.is_(False),
-            Invite.expires_at > now,
-            Invite.uses < Invite.max_uses,
+
+    invitation = None
+    registration_method = "email"
+
+    # 如果提供了邀请码，验证有效性
+    if invite_code:
+        invitation = db.scalar(
+            select(Invite).where(
+                Invite.digest == digest(invite_code),
+                Invite.revoked.is_(False),
+                Invite.expires_at > now,
+                Invite.uses < Invite.max_uses,
+            )
         )
-    )
-    if invitation is None:
-        return None
+        if invitation is None:
+            return None
+        registration_method = "invite"
+
     if user is None:
         user = User(
             email=email,
             password_hash=password_hash(password),
             pending_expires_at=now + timedelta(hours=24),
-            invite_id=invitation.id,
+            invite_id=invitation.id if invitation else None,
+            registration_method=registration_method,
         )
         db.add(user)
     else:
         user.password_hash = password_hash(password)
-        user.invite_id = invitation.id
+        user.invite_id = invitation.id if invitation else None
         user.pending_expires_at = now + timedelta(hours=24)
+        user.registration_method = registration_method
     db.flush()
     return user
 
@@ -188,3 +203,37 @@ def reset_password(db, raw, password):
     )
     db.commit()
     return revoked.rowcount
+
+
+def login_with_token(db, raw):
+    """
+    用验证令牌登录，不需要密码。
+    返回用户对象，如果令牌无效返回 None。
+    """
+    now = utcnow()
+    token = db.scalar(
+        select(EmailToken).where(
+            EmailToken.digest == digest(raw),
+            EmailToken.purpose == "login",
+            EmailToken.expires_at > now,
+            EmailToken.consumed.is_(False),
+        )
+    )
+    if token is None:
+        return None
+
+    user = db.scalar(select(User).where(User.id == token.user_id).with_for_update())
+    if user is None or not user.verified or user.disabled:
+        return None
+
+    # 标记令牌已使用
+    claimed = db.execute(
+        update(EmailToken)
+        .where(EmailToken.digest == token.digest, EmailToken.consumed.is_(False))
+        .values(consumed=True)
+    )
+    if claimed.rowcount != 1:
+        return None
+
+    db.commit()
+    return user

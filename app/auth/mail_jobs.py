@@ -21,7 +21,16 @@ def process_mail_request(action, payload, factory, mailer):
             if action == "register":
                 user = register(db, payload.email, payload.password, payload.invite_code)
                 purpose = "verify"
+            elif action == "login-link":
+                # 用户请求登录链接
+                user = db.scalar(select(User).where(User.email == payload.email).with_for_update())
+                # 用户必须已验证、未禁用
+                if user and user.verified and not user.disabled:
+                    purpose = "login"
+                else:
+                    return
             else:
+                # forgot-password 或 resend-verification
                 user = db.scalar(select(User).where(User.email == payload.email).with_for_update())
                 purpose = "reset" if action == "forgot-password" else "verify"
                 if user and (

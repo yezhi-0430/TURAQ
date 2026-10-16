@@ -4,16 +4,18 @@
  if(typeof document==='undefined')return;
  const $=id=>document.getElementById(id),api=window.apiClient;
  let mode='login',busy=false,ready=null,previousUser=null;
- const titles={login:'登录研究工作台',register:'邀请码注册',forgot:'找回密码',reset:'设置新密码',verify:'验证邮箱',resend:'重发验证邮件'};
+ const titles={login:'登录研究工作台',register:'邀请码注册',forgot:'找回密码',reset:'设置新密码',verify:'验证邮箱',resend:'重发验证邮件',magic:'验证码登录'};
  function show(next='login'){
   mode=next;$('auth-title').textContent=titles[mode];$('auth-status').textContent='';
-  for(const [field,modes] of Object.entries({email:['login','register','forgot','resend'],password:['login','register','reset'],invite:['register','verify'],token:['reset','verify']})){
-   $('auth-'+field+'-row').hidden=!modes.includes(mode);$('auth-'+field).required=modes.includes(mode)&&!(field==='invite'&&mode==='verify');
+  for(const [field,modes] of Object.entries({email:['login','register','forgot','resend','magic'],password:['login','register','reset'],invite:['register','verify'],token:['reset','verify','magic']})){
+   $('auth-'+field+'-row').hidden=!modes.includes(mode);$('auth-'+field).required=modes.includes(mode)&&!(field==='invite'&&mode!=='register');
   }
   $('auth-password').autocomplete=mode==='login'?'current-password':'new-password';
-  $('auth-submit').textContent={login:'登录',register:'提交注册',forgot:'请求重置邮件',reset:'重置密码',verify:'验证邮箱',resend:'请求验证邮件'}[mode];
+  $('auth-submit').textContent={login:'登录',register:'提交注册',forgot:'请求重置邮件',reset:'重置密码',verify:'验证邮箱',resend:'请求验证邮件',magic:'发送验证链接'}[mode];
   $('auth-mail-note').textContent=api.session.mail_configured?'注册与找回请求受理后，仍需在邮箱中完成验证。':'真实邮件服务尚未配置，暂不能注册、重发或找回密码。已有已验证账号可以登录。';
-  $('auth-submit').disabled=busy||(!api.session.mail_configured&&['register','forgot','resend'].includes(mode));
+  $('auth-submit').disabled=busy||(!api.session.mail_configured&&['register','forgot','resend','magic'].includes(mode));
+  // 邀请码变为可选提示
+  if(mode==='register'){$('auth-invite').placeholder='可选：输入邀请码以关联名额';$('auth-invite').required=false;}
   $('auth-dialog').showModal();
  }
  function update(session){const changed=previousUser!==session.user?.id,lost=previousUser&&!session.user;previousUser=session.user?.id||null;$('account-email').textContent=session.user?.email||'未登录';$('account-button').textContent=session.user?'退出账号':'登录';$('model-mode').textContent={disabled:'模型调用已关闭',fake:'隔离测试模型',qwen:'Qwen 在线模型'}[session.model_mode]||'模型状态未知';if(changed||!session.user){$('app').hidden=true;window.dispatchEvent(new CustomEvent('private-session-cleared'));if(lost)show();} }

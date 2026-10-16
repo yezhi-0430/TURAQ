@@ -21,11 +21,21 @@ class EmailRequest(StrictRequest):
 
 class RegisterRequest(EmailRequest):
     password: Password
-    invite_code: Token
+    invite_code: Token | None = None
 
 
 class LoginRequest(EmailRequest):
     password: str = Field(strict=True, max_length=1024)
+
+
+class MagicLinkRequest(EmailRequest):
+    """邮箱验证码登录请求"""
+    pass
+
+
+class MagicLinkVerifyRequest(StrictRequest):
+    """用验证码登录"""
+    token: Token
 
 
 class VerifyRequest(StrictRequest):

@@ -19,6 +19,8 @@ from app.auth.models import ThrottleBucket, User
 from app.auth.schemas import (
     EmailRequest,
     LoginRequest,
+    MagicLinkRequest,
+    MagicLinkVerifyRequest,
     RegisterRequest,
     ResetRequest,
     VerifyRequest,
@@ -26,6 +28,7 @@ from app.auth.schemas import (
 from app.auth.service import (
     check_password,
     digest,
+    login_with_token,
     new_session,
     reset_password,
     verify_email,
@@ -184,9 +187,23 @@ def reset(payload: ResetRequest, factory=Depends(get_session_factory)):
     return {"detail": "密码已重置，请重新登录。"}
 
 
+@router.post("/request-login-link", status_code=202)
+def request_login_link(
+    payload: MagicLinkRequest,
+    request: Request,
+    background_tasks: BackgroundTasks,
+    factory=Depends(get_session_factory),
+    mailer=Depends(get_mailer),
+):
+    """用邮箱请求验证码登录链接"""
+    mail_admission(request, payload, factory, mailer)
+    background_tasks.add_task(process_mail_request, "login-link", payload, factory, mailer)
+    return ACCEPTED
+
+
 @router.post("/login")
 def login(
-    payload: LoginRequest,
+    payload: LoginRequest | MagicLinkVerifyRequest,
     request: Request,
     response: Response,
     factory=Depends(get_session_factory),
@@ -195,25 +212,39 @@ def login(
 ):
     ip = request.client.host if request.client else "unknown"
     limit(factory, "login-ip:" + digest(ip), 20, 900)
-    limit(factory, "login-email:" + digest(payload.email), 5, 900)
+
     with factory() as db:
-        user = db.scalar(select(User).where(User.email == payload.email).with_for_update())
-        valid = check_password(user.password_hash if user else None, payload.password)
-        if not valid or not user or not user.verified or user.disabled:
-            raise HTTPException(401, "邮箱或密码错误，或账号尚不可用")
-        # Successful authentication releases its provisional failure-budget reservations atomically.
-        # Use CASE to prevent count from going negative due to race conditions.
-        db.execute(
-            update(ThrottleBucket)
-            .where(
-                ThrottleBucket.key.in_(
-                    ["login-ip:" + digest(ip), "login-email:" + digest(payload.email)]
-                ),
-                ThrottleBucket.count > 0,
+        user = None
+
+        # 情况1: 用令牌登录（MagicLinkVerifyRequest）
+        if isinstance(payload, MagicLinkVerifyRequest):
+            user = login_with_token(db, payload.token)
+            if user:
+                limit(factory, "login-token:" + digest(payload.token), 5, 900)
+        # 情况2: 用密码登录（LoginRequest）
+        else:
+            limit(factory, "login-email:" + digest(payload.email), 5, 900)
+            user = db.scalar(select(User).where(User.email == payload.email).with_for_update())
+            valid = check_password(user.password_hash if user else None, payload.password)
+            if not valid or not user or not user.verified or user.disabled:
+                raise HTTPException(401, "邮箱或密码错误，或账号尚不可用")
+            # 释放限流预留
+            db.execute(
+                update(ThrottleBucket)
+                .where(
+                    ThrottleBucket.key.in_(
+                        ["login-ip:" + digest(ip), "login-email:" + digest(payload.email)]
+                    ),
+                    ThrottleBucket.count > 0,
+                )
+                .values(count=ThrottleBucket.count - 1)
+                .execution_options(synchronize_session=False)
             )
-            .values(count=ThrottleBucket.count - 1)
-            .execution_options(synchronize_session=False)
-        )
+
+        if not user:
+            raise HTTPException(401, "验证令牌无效或已过期")
+
+        # 生成会话
         previous = load_session(db, request.cookies.get(settings.auth_cookie_name))
         if previous:
             previous.revoked = True

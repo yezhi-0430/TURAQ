@@ -56,10 +56,18 @@ class SMTPMailer:
         message = EmailMessage()
         message["From"] = self.settings.smtp_from
         message["To"] = email
-        message["Subject"] = "验证邮箱" if purpose == "verify" else "重置密码"
-        message.set_content(
-            f"{self.settings.site_base_url.rstrip('/')}/#{purpose}={token}\n链接有效期 30 分钟。"
-        )
+
+        # 根据 purpose 设置主题和内容
+        if purpose == "verify":
+            message["Subject"] = "验证邮箱"
+        elif purpose == "login":
+            message["Subject"] = "登录验证链接"
+        else:  # reset
+            message["Subject"] = "重置密码"
+
+        url = f"{self.settings.site_base_url.rstrip('/')}/#{purpose}={token}"
+        message.set_content(f"{url}\n链接有效期 30 分钟。")
+
         try:
             with self._connect() as client:
                 client.send_message(message)
