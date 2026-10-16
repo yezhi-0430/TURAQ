@@ -81,6 +81,19 @@ def test_kline_invalid_records_rejected(row):
         market.parse_klines(history_payload(rows=[row]), 'sh600519', 'day', NOW)
 
 
+def test_kline_source_extra_rows_keep_newest_320():
+    # Tencent returned 321 rows for sh000300 when 320 were requested.
+    start = datetime(2025, 1, 1).date()
+    rows = [[(start + timedelta(days=i)).isoformat(), '10', '10', '11', '9', '100']
+            for i in range(321)]
+    result = market.parse_klines(history_payload(rows=rows), 'sh600519', 'day', NOW)
+    assert len(result['bars']) == 320
+    assert result['bars'][0]['date'] == rows[1][0]
+    assert result['trade_date'] == rows[-1][0]
+    with pytest.raises(ValueError):
+        market.parse_klines(history_payload(rows=rows * 2), 'sh600519', 'day', NOW)
+
+
 def test_history_cache_period_isolation_and_stale_failure():
     async def run():
         tick = [0.0]

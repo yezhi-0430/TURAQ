@@ -3,6 +3,9 @@ FastAPI 路由：为前端提供 Agent 对话接口
 """
 
 import json
+import logging
+from contextvars import ContextVar
+from time import perf_counter
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException
@@ -19,12 +22,15 @@ from app.agent_actions import (
     parse_agent_answer,
 )
 from app.agent_loop import run_agent_loop
+from app.agent_market import MarketHistoryReader
 from app.agent_policy import ChatMessage as ChatMessage
 from app.agent_policy import ChatRequest, build_agent_messages
+from app.agent_research import ResearchMarketReader
 from app.audit.repository import save_tool_execution
 from app.auth.dependencies import Actor, require_actor
 from app.config import Settings
 from app.database import SessionLocal
+from app.disclosures import DisclosureReader
 from app.llm_client import ModelClient, ModelTimeoutError, create_model_client
 from app.model_limits import (
     Admission,
@@ -38,11 +44,13 @@ from app.model_limits import (
 from app.tools.provenance import ToolSource
 
 router = APIRouter(prefix="/api/v1/agent", tags=["agent"])
+logger = logging.getLogger(__name__)
 
 # 全局 HTTP 客户端和模型客户端缓存
 _http_client: httpx.Client | None = None
 _model_client: ModelClient | None = None
 _argument_serializer = TypeAdapter(dict)
+_request_settings: ContextVar[Settings | None] = ContextVar("agent_settings", default=None)
 
 
 def get_client() -> ModelClient:
@@ -51,7 +59,7 @@ def get_client() -> ModelClient:
 
     if _http_client is None:
         _http_client = httpx.Client()
-    return create_model_client(Settings(), _http_client)
+    return create_model_client(_request_settings.get() or Settings(), _http_client)
 
 
 class ToolExecution(BaseModel):
@@ -88,52 +96,106 @@ def display_tool_arguments(raw: str) -> dict | str:
     return decoded if isinstance(decoded, dict) else raw
 
 
+def display_executions(records) -> list[ToolExecution]:
+    return [
+        ToolExecution(
+            tool_name=record.tool_name,
+            arguments=display_tool_arguments(record.arguments),
+            result=json.dumps(record.result)
+            if record.status == "success" and record.result is not None
+            else None,
+            error=json.dumps(record.error.model_dump(exclude={"details"}))
+            if record.status == "error" and record.error
+            else None,
+            status=record.status,
+            duration_ms=record.duration_ms,
+            source=record.source,
+        )
+        for record in records
+    ]
+
+
 @router.post("/chat")
-def chat(request: ChatRequest, actor: Actor = Depends(require_actor),
-         admission: Admission = Depends(model_admission)) -> ChatResponse:
+def chat(
+    request: ChatRequest,
+    actor: Actor = Depends(require_actor),
+    admission: Admission = Depends(model_admission),
+) -> ChatResponse:
     """
     接收前端消息，运行 Agent 循环，返回结果和工具调用记录
     """
     # 转换为标准消息格式
     messages = build_agent_messages(request)
+    started = perf_counter()
+    audited = []
+    current_run = None
+
+    def save_progress(run_id, record):
+        nonlocal current_run
+        save_tool_execution(
+            run_id,
+            record,
+            actor_id=actor.id,
+            session_factory=SessionLocal,
+            before_work=admission.bound_database_work,
+        )
+        current_run = run_id
+        audited.append(record)
+
+    def timeout_response(error):
+        logger.warning(
+            "agent_timeout run_id=%s elapsed_ms=%.0f audited_tools=%d reason=%s",
+            current_run,
+            (perf_counter() - started) * 1000,
+            len(audited),
+            error.detail,
+        )
+        if not audited:
+            raise error
+        return JSONResponse(
+            status_code=504,
+            content={
+                "detail": error.detail,
+                "partial": {
+                    "run_id": current_run,
+                    "status": "incomplete",
+                    "model_mode": admission.settings.model_mode,
+                    "executions": [
+                        item.model_dump(mode="json") for item in display_executions(audited)
+                    ],
+                },
+            },
+        )
 
     try:
         # 获取 LLM 客户端
-        client = bind_model(get_client(), admission)
+        settings_token = _request_settings.set(admission.settings)
+        try:
+            client = bind_model(get_client(), admission, purpose="agent")
+        finally:
+            _request_settings.reset(settings_token)
 
         # 运行 Agent 循环
         with SessionLocal() as session:
+            if admission.settings.model_mode == "qwen":
+                session.info["daily_price_reader"] = MarketHistoryReader(admission.remaining)
+                session.info["disclosure_reader"] = DisclosureReader(admission.remaining)
+                session.info["research_reader"] = ResearchMarketReader(
+                    session.info["daily_price_reader"]
+                )
             result = run_agent_loop(
                 client=client,
                 messages=messages,
                 session=session,
                 max_rounds=request.max_rounds,
-                audit_writer=lambda run_id, record: save_tool_execution(
-                    run_id, record, actor_id=actor.id, session_factory=SessionLocal,
-                    before_work=admission.bound_database_work,
-                ),
+                audit_writer=save_progress,
                 check_deadline=lambda: admission.bound_database_work(session),
             )
         admission.remaining()
 
         answer, suggestions = parse_agent_answer(result.answer)
         # 转换工具执行记录
-        executions = [
-            ToolExecution(
-                tool_name=exec.tool_name,
-                arguments=display_tool_arguments(exec.arguments),
-                result=json.dumps(exec.result)
-                if exec.status == "success" and exec.result is not None
-                else None,
-                error=json.dumps(exec.error.model_dump(exclude={"details"}))
-                if exec.status == "error" and exec.error
-                else None,
-                status=exec.status,
-                duration_ms=exec.duration_ms,
-                source=exec.source,
-            )
-            for exec in result.executions
-        ]
+        executions = display_executions(result.executions)
 
         return ChatResponse(
             run_id=result.run_id,
@@ -145,10 +207,12 @@ def chat(request: ChatRequest, actor: Actor = Depends(require_actor),
             model_mode=admission.settings.model_mode,
         )
 
-    except (RateLimited, LimitsUnavailable, ModelDeadlineExceeded) as e:
+    except (RateLimited, LimitsUnavailable) as e:
         raise public_error(e) from e
-    except ModelTimeoutError as e:
-        raise HTTPException(504, "模型请求超时，请稍后重试") from e
+    except ModelDeadlineExceeded as e:
+        return timeout_response(public_error(e))
+    except ModelTimeoutError:
+        return timeout_response(HTTPException(504, "模型生成超时，请稍后重试"))
     except InvalidSuggestionOutput as e:
         raise HTTPException(status_code=502, detail="模型建议格式无效") from e
     except Exception as e:

@@ -2,14 +2,147 @@
 全量A股列表服务 - 内存存储方案
 """
 import asyncio
+import io
 import json
 import logging
+import re
+import unicodedata
+import xml.etree.ElementTree as ET
+import zipfile
 from datetime import datetime
 from pathlib import Path
 
 import httpx
 
+from app.market import SHANGHAI
+
 logger = logging.getLogger(__name__)
+
+# 新目录任一市场少于原有数量的这个比例，视为源异常（截断/限流），拒绝替换。
+MIN_KEEP_RATIO = 0.9
+_XLSX_NS = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
+_SOURCE_ERRORS = (
+    httpx.HTTPError, ValueError, KeyError, IndexError, TypeError,
+    zipfile.BadZipFile, ET.ParseError,
+)
+
+
+def _record(code, name, market: str) -> dict | None:
+    code = str(code).strip()
+    # NFKC 把"万  科Ａ"这类全角/补空格简称规整为"万科A"，按名称搜索才能命中。
+    name = re.sub(r"\s+", "", unicodedata.normalize("NFKC", str(name)))
+    if not re.fullmatch(r"\d{6}", code) or not name:
+        return None
+    return {
+        "symbol": f"{code}.{market.upper()}", "code": market + code, "name": name,
+        "market": market,
+    }
+
+
+async def _fetch_sse(client: httpx.AsyncClient) -> list[dict]:
+    """上交所主板(1)与科创板(8)上市A股。"""
+    stocks = []
+    for stock_type in ("1", "8"):
+        response = await client.get(
+            "https://query.sse.com.cn/sseQuery/commonQuery.do",
+            params={
+                "STOCK_TYPE": stock_type, "REG_PROVINCE": "", "CSRC_CODE": "", "STOCK_CODE": "",
+                "sqlId": "COMMON_SSE_CP_GPJCTPZ_GPLB_GP_L", "COMPANY_STATUS": "2,4,5,7,8",
+                "type": "inParams", "isPagination": "true", "pageHelp.cacheSize": "1",
+                "pageHelp.beginPage": "1", "pageHelp.pageSize": "5000", "pageHelp.pageNo": "1",
+            },
+            headers={"Referer": "https://www.sse.com.cn/"},
+        )
+        response.raise_for_status()
+        data = response.json()
+        rows = data["result"]
+        if len(rows) != int(data["pageHelp"]["total"]):
+            raise ValueError("上交所名单分页不完整")
+        stocks += [
+            r for row in rows if (r := _record(row["A_STOCK_CODE"], row["SEC_NAME_CN"], "sh"))
+        ]
+    return stocks
+
+
+def _xlsx_rows(content: bytes) -> list[list[str]]:
+    """只读取首个工作表的文本，不引入 openpyxl。"""
+    with zipfile.ZipFile(io.BytesIO(content)) as book:
+        shared = []
+        if "xl/sharedStrings.xml" in book.namelist():
+            shared = [
+                "".join(t.text or "" for t in item.iter(_XLSX_NS + "t"))
+                for item in ET.fromstring(book.read("xl/sharedStrings.xml"))
+            ]
+        sheet = ET.fromstring(book.read("xl/worksheets/sheet1.xml"))
+    rows = []
+    for row in sheet.iter(_XLSX_NS + "row"):
+        values = []
+        for cell in row.findall(_XLSX_NS + "c"):
+            value = cell.find(_XLSX_NS + "v")
+            if cell.get("t") == "s":
+                text = shared[int(value.text)]
+            elif value is not None:
+                text = value.text or ""
+            else:
+                text = "".join(t.text or "" for t in cell.iter(_XLSX_NS + "t"))
+            values.append(text)
+        rows.append(values)
+    return rows
+
+
+async def _fetch_szse(client: httpx.AsyncClient) -> list[dict]:
+    """深交所A股列表官方导出（主板+创业板）。"""
+    response = await client.get(
+        "https://www.szse.cn/api/report/ShowReport",
+        params={"SHOWTYPE": "xlsx", "CATALOGID": "1110", "TABKEY": "tab1"},
+        headers={"Referer": "https://www.szse.cn/"},
+    )
+    response.raise_for_status()
+    if len(response.content) > 20 * 1024 * 1024:
+        raise ValueError("深交所名单超过大小上限")
+    rows = _xlsx_rows(response.content)
+    code_at, name_at = rows[0].index("A股代码"), rows[0].index("A股简称")
+    return [
+        r for row in rows[1:]
+        if len(row) > max(code_at, name_at) and (r := _record(row[code_at], row[name_at], "sz"))
+    ]
+
+
+async def _fetch_bse(client: httpx.AsyncClient) -> list[dict]:
+    """北交所上市股票（JSONP 分页，每页固定 20 条）。"""
+    stocks, page, total_pages, total = [], 0, 1, None
+    while page < total_pages:
+        response = await client.post(
+            "https://www.bse.cn/nqxxController/nqxxCnzq.do",
+            data={
+                "page": str(page), "typejb": "T", "xxfcbj[]": "2", "xxzqdm": "",
+                "sortfield": "xxzqdm", "sorttype": "asc",
+            },
+            headers={"Referer": "https://www.bse.cn/"},
+        )
+        response.raise_for_status()
+        text = response.text
+        data = json.loads(text[text.index("(") + 1 : text.rindex(")")])[0]
+        total_pages, total = int(data["totalPages"]), int(data["totalElements"])
+        if total_pages > 200:
+            raise ValueError("北交所名单页数异常")
+        stocks += [
+            r for row in data["content"] if (r := _record(row["xxzqdm"], row["xxzqjc"], "bj"))
+        ]
+        page += 1
+    if len(stocks) != total:
+        raise ValueError("北交所名单分页不完整")
+    return stocks
+
+
+def _shrink_problem(old: list[dict], new: list[dict]) -> str | None:
+    """新目录明显变小（截断、限流、接口改版）时给出拒绝原因。"""
+    for market in ("sh", "sz", "bj"):
+        before = sum(s.get("market") == market for s in old)
+        after = sum(s["market"] == market for s in new)
+        if after == 0 or after < before * MIN_KEEP_RATIO:
+            return f"{market}市场新名单仅{after}只（原{before}只），疑似源异常，保留现有目录"
+    return None
 
 
 class StockListService:
@@ -31,7 +164,7 @@ class StockListService:
                 logger.warning(f"股票列表文件不存在: {file_path}")
                 return
 
-            with open(path, "r", encoding="utf-8") as f:
+            with open(path, encoding="utf-8") as f:
                 data = json.load(f)
 
             self.stocks = data.get("stocks", [])
@@ -81,7 +214,10 @@ class StockListService:
         if not query:
             return []
 
-        query = query.strip().lower()
+        # 名称同样做 NFKC+小写+去空格，"万科a"/"万科Ａ" 都能命中 "万科A"。
+        query = re.sub(r"\s+", "", unicodedata.normalize("NFKC", query)).lower()
+        if not query:
+            return []
         results = []
 
         for stock in self.stocks:
@@ -91,7 +227,7 @@ class StockListService:
 
             symbol = stock.get("symbol", "").lower()
             code = stock.get("code", "").lower()
-            name = stock.get("name", "")
+            name = re.sub(r"\s+", "", unicodedata.normalize("NFKC", stock.get("name", ""))).lower()
 
             # 计算匹配度
             score = 0
@@ -143,226 +279,46 @@ class StockListService:
             "last_updated": self.last_updated.isoformat() if self.last_updated else None,
         }
 
-    async def update_from_api(self):
-        """
-        从API更新列表（优先akshare，失败时尝试东方财富API）
+    async def update_from_api(self, transport=None) -> tuple[bool, str]:
+        """从沪深北三家交易所官方名单刷新；任一所失败或数量异常都保留现有数据。
 
-        这个方法会被定时任务调用，失败时保留现有数据
+        返回 (是否已替换, 说明)，供定时任务记录真实结果。
         """
         async with self._lock:  # 加锁保护并发更新
             try:
-                logger.info("开始从API更新股票列表...")
-
-                # 优先尝试akshare
-                new_stocks = await self._fetch_from_akshare()
-
-                # 如果akshare失败，尝试东方财富API
-                if not new_stocks:
-                    logger.warning("akshare获取失败，尝试东方财富API...")
-                    new_stocks = await self._fetch_from_eastmoney()
-
-                if not new_stocks:
-                    logger.warning("所有数据源均失败，保留现有数据")
-                    return
-
-                # 原子性更新
-                old_count = len(self.stocks)
-                self.stocks = new_stocks
-                self._build_indexes()
-                self.last_updated = datetime.now()
-
-                logger.info(f"股票列表更新成功: {old_count} -> {len(self.stocks)}")
-
-                # 保存到文件
-                self._save_to_file()
-
-            except Exception as e:
-                logger.error(f"从API更新股票列表失败: {e}", exc_info=True)
-                # 保留现有数据，不抛出异常
-
-    async def _fetch_from_akshare(self) -> list[dict]:
-        """从akshare获取股票列表"""
-        try:
-            import akshare as ak
-        except ImportError:
-            logger.warning("akshare未安装，跳过此数据源")
-            return []
-
-        all_stocks = []
-
-        try:
-            # 获取沪市A股 - 在线程池中执行避免阻塞
-            logger.info("正在从akshare获取沪市A股...")
-            sh_stocks = await self._run_in_executor(
-                ak.stock_info_sh_name_code, symbol="主板A股"
-            )
-            for _, row in sh_stocks.iterrows():
-                code = str(row['证券代码']).zfill(6)
-                name = row['证券简称']
-                all_stocks.append({
-                    'symbol': f"{code}.SH",
-                    'code': f"sh{code}",
-                    'name': name,
-                    'market': 'sh'
-                })
-            logger.info(f"  获取到 {len(sh_stocks)} 只沪市股票")
-        except Exception as e:
-            logger.warning(f"获取沪市股票失败: {e}")
-
-        try:
-            # 获取深市A股 - 在线程池中执行
-            logger.info("正在从akshare获取深市A股...")
-            sz_stocks = await self._run_in_executor(
-                ak.stock_info_sz_name_code, symbol="A股列表"
-            )
-            for _, row in sz_stocks.iterrows():
-                code = str(row.get('A股代码') or row.get('证券代码', '')).strip()
-                name = str(row.get('A股简称') or row.get('证券简称', '')).strip()
-                # 跳过空值
-                if not code or not name or code in ['nan', 'None', '']:
-                    continue
-                if code.isdigit() and len(code) <= 6:
-                    code = code.zfill(6)
-                    all_stocks.append({
-                        'symbol': f"{code}.SZ",
-                        'code': f"sz{code}",
-                        'name': name,
-                        'market': 'sz'
-                    })
-            logger.info(f"  获取到深市股票数量: {len([s for s in all_stocks if s['market'] == 'sz'])}")
-        except Exception as e:
-            logger.warning(f"获取深市股票失败: {e}")
-
-        try:
-            # 获取北交所股票 - 在线程池中执行
-            logger.info("正在从akshare获取北交所股票...")
-            bj_stocks = await self._run_in_executor(ak.stock_info_bj_name_code)
-            for _, row in bj_stocks.iterrows():
-                code = str(row.get('code') or row.get('证券代码', '')).strip()
-                name = str(row.get('name') or row.get('证券简称', '')).strip()
-                if not code or not name or code in ['nan', 'None', '']:
-                    continue
-                if code.isdigit() and len(code) <= 6:
-                    code = code.zfill(6)
-                    all_stocks.append({
-                        'symbol': f"{code}.BJ",
-                        'code': f"bj{code}",
-                        'name': name,
-                        'market': 'bj'
-                    })
-            logger.info(f"  获取到北交所股票数量: {len([s for s in all_stocks if s['market'] == 'bj'])}")
-        except Exception as e:
-            logger.warning(f"获取北交所股票失败: {e}")
-
-        logger.info(f"akshare获取完成，共 {len(all_stocks)} 只股票")
-        return all_stocks
-
-    async def _run_in_executor(self, func, *args, **kwargs):
-        """在线程池中运行同步函数（akshare是同步的）避免阻塞事件循环"""
-        import asyncio
-        loop = asyncio.get_event_loop()
-        return await loop.run_in_executor(None, lambda: func(*args, **kwargs))
-
-    async def _fetch_from_eastmoney(self) -> list[dict]:
-        """从东方财富API获取股票列表"""
-        all_stocks = []
-        page_size = 1000
-
-        # 分别获取不同市场的股票
-        markets = [
-            ("m:0+t:6,m:0+t:80", "深市"),
-            ("m:1+t:2,m:1+t:23", "沪市"),
-        ]
-
-        async with httpx.AsyncClient(timeout=30) as client:
-            for market_filter, market_name in markets:
-                logger.info(f"正在获取{market_name}股票...")
-                page = 1
-
-                while page <= 10:  # 最多10页，防止无限循环
-                    url = "http://80.push2.eastmoney.com/api/qt/clist/get"
-                    params = {
-                        "pn": page,
-                        "pz": page_size,
-                        "po": 1,
-                        "np": 1,
-                        "fltt": 2,
-                        "invt": 2,
-                        "fid": "f3",
-                        "fs": market_filter,
-                        "fields": "f12,f13,f14",
-                    }
-
-                    try:
-                        response = await client.get(url, params=params)
-                        response.raise_for_status()
-
-                        data = response.json()
-                        if data.get("rc") != 0 or not data.get("data"):
-                            break
-
-                        stocks_data = data["data"].get("diff", [])
-                        if not stocks_data:
-                            break
-
-                        # 标准化格式
-                        for item in stocks_data:
-                            stock = self._normalize_stock(item)
-                            if stock:
-                                all_stocks.append(stock)
-
-                        logger.info(f"  第{page}页: {len(stocks_data)} 只")
-
-                        if len(stocks_data) < page_size:
-                            break
-
-                        page += 1
-
-                    except Exception as e:
-                        logger.warning(f"获取{market_name}第{page}页失败: {e}")
-                        break
-
-        logger.info(f"API获取完成，共 {len(all_stocks)} 只股票")
-        return all_stocks
-
-    def _normalize_stock(self, item: dict) -> dict | None:
-        """标准化股票数据格式"""
-        try:
-            code_num = item["f12"]  # 如: 000001
-            market_code = item["f13"]  # 0=深圳, 1=上海, 2=北交所
-            name = item["f14"]
-
-            # 转换市场代码
-            if market_code == 0:
-                market = "sz"
-            elif market_code == 1:
-                market = "sh"
-            elif market_code == 2:
-                market = "bj"
-            else:
-                return None
-
-            # 生成标准格式
-            code = f"{market}{code_num}"  # sz000001
-            symbol = f"{code_num}.{market.upper()}"  # 000001.SZ
-
-            return {
-                "symbol": symbol,
-                "code": code,
-                "name": name,
-                "market": market,
-            }
-        except (KeyError, ValueError):
-            return None
+                async with httpx.AsyncClient(
+                    timeout=30, trust_env=False, follow_redirects=True, transport=transport,
+                    headers={"User-Agent": "Mozilla/5.0"},
+                ) as client:
+                    results = await asyncio.gather(
+                        _fetch_sse(client), _fetch_szse(client), _fetch_bse(client)
+                    )
+            except _SOURCE_ERRORS as exc:
+                message = f"交易所名单获取失败，保留现有目录: {type(exc).__name__}"
+                logger.warning(message)
+                return False, message
+            new_stocks = list({s["symbol"]: s for group in results for s in group}.values())
+            problem = _shrink_problem(self.stocks, new_stocks)
+            if problem:
+                logger.warning(problem)
+                return False, problem
+            old_count = len(self.stocks)
+            self.stocks = sorted(new_stocks, key=lambda s: s["symbol"])
+            self._build_indexes()
+            self.last_updated = datetime.now(SHANGHAI)
+            self._save_to_file()
+            message = f"股票列表更新成功: {old_count} -> {len(self.stocks)}"
+            logger.info(message)
+            return True, message
 
     def _save_to_file(self, file_path: str = "data/stocks_base.json"):
         """保存到文件（原子操作）"""
         try:
             output = {
                 "version": datetime.now().strftime("%Y-%m-%d"),
-                "source": "东方财富",
+                "source": "上交所/深交所/北交所官方证券名单",
                 "total": len(self.stocks),
-                "updated_at": datetime.now().isoformat(),
+                "updated_at": self.last_updated.isoformat(),
                 "stocks": self.stocks,
             }
 
@@ -386,9 +342,17 @@ class StockListService:
                 temp_path = Path(file_path).with_suffix('.json.tmp')
                 if temp_path.exists():
                     temp_path.unlink()
-            except:
-                pass
+            except OSError:
+                logger.warning("临时文件清理失败", exc_info=True)
 
 
 # 全局单例
 stock_list_service = StockListService()
+
+
+if __name__ == "__main__":
+    # 手动刷新：python -m app.stock_list
+    logging.basicConfig(level=logging.INFO)
+    updated, detail = asyncio.run(stock_list_service.update_from_api())
+    print(detail)
+    raise SystemExit(0 if updated else 1)

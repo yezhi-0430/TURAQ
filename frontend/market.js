@@ -10,6 +10,7 @@
  let failures = 0, queued = false, initialized = false, revision = 0;
  const databaseCodes = new Set(), manualCodes = new Set();
  let watchlistVersion = 0;
+ let refreshInterval = 10000;
  const nf = new Intl.NumberFormat('zh-CN', {maximumFractionDigits:2, minimumFractionDigits:2});
  function node(tag, cls, text) { const n = document.createElement(tag); n.className = cls || ''; if(text !== undefined)n.textContent = text; return n; }
  function validNumber(v) {return v !== null && v !== undefined && v !== '' && Number.isFinite(Number(v));}
@@ -80,7 +81,7 @@
   for(const i of [...new Set([0,Math.floor((pts.length-1)/2),pts.length-1])])chart.append(svg('text',{x:x(pts[i].time),y:218,'text-anchor':i===0?'start':i===pts.length-1?'end':'middle',fill:'#a2a99f','font-size':10},pts[i].time));
   box.append(chart);el('market-chart-caption').textContent=(data.stale?'分时更新失败 · 保留旧数据。 ':'')+'交易日期 '+data.trade_date+' · '+pts.length+' 个源记录 · 最后记录 '+end.time+' · 北京时间；缺口不插值。';
  }
- function schedule(delay=10000){clearTimeout(timer);if(current()&&el('market-auto').checked)timer=setTimeout(refresh,delay);}
+ function schedule(delay=refreshInterval){clearTimeout(timer);if(current()&&el('market-auto').checked)timer=setTimeout(refresh,delay);}
  async function refresh(){
   if(!current())return;
   if(busy){queued=true;return;}
@@ -114,7 +115,7 @@
    el('market-status').textContent='行情连接失败';banner(error.message+' 已有价格已标记为旧数据。');render();draw();
   }finally{
    clearTimeout(timeout);busy=false;controller=null;el('market-refresh').disabled=false;
-   if(current()){if(queued||mine!==revision){queued=false;timer=setTimeout(refresh,0);}else schedule(Math.min(60000,10000*2**Math.min(failures,3)));}
+   if(current()){if(queued||mine!==revision){queued=false;timer=setTimeout(refresh,0);}else schedule(Math.min(60000,refreshInterval*2**Math.min(failures,3)));}
   }
  }
  function choose(code){revision++;selected=code;render();draw();refresh();}
@@ -131,9 +132,10 @@
   finally{clearTimeout(timeout);}
  }
  function setVisible(value){visible=value;revision++;clearTimeout(timer);controller?.abort();if(!value)window.marketDetail?.close();if(current()){if(!initialized){initialized=true;loadWatchlist();}refresh();}}
+ function applyPreferences(p){refreshInterval=p.market_refresh_seconds*1000;el('market-auto').checked=p.market_auto_refresh;const label=el('market-refresh-label');if(label)label.textContent='自动刷新 · '+p.market_refresh_seconds+' 秒';schedule();}
  document.addEventListener('visibilitychange',()=>setVisible(visible));
  el('market-auto').addEventListener('change',()=>{if(el('market-auto').checked)refresh();else clearTimeout(timer);});
  el('market-refresh').addEventListener('click',refresh);
  el('market-search').addEventListener('submit',event=>{event.preventDefault();try{const c=canonical(el('market-symbol').value);if(!stocks.has(c)&&!indices.some(i=>i[0]===c)&&stocks.size>=30)throw Error('当前最多关注 30 只证券，请先移除一只。');if(!indices.some(i=>i[0]===c)){stocks.set(c,c.slice(2)+'.'+c.slice(0,2).toUpperCase());manualCodes.add(c);}el('market-search-error').textContent='';el('market-symbol').value='';choose(c);}catch(error){el('market-search-error').textContent=error.message;}});
- window.marketDashboard={setVisible,reset(){setVisible(false);watchlistVersion++;initialized=false;quotes.clear();trends.clear();stocks.clear();databaseCodes.clear();manualCodes.clear();chartStates.clear();selected='sh000001';el('market-watchlist-note').textContent='';el('market-fetched').textContent='';el('market-status').textContent='请登录后查看';el('market-symbol').value='';el('market-search-error').textContent='';banner('');render();draw();},invalidateWatchlist(){watchlistVersion++;initialized=false;if(current()){initialized=true;loadWatchlist();}}};render();
+ window.marketDashboard={setVisible,applyPreferences,reset(){setVisible(false);refreshInterval=10000;el('market-auto').checked=true;watchlistVersion++;initialized=false;quotes.clear();trends.clear();stocks.clear();databaseCodes.clear();manualCodes.clear();chartStates.clear();selected='sh000001';el('market-watchlist-note').textContent='';el('market-fetched').textContent='';el('market-status').textContent='请登录后查看';el('market-symbol').value='';el('market-search-error').textContent='';banner('');render();draw();},invalidateWatchlist(){watchlistVersion++;initialized=false;if(current()){initialized=true;loadWatchlist();}}};render();
 })();

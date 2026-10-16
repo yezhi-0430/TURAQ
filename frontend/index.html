@@ -8,11 +8,12 @@
 <style>
 :root{color-scheme:dark;--bg:#101211;--panel:#171a18;--raised:#1e221f;--line:#2c312d;--gold:#d2ba85;--text:#eeeFE9;--muted:#a2a99f;--green:#a5c6aa;--red:#e79a90;--font:Inter,"Segoe UI","Microsoft YaHei",sans-serif}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.7 var(--font);-webkit-font-smoothing:antialiased}button,input,textarea{font:inherit}button,a{-webkit-tap-highlight-color:transparent}button{cursor:pointer}button:disabled{cursor:wait;opacity:.5}a{color:inherit;text-decoration:none}button{color:inherit}button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--gold);outline-offset:5px}svg{display:block}.icon{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}[hidden]{display:none!important}.muted{color:var(--muted)}.eyebrow{font-size:10px;letter-spacing:2.4px;color:var(--gold);font-weight:600}.brand{display:flex;align-items:center;gap:12px;font-size:22px;letter-spacing:3px;font-weight:600}.brand-mark{display:grid;place-items:center;width:30px;height:30px;border:1px solid #877955;transform:rotate(-8deg);color:var(--gold);font:24px/1 Georgia,serif}.brand small{font-size:9px;letter-spacing:2px;color:var(--muted);border-left:1px solid var(--line);padding-left:16px;margin-left:5px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:14px;border:1px solid var(--line);border-radius:6px;padding:11px 19px;background:transparent;font-size:12px;transition:background .2s,transform .2s}.btn:hover{background:var(--raised);transform:translateY(-1px)}.btn.primary{background:var(--gold);border-color:var(--gold);color:#1d211b;font-weight:600}.btn.primary:hover{background:#e2cd9e}.dot{width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block}.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:30px;padding:5px 11px;font-size:10px;color:var(--muted)}
-/* The whole monogram straightens on hover/focus, then returns to its tilt. */
-.brand-mark{transition:transform .28s ease,background-color .28s ease,border-color .28s ease,box-shadow .28s ease}
+/* Keep the workspace monogram upright; warm gold light follows hover/focus. */
+.brand-mark{transform:none;transition:background-color .3s ease,border-color .3s ease,box-shadow .3s ease,text-shadow .3s ease,color .3s ease}
 .brand:hover .brand-mark,.brand:focus-visible .brand-mark{
- transform:rotate(0deg) scale(1.1);background:rgba(210,186,133,.12);
- border-color:var(--gold);box-shadow:0 0 18px rgba(210,186,133,.12)
+ transform:none;background:rgba(210,186,133,.1);color:#f3dca6;
+ border-color:#dfc587;box-shadow:0 0 12px rgba(210,186,133,.28),0 0 28px rgba(210,186,133,.14),inset 0 0 8px rgba(210,186,133,.06);
+ text-shadow:0 0 10px rgba(243,220,166,.65)
 }
 /* Landing */
 .landing{position:relative;overflow:hidden;background:radial-gradient(ellipse at 78% 33%,#29302566,transparent 51%),var(--bg)}/* Three staggered rings animate only transform and opacity. */
@@ -53,6 +54,11 @@ html{scrollbar-gutter:stable}
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
+<link rel="preload" href="./entrance.css" as="style">
+<link rel="preload" href="./entrance.js" as="script">
+<link rel="preload" href="./api.js" as="script">
+<link rel="preload" href="./auth.css" as="style">
+<link rel="preload" href="./auth.js" as="script">
 <link rel="stylesheet" href="./market.css">
 <link rel="stylesheet" href="./auth.css">
 <link rel="stylesheet" href="./admin.css">
@@ -62,6 +68,7 @@ html{scrollbar-gutter:stable}
 <script src="./auth.js" defer></script>
 <script src="./admin.js" defer></script>
 <script src="./actions.js" defer></script>
+<script src="./conversation.js" defer></script>
 <link rel="stylesheet" href="./market-detail.css">
 <link rel="stylesheet" href="./stock-search.css">
 <script src="./market-chart.js" defer></script>
@@ -70,6 +77,17 @@ html{scrollbar-gutter:stable}
 <script src="./stock-search.js" defer></script>
 <link rel="stylesheet" href="./watchlist.css">
 <script src="./watchlist.js" defer></script>
+<link rel="stylesheet" href="./risk.css">
+<script src="./risk.js" defer></script>
+<script src="./risk-auto.js" defer></script>
+<link rel="stylesheet" href="./paper-trading.css">
+<script src="./paper-trading.js" defer></script>
+<link rel="stylesheet" href="./theme-ui.css">
+<script src="./theme-ui.js" defer></script>
+<link rel="stylesheet" href="./markdown.css">
+<script src="./markdown.js" defer></script>
+<link rel="stylesheet" href="./settings.css">
+<script src="./settings.js" defer></script>
 </head>
 <body>
 <svg aria-hidden="true" width="0" height="0" style="position:absolute"><defs>
@@ -84,11 +102,53 @@ html{scrollbar-gutter:stable}
 </section>
 <div class="workspace" id="app" hidden>
 <header class="topbar"><button class="brand home-button" data-home aria-label="返回首页"><span class="brand-mark">T</span>TURAQ</button><div class="topbar-right"><span class="pill" id="model-mode">检查模型状态…</span><div class="account-meta"><small id="account-email">未登录</small><button class="btn" type="button" id="account-button">登录</button></div></div></header>
-<aside class="sidebar"><div class="side-label">WORKSPACE</div><nav aria-label="工作台导航"><button class="nav-button" data-page="dashboard"><svg class="icon"><use href="#i-grid"/></svg>行情驾驶舱</button><button class="nav-button" data-page="watchlist"><svg class="icon"><use href="#i-list"/></svg>自选管理</button><button class="nav-button active" data-page="agent" aria-current="page"><svg class="icon"><use href="#i-spark"/></svg>AI 研究助手</button><button class="nav-button" data-page="risk"><svg class="icon"><use href="#i-shield"/></svg>风险监控<small>筹备中</small></button><button class="nav-button" data-page="trading"><svg class="icon"><use href="#i-chart"/></svg>模拟交易<small>筹备中</small></button><button class="nav-button" data-page="settings"><svg class="icon"><use href="#i-sliders"/></svg>系统设置<small>筹备中</small></button><div class="side-label admin-section" id="admin-label" hidden>ADMIN</div>
+<aside class="sidebar"><div class="side-label">WORKSPACE</div><nav aria-label="工作台导航"><button class="nav-button" data-page="dashboard"><svg class="icon"><use href="#i-grid"/></svg>行情驾驶舱</button><button class="nav-button" data-page="watchlist"><svg class="icon"><use href="#i-list"/></svg>自选管理</button><button class="nav-button active" data-page="agent" aria-current="page"><svg class="icon"><use href="#i-spark"/></svg>AI 研究助手</button><button class="nav-button" data-page="risk"><svg class="icon"><use href="#i-shield"/></svg>风险监控</button><button class="nav-button" data-page="trading"><svg class="icon"><use href="#i-chart"/></svg>模拟交易</button><button class="nav-button" data-page="settings"><svg class="icon"><use href="#i-sliders"/></svg>系统设置</button><div class="side-label admin-section" id="admin-label" hidden>ADMIN</div>
 <button class="nav-button admin-nav" data-page="admin-dashboard" id="admin-dashboard-nav" hidden><svg class="icon"><use href="#i-grid"/></svg>管理仪表盘</button>
 <button class="nav-button admin-nav" data-page="admin-users" id="admin-users-nav" hidden><svg class="icon"><use href="#i-list"/></svg>用户管理</button>
 <button class="nav-button admin-nav" data-page="admin-invites" id="admin-invites-nav" hidden><svg class="icon"><use href="#i-shield"/></svg>邀请码管理</button></nav><div class="side-bottom"><button class="home-button" data-home>← 返回首页</button><p>以研究理解市场。<br>以独立判断面对不确定性。</p><div class="eyebrow" style="font-size:8px">TURAQ / RESEARCH FIRST</div></div></aside>
-<main class="main"><div class="page-heading"><div><div class="eyebrow">YOUR RESEARCH COPILOT</div><h1 id="page-title">AI 研究助手</h1><p id="page-description">从一个问题开始，让研究过程清晰可见。</p></div><button class="btn" id="new-chat"><svg class="icon"><use href="#i-plus"/></svg>新建对话</button></div>
+<main class="main"><div class="page-heading"><div><div class="eyebrow">YOUR RESEARCH COPILOT</div><h1 id="page-title">AI 研究助手</h1><p id="page-description">从一个问题开始，让研究过程清晰可见。</p><p class="page-description" style="font-size:11px;color:var(--muted);margin:8px 0 0">单次对话可调用最多 15 次行情查询工具。工具调用不足时可随时新开对话，不受影响。</p></div><button class="btn" id="new-chat"><svg class="icon"><use href="#i-plus"/></svg>新建对话</button></div>
+<section id="risk-page" hidden aria-label="风险工作台">
+ <div class="risk-toolbar"><p class="risk-note">选择自选范围或搜索股票，自动获取资料并分析。</p><button class="btn" id="risk-analyze" type="button">补充公告/财报资料</button><button class="btn" id="risk-reload" type="button">刷新记录 ↻</button></div>
+ <section class="risk-panel"><h2>监控范围与数据状态</h2><div class="risk-controls"><label>自选范围<select id="risk-scope"><option value="">全部自选组</option></select></label><label>指定股票<select id="risk-stock-filter"><option value="">范围内全部股票</option></select></label><label class="risk-check"><input type="checkbox" id="risk-unlinked" checked> 全部范围包含未关联资料</label></div><p class="risk-note" id="risk-scope-status" role="status"></p><p class="risk-scan-label" id="risk-scan-state">未执行 · 等待选择分析范围</p><p id="risk-data-state">选择后自动读取行情、财报及公告；结果注明实际资料覆盖。</p><p>自动分析按本次选择执行；定时持续扫描尚未接通。手动资料可作为补充。</p></section>
+ <section class="risk-panel risk-auto-panel" aria-label="自动风险分析"><div class="risk-auto-head"><div><h2>自动风险分析</h2><p class="risk-note" id="risk-auto-range">选择自选范围后自动分析，也可以搜索组外股票。</p></div><label>行情区间<select id="risk-auto-days"><option value="30">最近30个自然日</option><option value="90" selected>最近90个自然日</option><option value="180">最近180个自然日</option></select></label></div><label class="risk-search-label" for="risk-search-input">搜索并分析股票</label><input id="risk-search-input" class="risk-search-input" maxlength="20" autocomplete="off" placeholder="输入股票名称或代码，例如 贵州茅台 / 600519"><div id="risk-search-results" class="risk-search-results" aria-label="股票搜索候选"></div><div class="risk-auto-actions"><button id="risk-auto-repeat" type="button" class="btn primary">分析当前范围</button><button id="risk-auto-resume" type="button" class="btn" disabled>继续未完成项</button><button id="risk-auto-stop" type="button" class="btn" disabled>停止后续处理</button><button id="risk-auto-refresh" type="button" class="btn">刷新进度</button></div><p id="risk-auto-status" class="risk-note" role="status" aria-live="polite">打开页面不会自动新增模型请求；确认范围或选中搜索股票后开始。</p><div id="risk-auto-results" class="risk-auto-results"></div><p class="risk-note">每只股票独立获取资料并分析；离开页面后未开始项会等待继续。财报原文、行情观测与模型推断分别展示。</p></section>
+ <div class="risk-overview" aria-label="当前范围概览"><div class="risk-metric"><span id="risk-metric-label">监控股票数</span><strong id="risk-count-stocks">暂无数据</strong></div><div class="risk-metric"><span>待关注事件数</span><strong id="risk-count-pending">暂无数据</strong></div><div class="risk-metric"><span>高风险事件数</span><strong id="risk-count-high">暂无数据</strong></div><div class="risk-metric"><span>信息不足项数</span><strong id="risk-count-unknown">暂无数据</strong></div></div>
+ <div class="risk-controls"><label>风险类型<select id="risk-type"><option value="">全部类型</option><option value="announcement">公告风险</option><option value="financial">财报风险</option><option value="price_volume">量价异常</option><option value="comprehensive">股票综合分析</option></select></label><label>风险等级<select id="risk-level"><option value="">全部等级</option><option value="high">高风险</option><option value="medium">中风险</option><option value="low">低风险</option><option value="unknown">信息不足</option></select></label><label>处理状态<select id="risk-handling"><option value="">全部状态</option><option value="unread">未查看</option><option value="viewed">已查看</option><option value="following">持续关注</option></select></label><label>资料发布日期起<input id="risk-from" type="date"></label><label>资料发布日期止<input id="risk-to" type="date"></label></div>
+ <p class="risk-note" id="risk-status" role="status" aria-live="polite"></p>
+ <div class="risk-layout" id="risk-layout"><section class="risk-panel risk-events-panel"><h2>风险事件</h2><p>未查看的高风险优先；同级按分析时间倒序。信息不足不代表低风险。</p><div class="risk-list" id="risk-list"></div><div class="risk-pager"><span id="risk-page-note"></span><button class="btn" id="risk-prev" type="button" disabled>上一页</button><button class="btn" id="risk-next" type="button" disabled>下一页</button></div></section>
+ <section class="risk-panel"><div class="risk-detail-placeholder" id="risk-detail-placeholder">选择一条事件，查看事实与证据。</div><article id="risk-detail" hidden><button class="btn risk-back" id="risk-back" type="button">← 返回事件列表</button><h2 id="risk-detail-title"></h2><span class="risk-badge" id="risk-detail-level"></span><p id="risk-detail-mode"></p><h3>风险结论</h3><p id="risk-conclusion"></p><h3>评级依据（模型推断，待核实）</h3><div id="risk-basis"></div><h3>已知事实（从提供资料提取）</h3><div id="risk-facts"></div><h3>分析推断</h3><div id="risk-inferences"></div><h3>未知信息与待核实事项</h3><div id="risk-unknowns"></div><h3>原始来源与引用片段</h3><div id="risk-evidence"></div><h3>模型提及的来源（未核验）</h3><div id="risk-model-sources"></div><p id="risk-detail-times"></p><p id="risk-detail-status" class="risk-note" role="status"></p><div class="risk-detail-actions"><button class="btn primary" id="risk-research" type="button">继续研究</button><button class="btn" id="risk-viewed" type="button">标记已查看</button><button class="btn" id="risk-follow" type="button">持续关注</button></div></article></section></div>
+ <details class="risk-panel risk-history-panel"><summary>分析历史 · 当前账号全部资料</summary><p>历史与事件范围筛选独立，包含未关联资料及失败请求。输入版本保留，成功结果可重新查看。</p><div id="risk-history"></div><div class="risk-pager"><span id="risk-history-note"></span><button id="risk-history-prev" class="btn" type="button" disabled>上一页</button><button id="risk-history-next" class="btn" type="button" disabled>下一页</button></div></details>
+</section>
+<dialog id="risk-analysis-dialog" class="risk-analysis-dialog" aria-labelledby="risk-analysis-title"><div class="risk-dialog-head"><h2 id="risk-analysis-title">分析公告/财报</h2><button class="btn" id="risk-analysis-close" type="button">关闭</button></div><p class="risk-note">粘贴原文，区分事实、推断与未知。填写的标题、日期与链接均标注为“用户提供”，不视为核验来源。</p><form id="risk-form" class="risk-form"><div class="risk-form-grid"><label>资料类型<select id="risk-material-type"><option value="announcement">公告</option><option value="financial">财报</option></select></label><label>关联自选股票（可选）<select id="risk-associate"><option value="">不关联股票</option></select></label><label>资料标题<input id="risk-title" maxlength="200" placeholder="用户提供的资料"></label><label>资料发布日期（可选）<input id="risk-published" type="date"></label><label>来源链接（可选）<input id="risk-url" type="url" maxlength="2000" placeholder="https://"></label><label>页码（可选）<input id="risk-source-page" maxlength="40" placeholder="例如：第 12–13 页"></label></div><label>公告 / 财报原文<textarea id="risk-text" maxlength="20000" required placeholder="粘贴资料原文，最多 20,000 字"></textarea><small id="risk-char-count">0 / 20,000 字</small></label><p class="risk-note" id="risk-form-status" role="status" aria-live="polite"></p><button class="btn primary" id="risk-submit" type="submit">提交分析并保存</button></form></dialog>
+<section id="trading-page" hidden aria-label="模拟交易">
+ <div class="paper-toolbar"><label>模拟账户<select id="paper-account" aria-label="选择模拟账户"></select></label><button class="btn" id="paper-open-create" type="button">新建账户</button><button class="btn" id="paper-refresh" type="button">刷新</button><span id="paper-market-state" class="paper-note"></span></div>
+ <p id="paper-status" class="paper-note" role="status" aria-live="polite"></p>
+ <section id="paper-empty-state" class="paper-panel" hidden><h2>创建第一个模拟账户</h2><p class="paper-note">资金为虚拟资金。委托按腾讯财经公开实时行情撮合，遵循涨跌停、T+1、整手交易，计入佣金、印花税（卖出 0.05%）与过户费。</p><button class="btn primary" type="button" data-paper-create>创建模拟账户</button></section>
+ <div id="paper-workspace" hidden>
+  <div class="paper-overview"><div class="paper-metric"><span>总资产</span><strong id="paper-total">—</strong><small id="paper-return">—</small></div><div class="paper-metric"><span id="paper-day-label">今日盈亏</span><strong id="paper-day-pnl">—</strong><small id="paper-day-return">—</small></div><div class="paper-metric"><span>可用资金</span><strong id="paper-available">—</strong><small id="paper-frozen"></small></div><div class="paper-metric"><span>持仓市值</span><strong id="paper-market-value">—</strong><small>* 表示非实时估值</small></div></div>
+  <div class="paper-layout">
+   <section class="paper-panel" aria-label="下单"><h2>委托下单</h2><form id="paper-order-form" class="paper-form"><div class="paper-sides" role="group" aria-label="买卖方向"><button type="button" class="paper-side active" data-paper-side="buy" aria-pressed="true">买入</button><button type="button" class="paper-side" data-paper-side="sell" aria-pressed="false">卖出</button></div><div class="paper-field"><label for="paper-symbol">股票名称 / 代码</label><div class="paper-combo"><input id="paper-symbol" maxlength="30" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="paper-symbol-results" placeholder="输入名称或代码，如 贵州茅台 / 600519" required><div id="paper-symbol-results" class="paper-options" role="listbox" aria-label="股票候选" hidden></div></div></div><label>委托类型<select id="paper-type"><option value="limit">限价（当日有效）</option><option value="market">市价（按最新价即时成交）</option></select></label><label>委托价格<span class="paper-inline"><input id="paper-price" type="number" min="0.01" step="0.01" inputmode="decimal"><button class="btn paper-small" id="paper-use-price" type="button">最新价</button></span></label><label>数量（股）<span class="paper-inline"><input id="paper-quantity" type="number" min="1" step="1" inputmode="numeric" required><button class="btn paper-small" id="paper-max" type="button">最大</button></span></label><div id="paper-preview" class="paper-preview" aria-live="polite"></div><label id="paper-risk-ack-wrap" class="paper-check" hidden><input id="paper-risk-ack" type="checkbox"> 我已阅读该股近期高风险提示，仍要模拟买入</label><button id="paper-submit" class="btn primary paper-submit buy" type="submit">买入</button><p id="paper-order-status" class="paper-note" role="status" aria-live="polite"></p></form><p class="paper-note">模拟成交不代表真实可成交：未模拟排队、盘口深度和集合竞价；涨停封板不能买入、跌停封板不能卖出。</p></section>
+   <div class="paper-main">
+   <section class="paper-panel" aria-label="持仓"><h2>持仓</h2><div class="paper-table-wrap"><table class="paper-table"><thead><tr><th>证券</th><th>持仓 / 可卖</th><th>成本价</th><th>现价</th><th>市值</th><th>今日盈亏</th><th>浮动盈亏</th><th>盈亏率</th><th>仓位</th><th>操作</th></tr></thead><tbody id="paper-positions"></tbody></table></div><nav id="paper-pager" class="paper-pager" aria-label="持仓分页" hidden><button class="btn paper-small" id="paper-page-prev" type="button">上一页</button><span id="paper-page-label" aria-live="polite"></span><button class="btn paper-small" id="paper-page-next" type="button">下一页</button></nav><h2 class="paper-sub">持仓风险提示</h2><div id="paper-alerts" class="paper-alerts"></div></section>
+   <section id="paper-stock" class="paper-panel paper-stock" aria-label="个股行情">
+    <p id="paper-stock-empty" class="paper-empty-box">点击持仓中的股票，在这里查看分时 / K线与详细信息。</p>
+    <div id="paper-stock-body" hidden>
+     <div class="paper-stock-head"><div class="paper-stock-title"><h2 id="paper-stock-name"></h2><small id="paper-stock-code"></small></div><div class="paper-stock-quote"><strong id="paper-stock-price">—</strong><span id="paper-stock-change">—</span></div><div class="paper-actions"><button class="btn paper-small" id="paper-stock-buy" type="button">买入</button><button class="btn paper-small" id="paper-stock-sell" type="button">卖出</button><button class="btn paper-small" id="paper-stock-refresh" type="button">刷新</button></div></div>
+     <p id="paper-stock-status" class="paper-note" role="status" aria-live="polite"></p>
+     <dl id="paper-stock-facts" class="paper-stock-facts"></dl>
+     <div class="paper-stock-toolbar"><div class="paper-stock-tabs" role="group" aria-label="图表周期"><button type="button" class="paper-stock-tab" data-paper-period="minute">分时</button><button type="button" class="paper-stock-tab" data-paper-period="day">日K</button><button type="button" class="paper-stock-tab" data-paper-period="week">周K</button><button type="button" class="paper-stock-tab" data-paper-period="month">月K</button></div><div id="paper-stock-zoom" class="paper-actions" hidden><button class="btn paper-small" id="paper-stock-earlier" type="button" aria-label="查看更早K线">←</button><button class="btn paper-small" id="paper-stock-later" type="button" aria-label="查看更近K线">→</button><button class="btn paper-small" id="paper-stock-zoom-in" type="button" aria-label="放大">＋</button><button class="btn paper-small" id="paper-stock-zoom-out" type="button" aria-label="缩小">－</button></div></div>
+     <div id="paper-stock-chart" class="paper-stock-chart"></div>
+     <p id="paper-stock-inspect" class="paper-stock-inspect"></p>
+     <p id="paper-stock-note" class="paper-note"></p>
+    </div>
+   </section>
+   </div>
+  </div>
+  <section class="paper-panel"><h2>当日及历史委托</h2><div class="paper-table-wrap"><table class="paper-table"><thead><tr><th>时间</th><th>证券</th><th>方向</th><th>数量</th><th>委托价</th><th>状态</th><th>操作</th></tr></thead><tbody id="paper-orders"></tbody></table></div></section>
+  <section class="paper-panel"><h2>成交记录</h2><div class="paper-table-wrap"><table class="paper-table"><thead><tr><th>时间</th><th>证券</th><th>方向</th><th>成交</th><th>金额</th><th>费用</th><th>已实现盈亏</th></tr></thead><tbody id="paper-trades"></tbody></table></div></section>
+  <section class="paper-panel"><h2>业绩与沪深300对比</h2><dl id="paper-metrics" class="paper-facts paper-metrics"></dl><p id="paper-benchmark" class="paper-note"></p><div class="paper-legend"><span class="paper-key account">账户收益</span><span class="paper-key benchmark">沪深300</span></div><div id="paper-chart" class="paper-chart"></div><p id="paper-performance-note" class="paper-note"></p></section>
+ </div>
+ <dialog id="paper-create-dialog" class="paper-dialog" aria-labelledby="paper-create-title"><form method="dialog" class="paper-dialog-close"><button class="btn" aria-label="关闭">×</button></form><h2 id="paper-create-title">新建模拟账户</h2><p class="paper-note">新账户采用你的个人设置，可在下方调整；账户数量上限由管理员配置。</p><form id="paper-create-form" class="paper-form"><label>账户名称<input id="paper-new-name" maxlength="40" required placeholder="例如 价值组合"></label><label>初始资金（元）<input id="paper-new-capital" type="number" min="10000" max="100000000" step="0.01" value="1000000" required></label><label>佣金费率<input id="paper-new-commission" type="number" min="0" max="0.003" step="0.000001" value="0.0003" required></label><label>最低佣金（元）<input id="paper-new-min-commission" type="number" min="0" max="100" step="0.01" value="5" required></label><button id="paper-create" class="btn primary" type="submit">创建账户</button></form></dialog>
+</section>
 <section id="admin-page" hidden aria-label="管理后台">
 <div class="admin-toolbar"><p class="admin-note">管理账号与邀请名额，查看可核对的使用记录。</p><button class="btn" type="button" id="admin-refresh">刷新数据 ↻</button></div>
 <p id="admin-status" class="admin-status" role="status" aria-live="polite"></p>
@@ -122,7 +182,7 @@ html{scrollbar-gutter:stable}
    </div>
   </div>
  </div>
- <div class="market-toolbar"><div class="market-status"><span class="dot"></span><span id="market-status" role="status">等待连接行情源</span></div><div class="market-actions"><label><input type="checkbox" id="market-auto" checked> 自动刷新 · 10 秒</label><button class="btn" id="market-refresh">刷新行情 ↻</button></div></div>
+ <div class="market-toolbar"><div class="market-status"><span class="dot"></span><span id="market-status" role="status">等待连接行情源</span></div><div class="market-actions"><label><input type="checkbox" id="market-auto" checked> <span id="market-refresh-label">自动刷新 · 10 秒</span></label><button class="btn" id="market-refresh">刷新行情 ↻</button></div></div>
  <div class="market-banner" id="market-banner" role="status">正在准备真实行情数据…</div>
  <div class="market-indices" id="market-indices"></div>
  <div class="market-body"><section class="market-card"><div class="market-card-title"><h2 id="market-chart-title">上证指数 · 分时走势</h2><small>真实分时 / 不复权</small></div><div class="market-chart-meta" id="market-chart-meta"></div><div class="market-chart" id="market-chart">选择证券后加载真实分时</div><div class="market-caption" id="market-chart-caption">曲线来自数据源实际记录，不生成示例走势。</div></section>
@@ -130,11 +190,12 @@ html{scrollbar-gutter:stable}
  <section class="market-card"><div class="market-card-title"><h2>关注行情</h2><form class="stock-search" id="market-search"><input id="market-symbol" aria-label="股票代码" placeholder="股票代码，如 000001.SZ" maxlength="12" required><button class="btn" type="submit">查询 ＋</button></form></div><div class="market-caption" id="market-watchlist-note">正在读取数据库自选股。手动查询只保留在本次页面中。</div><div id="market-search-error" class="market-caption market-error" role="status"></div><div class="market-table-wrap"><table class="market-table"><thead><tr><th>证券 / 代码</th><th>最新价</th><th>涨跌幅</th><th>涨跌额</th><th>成交量（手）</th><th>成交额（元）</th><th>行情时间</th><th>操作</th></tr></thead><tbody id="market-stocks"></tbody></table></div><div id="market-stock-empty" class="market-empty">暂无关注证券，可输入代码查询真实行情。</div></section>
  <footer class="market-footer"><span>仅供研究 · 红涨绿跌 · 缺失数据以 — 显示</span><span id="market-fetched">尚未获取行情</span></footer>
 </section>
-<div id="agent-page" class="research-grid"><section class="chat" aria-label="研究对话"><div class="chat-top"><span><svg class="icon" style="width:14px"><use href="#i-spark"/></svg>TURAQ Assistant</span><span id="chat-status" role="status">等待提问</span></div><div class="messages" id="messages-area" role="log" aria-label="对话记录" aria-live="polite"></div><div class="composer"><form id="chatForm" class="input-shell"><textarea id="input-box" aria-label="研究问题" placeholder="输入股票代码、价格变化，或你想研究的问题…" maxlength="12000"></textarea><div class="composer-actions"><span>Enter 发送 · Shift + Enter 换行</span><button class="send" id="send-button" type="submit">发送 <svg class="icon"><use href="#i-arrow"/></svg></button></div></form><p class="composer-note">AI 回答需自行核验。模型模式由后端配置决定，不构成投资建议。</p></div></section>
-<aside class="context-panel" aria-label="研究说明"><section class="context-card"><div class="context-title">一条清晰的研究路径<svg class="icon"><use href="#i-spark"/></svg></div><div class="step"><span>01</span><div><strong>提出问题</strong><p>描述股票、数据和研究目标。</p></div></div><div class="step"><span>02</span><div><strong>工具执行</strong><p>按需查询数据或计算指标。</p></div></div><div class="step"><span>03</span><div><strong>查看结果</strong><p>展开调用记录，核对输入与输出。</p></div></div></section><section class="context-card"><div class="context-title">可用研究工具<svg class="icon"><use href="#i-sliders"/></svg></div><span class="tool-tag">get_stock_profile<br>股票资料查询</span><span class="tool-tag">get_daily_prices<br>日线数据查询</span><span class="tool-tag">calculate_change<br>价格变化率计算</span></section><section class="context-card"><div class="context-title">本次研究</div><div id="session-meta" class="session-meta">尚未开始</div><p class="context-note">执行后展示运行编号与轮数，便于关联后端审计记录。</p></section></aside></div>
+<section id="settings-page" hidden aria-label="系统设置"></section>
+<div id="agent-page" class="research-grid answer-only"><section class="chat" aria-label="研究对话"><div class="chat-top"><span><svg class="icon" style="width:14px"><use href="#i-spark"/></svg>TURAQ Assistant</span><span id="chat-status" role="status">等待提问</span></div><div class="messages" id="messages-area" role="log" aria-label="对话记录" aria-live="polite"></div><div class="composer"><form id="chatForm" class="input-shell"><textarea id="input-box" aria-label="研究问题" placeholder="输入股票代码、价格变化，或你想研究的问题…" maxlength="4000"></textarea><div class="composer-actions"><span id="research-key-hint">Enter 发送 · Shift + Enter 换行</span><button class="send" id="send-button" type="submit">发送 <svg class="icon"><use href="#i-arrow"/></svg></button></div></form><p class="composer-note">AI 回答需自行核验。模型模式由后端配置决定，不构成投资建议。</p></div></section>
+<div id="session-meta" hidden aria-hidden="true">尚未开始</div></div>
 <section class="unavailable" id="unavailable" hidden><div class="assistant-symbol"><svg class="icon"><use href="#i-grid"/></svg></div><span class="eyebrow">NEXT IN YOUR WORKSPACE</span><h2 id="unavailable-title"></h2><p id="unavailable-description"></p><button class="btn primary" data-research>先开始一次 AI 研究 <svg class="icon"><use href="#i-arrow"/></svg></button></section>
 </main></div>
-<template id="welcome-template"><div class="welcome"><div class="assistant-symbol"><svg class="icon"><use href="#i-spark"/></svg></div><h2>今天，想研究什么？</h2><p>提供一个问题或一组数据。<br>我会按需调用工具，与你一起拆解答案。</p><div class="suggestions"><button class="suggestion" data-example="平安银行从 10 元跌到 9 元，跌幅是多少？"><svg class="icon"><use href="#i-chart"/></svg><strong>拆解一次价格变化</strong><span>从 10 元到 9 元，跌幅多少？</span></button><button class="suggestion" data-example="股价从 50 涨到 55，涨幅是多少？"><svg class="icon"><use href="#i-spark"/></svg><strong>验证一个计算结果</strong><span>从 50 元到 55 元，涨幅多少？</span></button><button class="suggestion" data-example="查询 000001.SZ 的股票资料"><svg class="icon"><use href="#i-list"/></svg><strong>了解一只自选股</strong><span>查看 000001.SZ 的入库资料</span></button></div></div></template>
+<template id="welcome-template"><div class="welcome"><div class="assistant-symbol"><svg class="icon"><use href="#i-spark"/></svg></div><h2>今天，想研究什么？</h2><p>描述你关心的公司或问题。<br>直接查看结论、依据与待核实事项。</p><div class="suggestions"><button class="suggestion" data-example="平安银行从 10 元跌到 9 元，跌幅是多少？"><svg class="icon"><use href="#i-chart"/></svg><strong>拆解一次价格变化</strong><span>从 10 元到 9 元，跌幅多少？</span></button><button class="suggestion" data-example="看看今天主要指数的表现，简短概括市场情况，并注明实际行情时间。"><svg class="icon"><use href="#i-spark"/></svg><strong>看看今天的市场</strong><span>主要指数表现与简短概括</span></button><button class="suggestion" data-example="比较 600519.SH 和 000001.SZ 最近 90 个自然日的表现，适当总结差异和需要进一步核实的地方。"><svg class="icon"><use href="#i-list"/></svg><strong>比较两家公司的表现</strong><span>共同日期、价格变化与差异总结</span></button></div></div></template>
 <dialog id="auth-dialog" class="auth-dialog" aria-labelledby="auth-title">
  <div class="auth-head"><div><span class="eyebrow">TURAQ / YOUR ACCOUNT</span><h2 id="auth-title">登录研究工作台</h2></div><button id="auth-close" type="button" class="auth-close" aria-label="关闭账号窗口">×</button></div>
  <p class="auth-note" id="auth-mail-note">正在检查账号服务…</p>
@@ -152,23 +213,28 @@ const pages = {
  'admin-invites': ['邀请码管理','生成与撤销邀请码，核对有效期和激活名额。'],
  dashboard: ['行情驾驶舱', '市场概览界面正在筹备，行情数据尚未接入。你可以先在研究助手中查询已入库的股票资料与日线。'],
  watchlist: ['自选管理', '自选分组的页面操作尚未接入。当前可通过后端接口管理自选股。'],
- risk: ['风险监控', '公告与财报风险摘要的页面正在筹备，当前页面不展示未经分析的风险评级。'],
- trading: ['模拟交易', '模拟账户、持仓和成交界面尚未接入。当前不会执行交易。'],
- settings: ['系统设置', '界面配置功能正在筹备。模型和数据源仍由后端配置管理。']
+ risk: ['风险监控', '跟踪自选公司的公告、财报与量价风险。'],
+ trading: ['模拟交易', '用真实行情模拟 A 股委托与成交：涨跌停、T+1、整手与真实费率均按规则执行，不连接券商。'],
+ settings: ['系统设置', '管理个人使用偏好、账号安全与全站运行配置。']
 };
-let messages = [], isThinking = false, chatRevision=0, actionInDialog=null;
+let messages = [], isThinking = false, chatRevision=0, actionInDialog=null,workspaceEntered=false;
 async function enterWorkspace(){
  if(!await window.account.requireLogin())return;
+ const actorId=window.apiClient.session.user.id;
+ await window.settingsCenter?.ensureLoaded();
+ if(window.apiClient.session.user?.id!==actorId)return;
+ if(!workspaceEntered){activePage=window.settingsCenter?.preferences.default_page||'agent';applyPage(activePage);workspaceEntered=true;}
  if($('chat-status').textContent==='请登录')$('chat-status').textContent='等待提问';
  if(window.siteEntrance){if(!await window.siteEntrance.enterWorkspace())return;}
  else{$('auth-dialog').close();$('landing').hidden=true;$('app').hidden=false;}
  window.scrollTo({top:0,behavior:'instant'});
- window.marketDashboard?.setVisible(activePage==='dashboard');window.watchlistManager?.setVisible(activePage==='watchlist');
+ window.marketDashboard?.setVisible(activePage==='dashboard');window.watchlistManager?.setVisible(activePage==='watchlist');window.riskWorkbench?.setVisible(activePage==='risk');window.paperTrading?.setVisible(activePage==='trading');
  if(activePage.startsWith('admin-')&&!window.adminPanel?.allowed()){applyPage('agent');activePage='agent';}
  window.adminPanel?.setVisible(activePage.startsWith('admin-')?activePage:null);
+ window.settingsCenter?.setVisible(activePage==='settings');
 }
 window.addEventListener('account-login',enterWorkspace);
-window.addEventListener('private-session-cleared',()=>{window.siteEntrance?.cancelTransition();chatRevision++;pageTransitionVersion++;pageTransition?.cancel();messages=[];isThinking=false;actionInDialog=null;$('action-dialog').close();$('app').hidden=true;$('landing').hidden=false;$('input-box').value='';$('session-meta').textContent='尚未开始';$('chat-status').textContent='请登录';$('send-button').disabled=false;$('new-chat').disabled=false;window.marketDashboard?.reset();window.watchlistManager?.reset();window.marketDetail?.reset();window.StockSearch?.hide();window.adminPanel?.reset();applyPage('agent');activePage='agent';renderMessages();});
+window.addEventListener('private-session-cleared',()=>{workspaceEntered=false;window.siteEntrance?.cancelTransition();chatRevision++;pageTransitionVersion++;pageTransition?.cancel();messages=[];isThinking=false;actionInDialog=null;$('action-dialog').close();$('app').hidden=true;$('landing').hidden=false;$('input-box').value='';$('session-meta').textContent='尚未开始';$('chat-status').textContent='请登录';$('send-button').disabled=false;$('new-chat').disabled=false;window.marketDashboard?.reset();window.watchlistManager?.reset();window.riskWorkbench?.reset();window.paperTrading?.reset();window.marketDetail?.reset();window.StockSearch?.hide();window.adminPanel?.reset();applyPage('agent');activePage='agent';renderMessages();});
 let activePage = 'agent';
 const pageScrollPositions = new Map();
 let pageTransition = null;
@@ -178,6 +244,7 @@ async function selectPage(page){
  if(page.startsWith('admin-')&&!window.adminPanel?.allowed())return;
  window.StockSearch?.hide();
  if(page !== 'agent' && !Object.hasOwn(pages, page)) return;
+ workspaceEntered=true;
  const version = ++pageTransitionVersion;
  if(pageTransition){pageTransition.cancel();pageTransition=null;}
  if(page === activePage) return;
@@ -187,7 +254,7 @@ async function selectPage(page){
   applyPage(page);activePage=page;
   window.scrollTo({top:pageScrollPositions.get(page) ?? 0,behavior:'instant'});
  };
- if(window.matchMedia('(prefers-reduced-motion: reduce)').matches || typeof main.animate !== 'function'){
+ if(window.settingsCenter?.preferences.reduce_motion || window.matchMedia('(prefers-reduced-motion: reduce)').matches || typeof main.animate !== 'function'){
   commitPage();return;
  }
  try{
@@ -216,38 +283,40 @@ function applyPage(page){
  window.adminPanel?.setVisible(admin?page:null);
  const dashboard = page === 'dashboard';
  const watchlist = page === 'watchlist';
+ const risk = page === 'risk';
+ const trading = page === 'trading';
+ const settingsPage = page === 'settings';
+ $('settings-page').hidden = !settingsPage;
+ window.settingsCenter?.setVisible(settingsPage);
+ $('trading-page').hidden = !trading;
+ window.paperTrading?.setVisible(trading);
+ $('risk-page').hidden = !risk;
+ window.riskWorkbench?.setVisible(risk);
  $('watchlist-page').hidden = !watchlist;
  window.watchlistManager?.setVisible?.(watchlist);
  $('dashboard-page').hidden = !dashboard;
  window.marketDashboard?.setVisible?.(dashboard);
  document.querySelectorAll('[data-page]').forEach(button => { const active = button.dataset.page === page; button.classList.toggle('active', active); if(active) button.setAttribute('aria-current','page'); else button.removeAttribute('aria-current'); });
- $('agent-page').hidden = !agent; $('unavailable').hidden = agent || dashboard || watchlist || admin; $('new-chat').hidden = !agent;
+ $('agent-page').hidden = !agent; $('unavailable').hidden = agent || dashboard || watchlist || risk || trading || admin || settingsPage; $('new-chat').hidden = !agent;
  $('page-title').textContent = agent ? 'AI 研究助手' : pages[page][0];
- $('page-description').textContent = agent ? '从一个问题开始，让研究过程清晰可见。' : dashboard ? '连接真实市场，让每一次观察都有数据依据。' : watchlist ? '整理关注的公司，把观察转化为持续研究。' : admin ? pages[page][1] : '你的研究工作台，正在逐步完善。';
- if(!agent&&!admin){ $('unavailable-title').textContent = pages[page][0] + ' · 筹备中'; $('unavailable-description').textContent = pages[page][1]; }
+ $('page-description').textContent = agent ? '从一个问题开始，让研究过程清晰可见。' : dashboard ? '连接真实市场，让每一次观察都有数据依据。' : watchlist ? '整理关注的公司，把观察转化为持续研究。' : pages[page][1];
+ if(!agent&&!admin&&!trading&&!settingsPage){ $('unavailable-title').textContent = pages[page][0] + ' · 筹备中'; $('unavailable-description').textContent = pages[page][1]; }
 }
 document.querySelectorAll('[data-enter]').forEach(b => b.addEventListener('click',async()=>{await window.account.ready;window.account.show('login');}));
-document.querySelectorAll('[data-home]').forEach(b => b.addEventListener('click',()=>{ window.siteEntrance?.cancelTransition();$('app').hidden=true; $('landing').hidden=false; window.marketDashboard?.setVisible(false); window.watchlistManager?.setVisible(false); window.adminPanel?.setVisible(null); window.scrollTo({top:0,behavior:'instant'}); }));
+document.querySelectorAll('[data-home]').forEach(b => b.addEventListener('click',()=>{ window.siteEntrance?.cancelTransition();$('app').hidden=true; $('landing').hidden=false; window.marketDashboard?.setVisible(false); window.watchlistManager?.setVisible(false);window.riskWorkbench?.setVisible(false); window.paperTrading?.setVisible(false); window.adminPanel?.setVisible(null); window.scrollTo({top:0,behavior:'instant'}); }));
 document.querySelectorAll('[data-page]').forEach(b => b.addEventListener('click',()=>selectPage(b.dataset.page)));
 document.querySelector('[data-research]').addEventListener('click',()=>selectPage('agent'));
 $('new-chat').addEventListener('click',()=>{if(isThinking)return;messages=[];$('session-meta').textContent='尚未开始';$('chat-status').textContent='等待提问';$('input-box').value='';renderMessages();$('input-box').focus();});
 function textElement(tag, className, text){ const el=document.createElement(tag); el.className=className; el.textContent=text; return el; }
-function formatValue(value){ if(value==null)return '—'; if(typeof value==='string'){try{return JSON.stringify(JSON.parse(value),null,2);}catch{return value;}} return JSON.stringify(value,null,2); }
 function renderMessages(){
  const area=$('messages-area'); area.replaceChildren();
  if(!messages.length){area.append($('welcome-template').content.cloneNode(true));return;}
  for(const message of messages){
   const card=document.createElement('article');card.className='message'+(message.error?' error':'');
   card.append(textElement('div','message-label '+message.role,message.role==='user'?'YOU / 你':'TURAQ / 研究助手'));
-  card.append(textElement('div','message-content',message.content));
-  for(const tool of message.executions || []){
-   const details=document.createElement('details');details.className='tool-record';
-   const summary=document.createElement('summary');summary.append(textElement('span','',tool.tool_name));
-   summary.append(textElement('span','status'+(tool.status==='success'?'':' error'),tool.status==='success'?'执行成功':'执行失败'));
-   const duration=Number(tool.duration_ms);summary.append(textElement('span','muted',Number.isFinite(duration)?duration.toFixed(2)+' ms':'—'));
-   details.append(summary,textElement('pre','', '输入参数\n'+formatValue(tool.arguments)+'\n\n'+(tool.status==='success'?'执行结果\n'+formatValue(tool.result):'错误信息\n'+formatValue(tool.error))));card.append(details);
-  }
-  for(const tool of message.executions||[])card.append(textElement('div','source-card',window.describeSource(tool.source)));
+  card.append(message.role==='assistant'&&!message.error&&window.SafeMarkdown?window.SafeMarkdown.render(message.content):textElement('div','message-content',message.content));
+  const sources=[...new Set((message.executions||[]).map(item=>window.describeAnswerSource(item.source)).filter(Boolean))];
+  if(sources.length)card.append(textElement('div','answer-sources','数据：'+sources.join('；')));
   for(const item of message.suggestions||[]){
    const action=item.action,proposal=textElement('div','pending-action',item.text||'移除自选股建议');
    const state=textElement('div','action-status',action.state==='success'?'后端已确认执行成功':action.state==='unknown'?'结果待确认。'+action.error:action.state==='error'?'未执行成功：'+action.error:action.state==='running'?'正在执行…':'建议，尚未执行');proposal.append(state);
@@ -256,30 +325,30 @@ function renderMessages(){
   }
   area.append(card);
  }
- if(isThinking){area.append(textElement('div','thinking','正在分析问题与执行工具'));}
+ if(isThinking){area.append(textElement('div','thinking','正在整理答案'));}
  area.scrollTop=area.scrollHeight;
 }
 $('messages-area').addEventListener('click',event=>{const button=event.target.closest('[data-example]');if(button){$('input-box').value=button.dataset.example;$('input-box').focus();}});
 $('action-cancel').addEventListener('click',()=>{actionInDialog?.cancel();actionInDialog=null;$('action-dialog').close();renderMessages();});
 $('action-dialog').addEventListener('cancel',()=>{actionInDialog?.cancel();actionInDialog=null;renderMessages();});
 $('action-confirm').addEventListener('click',async()=>{const action=actionInDialog,mine=chatRevision;if(!action||action.state!=='ready')return;$('action-dialog').close();actionInDialog=null;const result=action.confirm();renderMessages();await result;if(mine!==chatRevision)return;if(action.state==='success'){window.watchlistManager?.reload();window.marketDashboard?.invalidateWatchlist();}renderMessages();});
-$('input-box').addEventListener('keydown',event=>{if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();$('chatForm').requestSubmit();}});
+$('input-box').addEventListener('keydown',event=>{const send=window.SettingsRules?window.SettingsRules.shouldSend(event,window.settingsCenter?.preferences.research_send_key):event.key==='Enter'&&!event.shiftKey&&!event.isComposing;if(send){event.preventDefault();$('chatForm').requestSubmit();}});
 $('chatForm').addEventListener('submit',async event=>{
- event.preventDefault();const input=$('input-box').value.trim();if(!input||isThinking||!await window.account.requireLogin())return;if(isThinking)return;const mine=chatRevision;
- messages.push({role:'user',content:input});$('input-box').value='';isThinking=true;$('send-button').disabled=true;$('new-chat').disabled=true;$('chat-status').textContent='研究进行中';$('messages-area').setAttribute('aria-busy','true');renderMessages();
+ event.preventDefault();const input=$('input-box').value.trim();if(!input||isThinking||!await window.account.requireLogin())return;if(isThinking)return;if(input.length>4000){messages.push({role:'assistant',error:true,content:'问题最多4000字，请缩短后重试。'});renderMessages();return;}const mine=chatRevision;
+ messages.push({role:'user',content:input});$('input-box').value='';isThinking=true;$('send-button').disabled=true;$('new-chat').disabled=true;$('chat-status').textContent='研究进行中';$('session-meta').textContent='本次研究进行中';$('messages-area').setAttribute('aria-busy','true');renderMessages();
  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),120000);
  try{
-  const data=await window.apiClient.request('/agent/chat',{method:'POST',body:{messages:messages.filter(m=>!m.error).map(({role,content})=>({role,content})),max_rounds:5},signal:controller.signal,timeout:120000});
+  const data=await window.apiClient.request('/agent/chat',{method:'POST',body:{messages:window.ResearchConversation.buildHistory(messages),max_rounds:window.settingsCenter?.preferences.research_max_rounds||15},signal:controller.signal,timeout:120000});
   if(mine!==chatRevision)return;
   $('model-mode').textContent={disabled:'模型调用已关闭',fake:'隔离测试模型',qwen:'Qwen 在线模型'}[data.model_mode]||'模型状态未知';
   messages.push({role:'assistant',content:data.answer || (data.status==='max_rounds_exceeded'?'已达到本次研究的轮数上限，尚未形成最终答案。请缩小问题范围后重试。':'本次请求未返回答案，请调整问题后重试。'),executions:Array.isArray(data.executions)?data.executions:[],suggestions:(data.suggestions||[]).map(item=>({...item,action:new window.ExecutionConfirmation(window.apiClient,item)}))});
   $('session-meta').textContent='RUN '+(data.run_id || '—')+'\n'+(data.rounds ?? '—')+' 轮 · '+(data.status==='completed'?'已完成':'未完成');$('chat-status').textContent=data.status==='completed'?'本次研究已完成':'本次研究未完成';
- }catch(error){if(mine!==chatRevision)return;messages.push({role:'assistant',error:true,content:error.unknownOutcome?'响应中断，研究结果待确认；后端可能仍在处理。请勿自动重复提交。':error.message});$('chat-status').textContent='请求未完成';}
+ }catch(error){if(mine!==chatRevision)return;const partial=error.partial;messages.push({role:'assistant',error:true,content:error.unknownOutcome?'响应中断，研究结果待确认；后端可能仍在处理。请勿自动重复提交。':error.message+(partial?'。尚未形成完整研究结论，已有资料的来源附在下方。':''),executions:Array.isArray(partial?.executions)?partial.executions:[]});$('session-meta').textContent=partial?.run_id?'RUN '+partial.run_id+'\n未完成 · 已保留部分资料':error.unknownOutcome?'本次研究结果待确认':'本次研究未完成';$('chat-status').textContent='本次研究未完成';}
  finally{clearTimeout(timeout);if(mine===chatRevision){isThinking=false;$('send-button').disabled=false;$('new-chat').disabled=false;$('messages-area').setAttribute('aria-busy','false');renderMessages();}}
 });
 window.researchStock = async stock => {
  await selectPage('agent');
- $('input-box').value = `请查询 ${stock.name}（${stock.symbol}）的股票资料和已入库日线数据，并说明缺失的信息。`;
+ $('input-box').value = `请查询 ${stock.name}（${stock.symbol}）的股票基础资料与最近 90 个自然日的日线行情，说明数据来源、实际交易日期与缺失的信息。`;
  $('input-box').focus();
 };
 window.selectWorkspacePage=selectPage;

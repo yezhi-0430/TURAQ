@@ -19,7 +19,10 @@ from app.database import DailyPrice, SessionLocal, Stock, Watchlist, WatchlistIt
 from app.json_requests import DecimalJSONRoute
 from app.market_api import router as market_router
 from app.model_limits import market_admission
+from app.paper_trading.api import router as paper_trading_router
 from app.risk_api import router as risk_router
+from app.risk_tasks import router as risk_tasks_router
+from app.risk_workbench import router as risk_workbench_router
 from app.stock_list_api import router as stock_list_router
 from app.tasks import shutdown_scheduler, start_scheduler
 from app.watchlists.metadata import resolve_stock
@@ -89,12 +92,17 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
+    from app.user_settings.api import router as settings_router
+    application.include_router(settings_router)
     application.include_router(auth_router)
     application.include_router(admin_router)
     application.include_router(risk_router)
+    application.include_router(risk_workbench_router)
+    application.include_router(risk_tasks_router)
     application.include_router(agent_router)
     application.include_router(market_router)
     application.include_router(stock_list_router)
+    application.include_router(paper_trading_router)
     price_router = APIRouter(route_class=DecimalJSONRoute)
 
     @application.exception_handler(RequestValidationError)

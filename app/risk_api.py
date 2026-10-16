@@ -51,7 +51,9 @@ def create_risk_summary(
     model: Annotated[ModelClient, Depends(get_model_client)],
 ) -> RiskSummary:
     try:
-        return generate_risk_summary(bind_model(model, admission), payload.input_text)
+        return generate_risk_summary(
+            bind_model(model, admission, purpose="risk"), payload.input_text
+        )
     except (RateLimited, LimitsUnavailable, ModelDeadlineExceeded) as exc:
         raise public_error(exc) from exc
     except ModelTimeoutError as exc:
@@ -59,5 +61,5 @@ def create_risk_summary(
     except RiskSummaryParseError as exc:
         raise HTTPException(
             status_code=502,
-            detail="模型输出格式无效",
+            detail=str(exc),
         ) from exc

@@ -44,4 +44,6 @@ def reserve(session_factory, key: str, limit: int, seconds: int) -> None:
                 if row.expires_at.tzinfo is None
                 else row.expires_at
             )
-            raise RateLimited(math.ceil((expiry - now).total_seconds()))
+            # Handle negative duration (clock skew) by using minimum 1 second
+            seconds_remaining = max(1, math.ceil((expiry - now).total_seconds()))
+            raise RateLimited(seconds_remaining)

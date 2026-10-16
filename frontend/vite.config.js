@@ -8,7 +8,7 @@ export default defineConfig({
     transformIndexHtml: {
       order: 'pre',
       handler: html => html.replace(
-        /<script src="(\.\/(?:api|auth|admin|actions|entrance|market-chart|market-detail|market|watchlist|stock-search)\.js)" defer><\/script>/g,
+        /<script src="(\.\/(?:api|auth|admin|actions|entrance|market-chart|market-detail|market|watchlist|stock-search|risk|risk-auto|paper-trading|theme-ui|markdown|conversation|settings)\.js)" defer><\/script>/g,
         '<script type="module" src="$1"></script>'
       )
     }

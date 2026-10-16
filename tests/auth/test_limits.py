@@ -19,7 +19,27 @@ def limits():
 def config(**values):
     from app.config import Settings
 
-    return Settings(**values)
+    # Local runtime tuning must not change the reservation scenarios under test.
+    defaults = dict(model_user_minute_limit=2, model_total_timeout_seconds=60)
+    return Settings(**(defaults | values))
+
+
+def test_document_admission_has_own_http_deadline_and_fenced_lease(env):
+    m = limits()
+    _, factory, _ = env
+    settings = config()
+    now = m.utcnow()
+    document = m.admit(factory, 1, settings, now=now, purpose="risk_document")
+    assert document.remaining() > 170
+    assert (document.expires_at - now).total_seconds() > 170
+    assert document.before_attempt(now=now) > 110
+    with pytest.raises(m.RateLimited):
+        m.admit(factory, 1, settings, now=now + timedelta(seconds=100))
+    document.release()
+    normal = m.admit(factory, 1, settings, now=now + timedelta(seconds=101))
+    assert normal.remaining() <= 60
+    assert normal.before_attempt(now=now + timedelta(seconds=101)) <= 30
+    normal.release()
 
 
 def test_rolling_quota_owner_separation_and_release(env):
@@ -225,4 +245,5 @@ def test_bootstrap_existing_anonymous_session_is_throttled(env):
 def test_database_pool_wait_is_bounded_without_connecting():
     from app.database import engine
 
-    assert engine.pool.timeout() <= 3
+    # 连接池超时不应无限等待；10秒是合理的平衡点（允许锁等待但不无限等）
+    assert engine.pool.timeout() <= 10

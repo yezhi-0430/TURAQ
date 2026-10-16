@@ -13,7 +13,7 @@ function fixture({mail=false,initialUser=null,suggestions=[]}={}){
  const requests=[],entry=new Element(),research=new Element(),home=new Element();
  const context={console,AbortController,setTimeout,clearTimeout,URL,URLSearchParams,CustomEvent:class{constructor(type){this.type=type;}},window:{location:{hash:'',search:'',pathname:'/'},history:{replaceState(){}},scrollTo(){},matchMedia:()=>({matches:true}),addEventListener:(k,f)=>{(events[k]??=[]).push(f);},dispatchEvent:e=>{for(const f of events[e.type]||[])f(e);}},document:{addEventListener(){},getElementById:get,createElement:()=>new Element(),querySelector:()=>research,querySelectorAll:selector=>selector==='[data-auth-mode]'?modes:selector==='[data-enter]'?[entry]:selector==='[data-home]'?[home]:[]},fetch:async(url,opts)=>{requests.push([url,opts]);if(url.endsWith('/session'))return res({user,csrf_token:user?'private-csrf':'anon-csrf',mail_configured:mail,model_mode:'fake'});if(url.endsWith('/login')){user={id:1,email:'synthetic@example.test',is_admin:false};return res({user,csrf_token:'private-csrf',mail_configured:mail,model_mode:'fake'});}if(url.endsWith('/logout')){user=null;return res({user:null,csrf_token:'new-anon',mail_configured:mail,model_mode:'fake'});}if(url.endsWith('/agent/chat')){chatWrites++;return res({answer:'A',executions:[{tool_name:'get_daily_prices',status:'success',source:{kind:'local_database',executed_at:'2026-10-11T15:00:00+08:00',latest_trade_date:'2026-10-09',record_count:1}}],suggestions});}if(url.endsWith('/watchlists'))return res([{id:1,name:'Synthetic owned group'}]);if(url.endsWith('/watchlists/1/stocks'))return res([{symbol:'000001.SZ',name:'Synthetic bank'}]);if(url.endsWith('/agent/actions/remove-stock'))return res({status:'success'});if(url.includes('/stocks/search'))return new Promise(r=>searchResolve=r);return res({detail:'请求已受理'});}};
  function res(data,status=200){return{ok:status<400,status,json:async()=>data,headers:{get:()=>null}};}
- vm.createContext(context);for(const path of ['frontend/api.js','frontend/actions.js'])vm.runInContext(fs.readFileSync(path,'utf8'),context);
+ vm.createContext(context);for(const path of ['frontend/api.js','frontend/actions.js','frontend/conversation.js'])vm.runInContext(fs.readFileSync(path,'utf8'),context);
  const html=fs.readFileSync('frontend/index.html','utf8'),inline=html.match(/<script>\s*([\s\S]*?)<\/script>/)[1];vm.runInContext(inline,context);vm.runInContext(fs.readFileSync('frontend/auth.js','utf8'),context);
  return {get,context,requests,entry,home,modes,res,get chatWrites(){return chatWrites;},finishSearch(data){searchResolve(res(data));}};
 }
@@ -58,6 +58,52 @@ test('suggestion UI shows exact owned target, cancel sends no action and final d
 
 function renderedText(node){return [node.textContent,...node.children.map(renderedText)].join('\n');}
 
+test('answers show conclusions and source facts without tool names, arguments or timing',async()=>{
+ const f=fixture({initialUser:{id:1,email:'qa@example.test'}});await f.context.window.account.ready;
+ f.context.fetch=async()=>f.res({answer:'最新价格为10元，资料不足以判断趋势。',status:'completed',rounds:2,run_id:'qa-answer-only',model_mode:'fake',executions:[{tool_name:'get_stock_quotes',status:'success',arguments:{secret:'raw arguments'},duration_ms:400,result:'{"internal":"raw result"}',source:{kind:'online_market',upstream_source:'QA报价源',quote_time:'2026-10-09T15:00:00+08:00',latest_trade_date:'2026-10-09',record_count:1}}]});
+ f.get('input-box').value='报价';await f.get('chatForm').listeners.submit(event);
+ const text=renderedText(f.get('messages-area'));
+ assert(text.includes('最新价格为10元'));assert(text.includes('QA报价源'));assert(text.includes('行情时间'));
+ for(const technical of ['get_stock_quotes','raw arguments','raw result','执行成功','工具执行时间','400.00 ms'])assert(!text.includes(technical));
+ assert.equal(f.get('messages-area').children.at(-1).children.filter(n=>n.className==='tool-record').length,0);
+});
+
+test('continued dialogue sends recent context and preserves latest follow-up',async()=>{
+ const f=fixture({initialUser:{id:1,email:'qa@example.test'}});await f.context.window.account.ready;let lastBody,writes=0;
+ f.context.fetch=async(url,options)=>{writes++;lastBody=JSON.parse(options.body);return f.res({answer:'这是本次回答的内容。',status:'completed',rounds:1,executions:[],model_mode:'fake'});};
+ for(let i=0;i<14;i++){f.get('input-box').value=i===13?'刚才说的风险有什么依据？':'问题'+i;await f.get('chatForm').listeners.submit(event);}
+ assert(lastBody.messages.length<=20);assert.equal(lastBody.messages[0].role,'user');assert.equal(lastBody.messages.at(-1).content,'刚才说的风险有什么依据？');
+ assert(lastBody.messages.some(m=>m.role==='assistant'));
+ const previousWrites=writes;f.get('input-box').value='长'.repeat(4001);await f.get('chatForm').listeners.submit(event);assert(renderedText(f.get('messages-area')).includes('问题最多4000字'));assert.equal(writes,previousWrites);
+});
+
+test('timeout keeps current tool evidence and clears previous completed run state',async()=>{
+ const f=fixture({initialUser:{id:1,email:'qa@example.test'}});await f.context.window.account.ready;
+ f.context.fetch=async()=>f.res({run_id:'previous-run',status:'completed',rounds:2,answer:'old answer',model_mode:'fake',executions:[]});
+ f.get('input-box').value='first';await f.get('chatForm').listeners.submit(event);
+ assert(f.get('session-meta').textContent.includes('已完成'));
+ f.context.fetch=async()=>f.res({detail:'模型生成超时，请稍后重试',partial:{run_id:'partial-run',status:'incomplete',model_mode:'qwen',executions:[{tool_name:'get_daily_prices',arguments:{stock_code:'600519.SH'},status:'success',result:'{"rows":[{"close":"10"}]}',duration_ms:400,source:{kind:'online_market',record_count:98,upstream_source:'QA测试源'}}]}},504);
+ f.get('input-box').value='second';const pending=f.get('chatForm').listeners.submit(event);await pending;
+ assert(f.get('session-meta').textContent.includes('partial-run'));
+ assert(!f.get('session-meta').textContent.includes('已完成'));
+ assert.equal(f.get('chat-status').textContent,'本次研究未完成');
+ assert(renderedText(f.get('messages-area').children.at(-1)).includes('QA测试源'));
+ assert(!renderedText(f.get('messages-area').children.at(-1)).includes('get_daily_prices'));
+ assert.equal(f.get('send-button').disabled,false);
+ f.context.fetch=async(url,options)=>{const history=JSON.parse(options.body).messages;assert(!history.some(m=>m.content.includes('模型生成超时')));return f.res({answer:'recovered',status:'completed',rounds:1,run_id:'new-run',executions:[]});};
+ f.get('input-box').value='retry';await f.get('chatForm').listeners.submit(event);
+ assert(f.get('session-meta').textContent.includes('new-run'));
+});
+
+test('a late timeout with tool evidence cannot enter the next account',async()=>{
+ const f=fixture({initialUser:{id:1,email:'qa@example.test'}});await f.context.window.account.ready;
+ let finish;f.context.fetch=()=>new Promise(resolve=>finish=()=>resolve(f.res({detail:'模型生成超时',partial:{run_id:'private-old',executions:[{tool_name:'get_daily_prices',source:{record_count:98}}]}},504)));
+ f.get('input-box').value='private question';const pending=f.get('chatForm').listeners.submit(event);await flush();
+ f.context.window.apiClient.invalidate();finish();await pending;
+ assert(!renderedText(f.get('messages-area')).includes('private-old'));
+ assert.equal(f.get('session-meta').textContent,'尚未开始');
+});
+
 test('invalid tool arguments show the rejection and allow a later successful chat',async()=>{
  const f=fixture({initialUser:{id:1,email:'qa@example.test'}});await f.context.window.account.ready;
  const replies=[
@@ -67,20 +113,20 @@ test('invalid tool arguments show the rejection and allow a later successful cha
  f.context.fetch=async()=>f.res(replies.shift());
  f.get('input-box').value='invalid';await f.get('chatForm').listeners.submit(event);
  const failure=renderedText(f.get('messages-area'));
- assert(failure.includes('执行失败'));assert(failure.includes('invalid_arguments'));assert(failure.includes('previous_close must be greater than 0'));
+ assert(failure.includes('前期价格为零，无法计算'));assert(!failure.includes('invalid_arguments'));assert(!failure.includes('previous_close must be greater than 0'));
  assert(!failure.includes('执行结果'));assert(!failure.includes('0%'));assert.equal(f.get('send-button').disabled,false);
  f.get('input-box').value='valid';await f.get('chatForm').listeners.submit(event);
- assert(renderedText(f.get('messages-area').children.at(-1)).includes('-10.0000'));
+ assert(renderedText(f.get('messages-area').children.at(-1)).includes('下跌 10%'));
  assert.equal(f.get('chat-status').textContent,'本次研究已完成');assert.equal(replies.length,0);
 });
 
-test('round exhaustion preserves five tool records and stays incomplete without an answer',async()=>{
+test('round exhaustion hides operations and stays incomplete without an answer',async()=>{
  const f=fixture({initialUser:{id:1,email:'qa@example.test'}});await f.context.window.account.ready;
  f.context.fetch=async()=>f.res({run_id:'limited-run',status:'max_rounds_exceeded',rounds:5,answer:null,model_mode:'fake',executions:Array.from({length:5},()=>({tool_name:'calculate_change',arguments:{previous_close:10,current_close:9},status:'success',result:JSON.stringify({change_percent:'-10.0000'}),error:null,duration_ms:0.1,source:null}))});
  f.get('input-box').value='repeat';await f.get('chatForm').listeners.submit(event);
  const last=f.get('messages-area').children.at(-1);
  assert(renderedText(last).includes('尚未形成最终答案'));
- assert.equal(last.children.filter(node=>node.className==='tool-record').length,5);
+ assert.equal(last.children.filter(node=>node.className==='tool-record').length,0);
  assert.equal(f.get('chat-status').textContent,'本次研究未完成');assert(f.get('session-meta').textContent.includes('5 轮 · 未完成'));
  assert.equal(f.get('send-button').disabled,false);assert.equal(f.get('new-chat').disabled,false);
 });

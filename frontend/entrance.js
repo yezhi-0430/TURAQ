@@ -54,13 +54,17 @@
   [446,344,460,326],[348,336,365,318],[336,369,382,322],[368,219,382,195],
   [220,177,244,158],[179,198,215,163],[199,130,216,109],[131,83,157,61]
  ];
+ // Create candles in a document fragment first to minimize reflows
+ const fragment=document.createDocumentFragment();
  candles.forEach(([open,close,low,high],index)=>{
   const outer=svgElement('g',{transform:`translate(${78+index*62},0)`});
   const shape=svgElement('g',{class:`intro-candle ${close<open?'up':'down'}`,style:`--candle-delay:${(index*.065).toFixed(3)}s`});
   shape.append(svgElement('line',{x1:0,x2:0,y1:high,y2:low,class:'intro-wick'}),svgElement('rect',{x:-10,y:Math.min(open,close),width:20,height:Math.max(7,Math.abs(open-close)),rx:1.5,class:'intro-body'}));
-  outer.append(shape);chart.append(outer);
+  outer.append(shape);fragment.append(outer);
  });
+ chart.append(fragment);
  const landing=document.getElementById('landing');
- window.siteEntrance=createEntranceController({landing,workspace:document.getElementById('app'),dialog:document.getElementById('auth-dialog'),reducedMotion:()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches,authenticated:()=>Boolean(window.apiClient?.session.user)});
- landing.classList.add('intro-running');
+ window.siteEntrance=createEntranceController({landing,workspace:document.getElementById('app'),dialog:document.getElementById('auth-dialog'),reducedMotion:()=>window.settingsCenter?.preferences.reduce_motion||window.matchMedia('(prefers-reduced-motion: reduce)').matches,authenticated:()=>Boolean(window.apiClient?.session.user)});
+ // Start animation on next frame to ensure DOM is ready
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{landing.classList.add('intro-running');}));
 })();

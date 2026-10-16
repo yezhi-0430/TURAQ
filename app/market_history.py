@@ -4,6 +4,10 @@ from decimal import Decimal, InvalidOperation
 
 PERIODS = ('day', 'week', 'month')
 ADJUSTMENTS = ('none', 'qfq', 'hfq')
+MAX_BARS = 320
+# The provider occasionally returns a row or two beyond the requested count
+# (e.g. index series append the live session); keep the newest MAX_BARS.
+MAX_SOURCE_ROWS = MAX_BARS + 10
 
 
 def parse_klines(payload: dict, code: str, period: str, now: datetime,
@@ -12,7 +16,7 @@ def parse_klines(payload: dict, code: str, period: str, now: datetime,
         raise ValueError('K线周期或源响应无效')
     key = ('' if adjustment == 'none' else adjustment) + period
     rows = payload['data'][code].get(key)
-    if not isinstance(rows, list) or not rows or len(rows) > 320:
+    if not isinstance(rows, list) or not rows or len(rows) > MAX_SOURCE_ROWS:
         raise ValueError('暂无有效的真实K线数据')
     records = {}
     for row in rows:
@@ -41,6 +45,7 @@ def parse_klines(payload: dict, code: str, period: str, now: datetime,
             Decimal('0.01'))) if previous is not None and previous > 0 and close > 0 else None
         bars.append(bar)
         previous = close
+    bars = bars[-MAX_BARS:]
     return {'code': code, 'period': period, 'adjustment': adjustment,
             'trade_date': bars[-1]['date'], 'fetched_at': now.isoformat(),
             'source': '腾讯财经公开行情', 'bars': bars}

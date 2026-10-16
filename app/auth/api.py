@@ -32,6 +32,7 @@ from app.auth.service import (
 )
 from app.auth.throttle import RateLimited, reserve
 from app.model_limits import client_ip, read_limit
+from app.user_settings.models import GlobalSettings
 
 
 def no_store(response: Response):
@@ -68,6 +69,10 @@ def mail_admission(request, payload, factory, mailer):
 
 
 def session_json(db, row, mailer, settings):
+    overrides = db.get(GlobalSettings, 1)
+    model_values = overrides.values if overrides else {}
+    model_enabled = model_values.get("model_enabled", settings.model_enabled)
+    model_mode = model_values.get("model_provider", settings.model_provider)
     user = db.get(User, row.user_id) if row.user_id else None
     actor = (
         Actor(user.id, user.email, user.is_admin)
@@ -78,7 +83,7 @@ def session_json(db, row, mailer, settings):
         "user": asdict(actor) if actor else None,
         "csrf_token": row.csrf_token,
         "mail_configured": mailer.configured,
-        "model_mode": settings.model_mode,
+        "model_mode": model_mode if model_enabled else "disabled",
     }
 
 
@@ -196,7 +201,8 @@ def login(
         valid = check_password(user.password_hash if user else None, payload.password)
         if not valid or not user or not user.verified or user.disabled:
             raise HTTPException(401, "邮箱或密码错误，或账号尚不可用")
-        # Successful authentication releases its provisional failure-budget reservations.
+        # Successful authentication releases its provisional failure-budget reservations atomically.
+        # Use CASE to prevent count from going negative due to race conditions.
         db.execute(
             update(ThrottleBucket)
             .where(
@@ -206,6 +212,7 @@ def login(
                 ThrottleBucket.count > 0,
             )
             .values(count=ThrottleBucket.count - 1)
+            .execution_options(synchronize_session=False)
         )
         previous = load_session(db, request.cookies.get(settings.auth_cookie_name))
         if previous:

@@ -15,11 +15,12 @@ from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.auth.dependencies import Actor, get_session_factory, get_settings, require_actor
+from app.auth.dependencies import Actor, get_session_factory, require_actor
 from app.auth.models import ModelBudget
 from app.auth.service import aware, digest, utcnow
 from app.auth.throttle import RateLimited, reserve
 from app.config import Settings
+from app.user_settings.runtime import get_runtime_policy, get_runtime_settings
 
 logger = logging.getLogger(__name__)
 
@@ -108,13 +109,18 @@ def bind_database_deadline(db, remaining, *, max_seconds=None):
 
 
 class Admission:
-    def __init__(self, factory, actor_id, settings, token, expires_at, *, deadline=None):
+    def __init__(self, factory, actor_id, settings, token, expires_at, *, deadline=None,
+                 purpose="default"):
         self.factory = factory
         self.actor_id = actor_id
         self.settings = settings
         self.token = token
         self.expires_at = expires_at
-        self.deadline = (time.monotonic() + settings.model_total_timeout_seconds
+        self.http_timeout = (settings.risk_document_http_timeout_seconds
+                             if purpose == "risk_document" else settings.model_http_timeout_seconds)
+        total_timeout = (settings.risk_document_total_timeout_seconds
+                         if purpose == "risk_document" else settings.model_total_timeout_seconds)
+        self.deadline = (time.monotonic() + total_timeout
                          if deadline is None else deadline)
         self.attempt_deadline = self.deadline
 
@@ -158,7 +164,7 @@ class Admission:
                 self.attempt_deadline = min(self.deadline, sampled_at + lease_remaining)
                 self.remaining()
             # Recompute after committing the reservation, before starting any network work.
-            timeout = min(self.settings.model_http_timeout_seconds, self.remaining(),
+            timeout = min(self.http_timeout, self.remaining(),
                           self.attempt_deadline - time.monotonic())
             if timeout <= 0:
                 raise ModelDeadlineExceeded("研究处理超时")
@@ -179,12 +185,16 @@ class Admission:
             logger.error("模型并发租约释放失败")
 
 
-def admit(factory, actor_id, settings, *, now=None):
-    deadline = time.monotonic() + settings.model_total_timeout_seconds
+def admit(factory, actor_id, settings, *, now=None, charge_request=True, purpose="default"):
+    timeout = (settings.risk_document_total_timeout_seconds
+               if purpose == "risk_document" else settings.model_total_timeout_seconds)
+    deadline = time.monotonic() + timeout
     if not settings.model_enabled:
         raise LimitsUnavailable("研究服务已暂停")
     token = str(uuid4())
-    admission = Admission(factory, actor_id, settings, token, None, deadline=deadline)
+    admission = Admission(
+        factory, actor_id, settings, token, None, deadline=deadline, purpose=purpose
+    )
     try:
         with factory() as db, db.begin():
             admission.bound_database_work(db, max_seconds=3)
@@ -198,11 +208,12 @@ def admit(factory, actor_id, settings, *, now=None):
             if user.lease_token and aware(user.lease_expires_at) > clock:
                 raise RateLimited(math.ceil((aware(user.lease_expires_at) - clock).total_seconds()))
             stamp = clock.timestamp()
-            events = check_window(user.events, settings.model_user_daily_limit, 86400, stamp)
-            check_window(events, settings.model_user_minute_limit, 60, stamp)
-            # Reject an already-exhausted site budget before client construction too.
-            check_window(site.events, settings.model_site_daily_limit, 86400, stamp)
-            user.events = events + [stamp]
+            if charge_request:
+                events = check_window(user.events, settings.model_user_daily_limit, 86400, stamp)
+                check_window(events, settings.model_user_minute_limit, 60, stamp)
+                # Reject an already-exhausted site budget before client construction too.
+                check_window(site.events, settings.model_site_daily_limit, 86400, stamp)
+                user.events = events + [stamp]
             user.lease_token = token
             expiry = clock + timedelta(seconds=remaining + 5)
             user.lease_expires_at = expiry
@@ -218,16 +229,20 @@ def public_error(exc):
         return HTTPException(429, "请求额度已用尽，请稍后重试",
                              headers={"Retry-After": str(exc.retry_after)})
     if isinstance(exc, ModelDeadlineExceeded):
+        if str(exc) == "模型请求超时":
+            return HTTPException(504, "模型生成超时，请稍后重试")
         return HTTPException(504, "研究处理超时，请稍后重试")
     return HTTPException(503, "研究服务暂不可用")
 
 
 def model_admission(
+    request: Request,
     actor: Actor = Depends(require_actor), factory=Depends(get_session_factory),
-    settings: Settings = Depends(get_settings),
+    settings: Settings = Depends(get_runtime_settings),
 ) -> Iterator[Admission]:
     try:
-        admission = admit(factory, actor.id, settings)
+        admission = admit(factory, actor.id, settings,
+                          purpose=getattr(request.state, "model_purpose", "default"))
     except (RateLimited, LimitsUnavailable, ModelDeadlineExceeded) as exc:
         raise public_error(exc) from exc
     try:
@@ -236,10 +251,10 @@ def model_admission(
         admission.release()
 
 
-def bind_model(client, admission):
+def bind_model(client, admission, *, purpose="default"):
     # Custom/fake clients are also deadline-checked, but never billed as HTTP attempts.
     if hasattr(client, "with_admission"):
-        return client.with_admission(admission)
+        return client.with_admission(admission, purpose=purpose)
 
     class BoundedClient:
         def chat(self, messages):
@@ -306,11 +321,11 @@ def client_ip(request):
 
 
 def market_admission(request: Request, actor: Actor = Depends(require_actor),
-                     factory=Depends(get_session_factory), settings=Depends(get_settings)):
+                     factory=Depends(get_session_factory), settings=Depends(get_runtime_policy)):
     read_limit(factory, f"market-user:{actor.id}", settings.market_user_minute_limit)
     read_limit(factory, "market-ip:" + client_ip(request), settings.market_ip_minute_limit)
 
 
 def catalog_admission(request: Request, factory=Depends(get_session_factory),
-                      settings=Depends(get_settings)):
+                      settings=Depends(get_runtime_policy)):
     read_limit(factory, "catalog-ip:" + client_ip(request), settings.catalog_ip_minute_limit)

@@ -23,7 +23,8 @@
   $('watch-members').replaceChildren();$('watch-count').textContent=memberLoadFailed?'—':members.length+' 只股票';
   if(memberLoadFailed){$('watch-members').append(node('div','watch-empty','加载失败，点击“刷新列表”重试。'));return;}
   if(!members.length){$('watch-members').append(node('div','watch-empty',selected===null?'创建一个分组，开始整理你的自选股。':'当前分组暂无股票，搜索并添加第一只。'));return;}
-  for(const stock of members){const row=node('div','watch-stock'),title=node('button','watch-stock-title',stock.name);title.type='button';title.append(node('small','',stock.symbol+' · 点击开始研究'));title.addEventListener('click',()=>window.researchStock(stock));
+  const sorted=window.SettingsRules?window.SettingsRules.sortStocks(members,window.settingsCenter?.preferences.watchlist_sort):members;
+  for(const stock of sorted){const row=node('div','watch-stock'),title=node('button','watch-stock-title',stock.name);title.type='button';title.append(node('small','',stock.symbol+' · 点击开始研究'));title.addEventListener('click',()=>window.researchStock(stock));
    const actions=node('div','watch-stock-actions'),remove=node('button','btn','移除');remove.type='button';remove.disabled=saving;remove.addEventListener('click',()=>removeStock(stock));actions.append(remove);row.append(title,actions);$('watch-members').append(row);}
  }
  async function loadMembers(){
@@ -68,6 +69,6 @@
  $('watch-rename').addEventListener('click',()=>openDialog('rename'));$('watch-delete').addEventListener('click',()=>openDialog('delete'));$('watch-dialog-cancel').addEventListener('click',()=>$('watch-dialog').close());
  $('watch-dialog-form').addEventListener('submit',async e=>{e.preventDefault();if(!dialogAction||saving)return;const {mode,id}=dialogAction,name=$('watch-rename-value').value.trim();if(mode==='rename'&&!name){$('watch-rename-value').focus();return;}$('watch-dialog').close();await mutate(async()=>{await request('/watchlists/'+id,mode==='rename'?'PATCH':'DELETE',mode==='rename'?{name}:undefined);searchVersion++;$('watch-results').replaceChildren();await loadGroups(mode==='rename'?id:null);},mode==='rename'?'分组名称已更新。':'分组已删除。');});
  $('watch-reload').addEventListener('click',()=>{if(!saving){status('');searchVersion++;$('watch-results').replaceChildren();loadGroups();}});
- window.watchlistManager={reset(){accountRevision++;visible=false;loadVersion++;memberVersion++;searchVersion++;groups=[];members=[];selected=null;saving=false;dialogAction=null;$('watch-dialog').close();$('watch-group-name').value='';$('watch-query').value='';$('watch-results').replaceChildren();$('watch-search-note').textContent='';status('');renderGroups();renderMembers();},reload(){if(visible)loadGroups();},setVisible(value){visible=value;if(visible&&!saving){status('');loadGroups();}else if(!visible){searchVersion++;loadVersion++;memberVersion++;$('watch-dialog').close();}}};
+ window.watchlistManager={applyPreferences(){renderMembers();},reset(){accountRevision++;visible=false;loadVersion++;memberVersion++;searchVersion++;groups=[];members=[];selected=null;saving=false;dialogAction=null;$('watch-dialog').close();$('watch-group-name').value='';$('watch-query').value='';$('watch-results').replaceChildren();$('watch-search-note').textContent='';status('');renderGroups();renderMembers();},reload(){if(visible)loadGroups();},setVisible(value){visible=value;if(visible&&!saving){status('');loadGroups();}else if(!visible){searchVersion++;loadVersion++;memberVersion++;$('watch-dialog').close();}}};
  renderGroups();renderMembers();
 })();

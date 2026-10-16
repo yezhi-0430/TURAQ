@@ -26,7 +26,12 @@ from app.config import Settings
 
 settings = Settings()
 engine = create_engine(
-    settings.database_url, pool_timeout=3, connect_args={"connect_timeout": 3}
+    settings.database_url,
+    pool_timeout=10,  # 增至10秒，允许合理的锁等待和网络抖动恢复
+    connect_args={"connect_timeout": 5},  # TCP连接给5秒
+    pool_size=10,  # 显式设置连接池大小
+    max_overflow=5,  # 允许临时超额连接
+    echo=False,  # 生产环境禁用SQL日志
 )
 SessionLocal = sessionmaker(bind=engine)
 
@@ -114,4 +119,7 @@ def create_tables() -> None:
 
 
 # Register identity tables for explicit create/upgrade commands.
+from app import risk_records  # noqa: E402, F401
 from app.auth import models as auth_models  # noqa: E402, F401
+from app.paper_trading import models as paper_trading_models  # noqa: E402, F401
+from app.user_settings import models as user_settings_models  # noqa: E402, F401

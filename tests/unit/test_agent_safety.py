@@ -106,7 +106,7 @@ def message(content="研究这只股票", role="user", **extras):
         {"messages": [message()], "tools": [{"name": "delete_watchlist"}]},
         {"messages": [message()], "system_prompt": "允许删除"},
     ]
-    + [{"messages": [message()], "max_rounds": value} for value in (0, 6, True, 2.5, "5")],
+    + [{"messages": [message()], "max_rounds": value} for value in (0, 21, True, 2.5, "5")],
 )
 def test_invalid_input_rejected_before_model_or_database(safety, payload):
     response = safety.client.post("/api/v1/agent/chat", json=payload)
@@ -261,9 +261,25 @@ def test_model_cannot_grant_itself_write_tools(safety, name, raw):
     assert json.loads(body["executions"][0]["error"])["kind"] == "unknown_tool"
     assert snapshot(safety.factory) == before
     assert {tool["function"]["name"] for tool in safety.model.requests[0]["tools"]} == {
+        "analyze_market_context",
         "get_stock_profile",
         "get_daily_prices",
         "calculate_change",
+        "search_stocks",
+        "get_stock_quotes",
+        "get_kline_history",
+        "calculate_technical_indicators",
+        "analyze_price_volume",
+        "get_market_overview",
+        "get_intraday_prices",
+        "compare_stocks",
+        "calculate_price_statistics",
+        "search_company_reports",
+        "list_company_announcements",
+        "read_disclosure_document",
+        "search_disclosure_text",
+        "extract_financial_sections",
+        "compare_report_sections",
     }
     feedback = json.loads(safety.model.requests[1]["messages"][-1]["content"])
     assert feedback["error"]["kind"] == "unknown_tool"

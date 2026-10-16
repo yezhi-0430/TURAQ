@@ -33,6 +33,7 @@
   el('detail-status').textContent=loading?'正在获取真实行情…':quote?.stale||data?.stale?'连接异常 · 数据已标记过期':old?'最近交易日行情 · 当前无当日数据':'以源行情时间为准';
   const notices=[];if(quote?.stale)notices.push('报价更新失败，保留旧报价。');if(data?.error)notices.push(data.error);
   if(period!=='minute')notices.push(labels[period]+' · '+adjustments[adjustment]+'价格 · 涨跌幅按上一根同口径K线收盘价计算。'+(['week','month'].includes(period)?'最后一根可能为尚未结束的本周/本月。':''));
+  if(period!=='minute')notices.push('均线：白 MA5 · 粉 MA10 · 黄 MA20（同口径收盘价）；量线：白 MA5 · 粉 MA10。');
   if(data?.latest_bar_source==='daily_aggregation')notices.push('最新月K由同口径真实日线汇总。');
   if(period==='minute')notices.push('白线：价格 · 金线：成交均价 · 首个量柱包含开盘累计量；缺失分钟的量合并在下一条源记录。');
   if(old)notices.push('当前图表交易日 '+day+'，休市期间保留最近交易日记录。');
@@ -42,7 +43,7 @@
   const n=(data?.bars||[]).length;el('detail-range-label').textContent=period==='minute'?'':`共 ${n} 根 · 当前最多 ${state.count} 根`;
   window.MarketChart.render(el('detail-chart'),{period,data,state,onInspect:text=>{el('detail-inspect').textContent=text;}});
  }
- function schedule(){clearTimeout(timer);if(current()&&el('detail-auto').checked)timer=setTimeout(()=>refresh(),10000);}
+ function schedule(){clearTimeout(timer);if(current()&&el('detail-auto').checked)timer=setTimeout(()=>refresh(),(window.settingsCenter?.preferences.market_refresh_seconds||10)*1000);}
  async function request(path,signal){return window.apiClient.request(API+path,{signal});}
  async function refresh(force=false){
   if(!current())return;
@@ -74,8 +75,10 @@
  function open(symbol,name){
   stop();if(!dialog.open){returnFocus=document.activeElement;previousOverflow=document.body.style.overflow;dialog.showModal();document.body.style.overflow='hidden';}
   dialog.scrollTop=0;
-  views.clear();if(/^(sh000|sh950|sz399|bj899)/.test(symbol))adjustment='none';
-  code=symbol;period='minute';quote=null;data=null;chartFetched=0;state={count:80,start:null,time:null,hover:false};
+  const prefs=window.settingsCenter?.preferences;
+  views.clear();adjustment=prefs?.chart_adjustment||'none';if(/^(sh000|sh950|sz399|bj899)/.test(symbol))adjustment='none';
+  el('detail-auto').checked=prefs?.market_auto_refresh??true;
+  code=symbol;period=prefs?.chart_period||'minute';quote=null;data=null;chartFetched=0;state={count:80,start:null,time:null,hover:false};
   el('detail-name').textContent=name||symbol;el('detail-symbol').textContent=symbol.slice(2)+'.'+symbol.slice(0,2).toUpperCase();
   paint();refresh(true);
  }

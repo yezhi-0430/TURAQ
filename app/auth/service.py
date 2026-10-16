@@ -33,6 +33,7 @@ def password_hash(password: str) -> str:
 
 
 def check_password(stored: str | None, password: str) -> bool:
+    """Unknown accounts still pay for one Argon2 verify, so timing does not reveal them."""
     try:
         return hasher.verify(stored or _dummy_hash, password) and stored is not None
     except VerificationError:
@@ -69,6 +70,7 @@ def issue_token(db, user_id: int, purpose: str):
 def register(db, email, password, invite_code):
     now = utcnow()
     user = db.scalar(select(User).where(User.email == email).with_for_update())
+    # None, not an error: the caller sends the same generic response for every outcome.
     if user and (user.verified or aware(user.pending_expires_at) > now):
         return None
     invitation = db.scalar(
@@ -178,5 +180,11 @@ def reset_password(db, raw, password):
     if claimed.rowcount != 1:
         raise ValueError("重置链接无效或已过期")
     user.password_hash = password_hash(password)
-    db.execute(update(LoginSession).where(LoginSession.user_id == user.id).values(revoked=True))
+    # A reset revokes every existing session, including any held by an attacker.
+    revoked = db.execute(
+        update(LoginSession)
+        .where(LoginSession.user_id == user.id, LoginSession.revoked.is_(False))
+        .values(revoked=True)
+    )
     db.commit()
+    return revoked.rowcount

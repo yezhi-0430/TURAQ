@@ -154,3 +154,16 @@ def test_generation_reports_invalid_model_reply() -> None:
         match="模型输出格式无效",
     ):
         generate_risk_summary(client, "请根据提供的数据生成风险摘要")
+
+
+def test_risk_generation_budgets_output_and_surfaces_truncation():
+    from app.llm_client import ModelOutputTruncatedError
+
+    class Truncated:
+        def chat(self, messages):
+            assert "每个数组最多3条" in messages[0]["content"]
+            assert "总计不超过450个汉字" in messages[0]["content"]
+            raise ModelOutputTruncatedError("模型输出达到长度上限，结果未完整生成")
+
+    with pytest.raises(RiskSummaryParseError, match="输出达到长度上限"):
+        generate_risk_summary(Truncated(), "资料" * 9000)

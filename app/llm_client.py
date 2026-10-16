@@ -31,6 +31,10 @@ class ModelResponseError(Exception):
     pass
 
 
+class ModelOutputTruncatedError(ModelResponseError):
+    pass
+
+
 class ModelConfigurationError(Exception):
     pass
 
@@ -72,10 +76,17 @@ class QwenModelClient:
         self.model_name = model_name
         self.chat_url = f"{base_url.rstrip('/')}/chat/completions"
         self.admission = None
+        self.output_tokens = None
 
-    def with_admission(self, admission):
+    def with_admission(self, admission, *, purpose="default"):
         client = copy(self)
         client.admission = admission
+        client.output_tokens = {
+            "agent": admission.settings.agent_max_output_tokens,
+            "risk": admission.settings.risk_max_output_tokens,
+            "risk_document": admission.settings.risk_document_output_tokens,
+            "default": admission.settings.model_max_output_tokens,
+        }[purpose]
         return client
 
     def chat(self, messages: Sequence[Mapping[str, object]]) -> str:
@@ -101,8 +112,7 @@ class QwenModelClient:
         self, messages: Sequence[Mapping[str, object]], tools: list[dict[str, object]] | None = None
     ) -> dict[str, object]:
         payload: dict[str, object] = {"model": self.model_name, "messages": messages,
-                                    "max_tokens": self.admission.settings.model_max_output_tokens
-                                    if self.admission else 1024}
+                                    "max_tokens": self.output_tokens or 1024}
         if tools is not None:
             payload.update({"tools": tools, "tool_choice": "auto"})
         for attempt in range(2):
@@ -135,11 +145,14 @@ class QwenModelClient:
         if response.is_error:
             raise ModelAPIError(response.status_code)
         try:
-            message = response.json()["choices"][0]["message"]
+            choice = response.json()["choices"][0]
+            message = choice["message"]
         except (ValueError, KeyError, IndexError, TypeError) as exc:
             raise ModelResponseError("模型响应格式无效") from exc
         if not isinstance(message, dict):
             raise ModelResponseError("模型响应格式无效")
+        if choice.get("finish_reason") == "length":
+            raise ModelOutputTruncatedError("模型输出达到长度上限，结果未完整生成")
         return message
 
 

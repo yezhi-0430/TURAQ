@@ -17,15 +17,23 @@ class Settings(BaseSettings):
     database_user: str
     database_password: SecretStr
     dashscope_api_key: SecretStr | None = None
+    settings_encryption_key: SecretStr | None = None
+    paper_max_accounts: int = Field(default=10, ge=1, le=100)
     model_provider: Literal["fake", "qwen"] = "fake"
-    model_name: str = "qwen-plus"
+    model_name: str = Field(default="qwen-plus", min_length=1, max_length=120)
     model_base_url: str = "https://dashscope.aliyuncs.com/compatible-mode/v1"
     model_enabled: bool = True
     model_user_daily_limit: int = Field(default=20, ge=1, le=10000)
     model_user_minute_limit: int = Field(default=2, ge=1, le=1000)
     model_site_daily_limit: int = Field(default=200, ge=1, le=100000)
     model_max_output_tokens: int = Field(default=1024, ge=1, le=8192)
-    model_http_timeout_seconds: float = Field(default=10, gt=0, le=30)
+    agent_max_output_tokens: int = Field(default=4096, ge=1, le=8192)
+    risk_max_output_tokens: int = Field(default=1024, ge=1, le=8192)
+    risk_document_output_tokens: int = Field(default=4096, ge=1, le=8192)
+    risk_document_http_timeout_seconds: float = Field(default=120, gt=0, le=300)
+    risk_document_total_timeout_seconds: float = Field(default=180, gt=0, le=600)
+    risk_document_chunk_chars: int = Field(default=120000, ge=20000, le=250000)
+    model_http_timeout_seconds: float = Field(default=30, gt=0, le=30)
     model_total_timeout_seconds: float = Field(default=60, gt=0, le=120)
     bootstrap_ip_minute_limit: int = Field(default=20, ge=1, le=1000)
     market_user_minute_limit: int = Field(default=120, ge=1, le=10000)
