@@ -196,6 +196,12 @@ def request_login_link(
     mailer=Depends(get_mailer),
 ):
     """用邮箱请求验证码登录链接"""
+    # 验证码登录独立限流：防止邮箱轰炸
+    # 单个邮箱 1 小时最多 3 次，单个 IP 1 小时最多 10 次
+    ip = request.client.host if request.client else "unknown"
+    limit(factory, "magic-link-email:" + digest(payload.email), 3, 3600)
+    limit(factory, "magic-link-ip:" + digest(ip), 10, 3600)
+
     mail_admission(request, payload, factory, mailer)
     background_tasks.add_task(process_mail_request, "login-link", payload, factory, mailer)
     return ACCEPTED
