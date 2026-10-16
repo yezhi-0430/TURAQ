@@ -477,7 +477,21 @@ AI 研究助手是您的智能研究伙伴，能够帮您快速分析股票、�
       }
 
       btn.addEventListener('click', () => {
-        showAnnouncement(tutorialType);
+        // 点击时重新检测当前页面标题
+        const currentTitle = document.querySelector('#page-title')?.textContent || heading.querySelector('h1')?.textContent || '';
+        let currentType = 'research';
+
+        if (currentTitle.includes('市场') || currentTitle.includes('行情')) {
+          currentType = 'market';
+        } else if (currentTitle.includes('风险')) {
+          currentType = 'risk';
+        } else if (currentTitle.includes('模拟') || currentTitle.includes('交易')) {
+          currentType = 'paper';
+        } else if (currentTitle.includes('自选')) {
+          currentType = 'watchlist';
+        }
+
+        showAnnouncement(currentType);
       });
 
       // 插入到 page-heading 的末尾（和其他按钮并列）
