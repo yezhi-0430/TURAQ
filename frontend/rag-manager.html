@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG 知识库管理</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0a0c0b;
+            --panel: #141715;
+            --raised: #1e2420;
+            --line: #2a2d24;
+            --text: #e8ebe6;
+            --muted: #879080;
+            --gold: #d4af37;
+            --green: #5dba6a;
+            --red: #e74c3c;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: var(--gold);
+        }
+
+        .subtitle {
+            color: var(--muted);
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 20px;
+            border-bottom: 1px solid var(--line);
+            margin-bottom: 30px;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 14px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab:hover { color: var(--text); }
+        .tab.active {
+            color: var(--gold);
+            border-bottom-color: var(--gold);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: var(--gold);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        input[type="text"],
+        input[type="file"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--raised);
+            border: 1px solid var(--line);
+            border-radius: 5px;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: var(--gold);
+            color: var(--bg);
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #e5c254;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--raised);
+            color: var(--text);
+            border: 1px solid var(--line);
+        }
+
+        .btn-secondary:hover {
+            background: var(--line);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--raised);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            flex: 1;
+        }
+
+        .results {
+            margin-top: 20px;
+        }
+
+        .result-item {
+            background: var(--raised);
+            border: 1px solid var(--line);
+            border-radius: 5px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .result-text {
+            color: var(--text);
+            margin-bottom: 8px;
+            line-height: 1.8;
+        }
+
+        .result-meta {
+            font-size: 12px;
+            color: var(--muted);
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .similarity {
+            color: var(--gold);
+            font-weight: 500;
+        }
+
+        .message {
+            padding: 12px 16px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .message.success {
+            background: rgba(93, 186, 106, 0.1);
+            border: 1px solid var(--green);
+            color: var(--green);
+        }
+
+        .message.error {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid var(--red);
+            color: var(--red);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+        }
+
+        .spinner {
+            border: 3px solid var(--line);
+            border-top: 3px solid var(--gold);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .file-upload {
+            border: 2px dashed var(--line);
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .file-upload:hover {
+            border-color: var(--gold);
+            background: var(--raised);
+        }
+
+        .file-upload.dragover {
+            border-color: var(--gold);
+            background: var(--raised);
+        }
+
+        .file-info {
+            margin-top: 16px;
+            padding: 12px;
+            background: var(--raised);
+            border-radius: 5px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RAG 知识库管理</h1>
+        <p class="subtitle">管理文档、搜索知识、查看统计</p>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="overview">概览</button>
+            <button class="tab" data-tab="upload">上传文档</button>
+            <button class="tab" data-tab="search">搜索测试</button>
+            <button class="tab" data-tab="add-text">添加文本</button>
+        </div>
+
+        <!-- 概览 -->
+        <div id="overview" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-docs">-</div>
+                    <div class="stat-label">文档总数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-chunks">-</div>
+                    <div class="stat-label">文档块数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-categories">-</div>
+                    <div class="stat-label">分类数量</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>分类统计</h3>
+                <div id="categories-list">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 上传文档 -->
+        <div id="upload" class="tab-content">
+            <div class="card">
+                <h3>上传文档</h3>
+                <div id="upload-message"></div>
+
+                <div class="file-upload" id="file-upload-area">
+                    <p style="font-size: 48px; margin-bottom: 16px;">📄</p>
+                    <p style="color: var(--text); margin-bottom: 8px;">点击或拖拽文件到这里</p>
+                    <p style="color: var(--muted); font-size: 13px;">支持 PDF, TXT, DOCX, MD 格式</p>
+                    <input type="file" id="file-input" style="display: none;" accept=".pdf,.txt,.docx,.doc,.md">
+                </div>
+
+                <div id="file-info" class="file-info" style="display: none;">
+                    <div>文件名: <span id="filename"></span></div>
+                    <div>文件大小: <span id="filesize"></span></div>
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>分类（可选）</label>
+                    <select id="upload-category">
+                        <option value="">-- 请选择 --</option>
+                        <option value="stock_report">股票研报</option>
+                        <option value="financial_report">财务报告</option>
+                        <option value="announcement">公司公告</option>
+                        <option value="industry_research">行业研究</option>
+                        <option value="investment_book">投资书籍</option>
+                        <option value="tutorial">教程文档</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>来源（可选）</label>
+                    <input type="text" id="upload-source" placeholder="例如：东方财富、券商研报等">
+                </div>
+
+                <div class="form-group">
+                    <label>股票代码（可选）</label>
+                    <input type="text" id="upload-stock" placeholder="例如：600519">
+                </div>
+
+                <button class="btn" id="upload-btn" disabled>上传到知识库</button>
+            </div>
+        </div>
+
+        <!-- 搜索测试 -->
+        <div id="search" class="tab-content">
+            <div class="card">
+                <h3>语义搜索</h3>
+                <div id="search-message"></div>
+
+                <div class="search-box">
+                    <input type="text" id="search-query" placeholder="输入问题，例如：茅台的营收是多少？">
+                    <button class="btn" id="search-btn">搜索</button>
+                </div>
+
+                <div class="form-group">
+                    <label>返回结果数量</label>
+                    <select id="search-limit">
+                        <option value="3">3 条</option>
+                        <option value="5">5 条</option>
+                        <option value="10">10 条</option>
+                    </select>
+                </div>
+
+                <div id="search-results" class="results"></div>
+            </div>
+        </div>
+
+        <!-- 添加文本 -->
+        <div id="add-text" class="tab-content">
+            <div class="card">
+                <h3>直接添加文本</h3>
+                <div id="text-message"></div>
+
+                <div class="form-group">
+                    <label>文本内容</label>
+                    <textarea id="text-content" placeholder="粘贴或输入文本内容..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>分类（可选）</label>
+                    <select id="text-category">
+                        <option value="">-- 请选择 --</option>
+                        <option value="stock_report">股票研报</option>
+                        <option value="financial_report">财务报告</option>
+                        <option value="announcement">公司公告</option>
+                        <option value="industry_research">行业研究</option>
+                        <option value="investment_book">投资书籍</option>
+                        <option value="tutorial">教程文档</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>股票代码（可选）</label>
+                    <input type="text" id="text-stock" placeholder="例如：600519">
+                </div>
+
+                <button class="btn" id="add-text-btn">添加到知识库</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./rag-manager.js"></script>
+</body>
+</html>

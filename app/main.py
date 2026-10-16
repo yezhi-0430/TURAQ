@@ -20,6 +20,7 @@ from app.json_requests import DecimalJSONRoute
 from app.market_api import router as market_router
 from app.model_limits import market_admission
 from app.paper_trading.api import router as paper_trading_router
+from app.rag.api import router as rag_router
 from app.risk_api import router as risk_router
 from app.risk_tasks import router as risk_tasks_router
 from app.risk_workbench import router as risk_workbench_router
@@ -79,10 +80,28 @@ async def lifespan(app: FastAPI):
     # 启动时
     logger.info("应用启动...")
     start_scheduler()
+
+    # 启动 RAG 爬虫调度器
+    try:
+        from app.rag.crawlers import start_crawler_scheduler
+        start_crawler_scheduler()
+        logger.info("RAG 爬虫调度器已启动")
+    except Exception as e:
+        logger.warning(f"RAG 爬虫调度器启动失败: {str(e)}")
+
     yield
+
     # 关闭时
     logger.info("应用关闭...")
     shutdown_scheduler()
+
+    # 停止 RAG 爬虫调度器
+    try:
+        from app.rag.crawlers import stop_crawler_scheduler
+        stop_crawler_scheduler()
+        logger.info("RAG 爬虫调度器已停止")
+    except Exception as e:
+        logger.warning(f"RAG 爬虫调度器停止失败: {str(e)}")
 
 
 def create_app() -> FastAPI:
@@ -103,6 +122,7 @@ def create_app() -> FastAPI:
     application.include_router(market_router)
     application.include_router(stock_list_router)
     application.include_router(paper_trading_router)
+    application.include_router(rag_router)
     price_router = APIRouter(route_class=DecimalJSONRoute)
 
     @application.exception_handler(RequestValidationError)
