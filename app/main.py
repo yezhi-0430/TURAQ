@@ -13,6 +13,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app.admin.api import router as admin_router
 from app.agent_api import router as agent_router
+from app.analysis.api import router as analysis_router
 from app.auth.api import router as auth_router
 from app.auth.dependencies import Actor, require_actor, require_admin
 from app.database import DailyPrice, SessionLocal, Stock, Watchlist, WatchlistItem
@@ -110,6 +111,7 @@ def create_app() -> FastAPI:
     application.include_router(stock_list_router)
     application.include_router(paper_trading_router)
     application.include_router(rag_router)
+    application.include_router(analysis_router)
     price_router = APIRouter(route_class=DecimalJSONRoute)
 
     @application.exception_handler(RequestValidationError)
