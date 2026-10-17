@@ -333,10 +333,12 @@ function applyPage(page){
  const dashboard = page === 'dashboard';
  const watchlist = page === 'watchlist';
  const risk = page === 'risk';
+ const analysis = page === 'analysis';
  const trading = page === 'trading';
  const settingsPage = page === 'settings';
  $('settings-page').hidden = !settingsPage;
  window.settingsCenter?.setVisible(settingsPage);
+ $('analysis-page').hidden = !analysis;
  $('trading-page').hidden = !trading;
  window.paperTrading?.setVisible(trading);
  $('risk-page').hidden = !risk;
@@ -346,10 +348,10 @@ function applyPage(page){
  $('dashboard-page').hidden = !dashboard;
  window.marketDashboard?.setVisible?.(dashboard);
  document.querySelectorAll('[data-page]').forEach(button => { const active = button.dataset.page === page; button.classList.toggle('active', active); if(active) button.setAttribute('aria-current','page'); else button.removeAttribute('aria-current'); });
- $('agent-page').hidden = !agent; $('unavailable').hidden = agent || dashboard || watchlist || risk || trading || admin || settingsPage; $('new-chat').hidden = !agent;
+ $('agent-page').hidden = !agent; $('unavailable').hidden = agent || dashboard || watchlist || risk || analysis || trading || admin || settingsPage; $('new-chat').hidden = !agent;
  $('page-title').textContent = agent ? 'AI 研究助手' : pages[page][0];
  $('page-description').textContent = agent ? '从一个问题开始，让研究过程清晰可见。' : dashboard ? '连接真实市场，让每一次观察都有数据依据。' : watchlist ? '整理关注的公司，把观察转化为持续研究。' : pages[page][1];
- if(!agent&&!admin&&!trading&&!settingsPage){ $('unavailable-title').textContent = pages[page][0] + ' · 筹备中'; $('unavailable-description').textContent = pages[page][1]; }
+ if(!agent&&!admin&&!analysis&&!trading&&!settingsPage){ $('unavailable-title').textContent = pages[page][0] + ' · 筹备中'; $('unavailable-description').textContent = pages[page][1]; }
 }
 document.querySelectorAll('[data-enter]').forEach(b => b.addEventListener('click',async()=>{await window.account.ready;window.account.show('login');}));
 document.querySelectorAll('[data-home]').forEach(b => b.addEventListener('click',()=>{ window.siteEntrance?.cancelTransition();$('app').hidden=true; $('landing').hidden=false; window.marketDashboard?.setVisible(false); window.watchlistManager?.setVisible(false);window.riskWorkbench?.setVisible(false); window.paperTrading?.setVisible(false); window.adminPanel?.setVisible(null); window.scrollTo({top:0,behavior:'instant'}); }));
