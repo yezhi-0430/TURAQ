@@ -81,27 +81,14 @@ async def lifespan(app: FastAPI):
     logger.info("应用启动...")
     start_scheduler()
 
-    # 启动 RAG 爬虫调度器
-    try:
-        from app.rag.crawlers import start_crawler_scheduler
-        start_crawler_scheduler()
-        logger.info("RAG 爬虫调度器已启动")
-    except Exception as e:
-        logger.warning(f"RAG 爬虫调度器启动失败: {str(e)}")
+    # RAG 爬虫调度器已移除（聚焦核心功能）
+    logger.info("RAG 系统就绪")
 
     yield
 
     # 关闭时
     logger.info("应用关闭...")
     shutdown_scheduler()
-
-    # 停止 RAG 爬虫调度器
-    try:
-        from app.rag.crawlers import stop_crawler_scheduler
-        stop_crawler_scheduler()
-        logger.info("RAG 爬虫调度器已停止")
-    except Exception as e:
-        logger.warning(f"RAG 爬虫调度器停止失败: {str(e)}")
 
 
 def create_app() -> FastAPI:
