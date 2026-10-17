@@ -6,8 +6,11 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
+from app.auth.dependencies import Actor, require_actor
 from app.llm_client import FakeModelClient
+from app.model_limits import model_admission
 from app.risk_api import get_model_client, router
+from tests.unit.admission import offline_admission
 
 VALID_SUMMARY = {
     "facts": ["用户提供的今日收盘价为9元"],
@@ -64,6 +67,8 @@ CASES = [
 @pytest.mark.parametrize(("reply", "expected"), CASES)
 def test_model_output_is_handled_and_next_request_succeeds(reply, expected) -> None:
     application = FastAPI()
+    application.dependency_overrides[model_admission] = offline_admission
+    application.dependency_overrides[require_actor] = lambda: Actor(1, "unit@example.com", True)
     application.include_router(router)
     model = FakeModelClient(reply=reply)
     application.dependency_overrides[get_model_client] = lambda: model

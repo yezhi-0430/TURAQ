@@ -5,17 +5,33 @@ from contextlib import contextmanager
 import pytest
 
 
-def test_tool_definitions_describe_only_three_read_tools(stock_session) -> None:
+def test_tool_definitions_describe_only_nineteen_read_tools(stock_session) -> None:
     from app.tools import registry
 
     definitions = registry.tool_definitions()
 
     assert {item["function"]["name"] for item in definitions} == {
+        "analyze_market_context",
         "get_stock_profile",
         "get_daily_prices",
         "calculate_change",
+        "search_stocks",
+        "get_stock_quotes",
+        "get_kline_history",
+        "calculate_technical_indicators",
+        "analyze_price_volume",
+        "get_market_overview",
+        "get_intraday_prices",
+        "compare_stocks",
+        "calculate_price_statistics",
+        "search_company_reports",
+        "list_company_announcements",
+        "read_disclosure_document",
+        "search_disclosure_text",
+        "extract_financial_sections",
+        "compare_report_sections",
     }
-    assert len(definitions) == 3
+    assert len(definitions) == 19
     for item in definitions:
         assert item["type"] == "function"
         assert item["function"]["description"]

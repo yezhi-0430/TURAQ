@@ -1,0 +1,146 @@
+/* Stock search styles */
+.stock-search-container {
+  margin-bottom: 20px;
+}
+
+.stock-search-wrapper {
+  position: relative;
+  max-width: 600px;
+}
+
+.stock-search-input {
+  width: 100%;
+  padding: 12px 48px 12px 16px;
+  background: var(--raised);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.stock-search-input:focus {
+  outline: none;
+  border-color: var(--gold);
+  background: var(--panel);
+}
+
+.stock-search-input::placeholder {
+  color: var(--muted);
+}
+
+.stock-search-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 8px;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.stock-search-btn:hover {
+  color: var(--gold);
+}
+
+.stock-search-btn .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.stock-search-results {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.stock-search-item {
+  width: 100%;
+  background: transparent;
+  color: var(--text);
+  border: 0;
+  text-align: left;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stock-search-item:last-child {
+  border-bottom: none;
+}
+
+.stock-search-item:hover {
+  background: var(--raised);
+}
+
+.stock-search-item-name {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.stock-search-item-code {
+  color: var(--muted);
+  font-size: 11px;
+  margin-left: 8px;
+}
+
+.stock-search-item-market {
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+
+.stock-search-empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.stock-search-loading {
+  padding: 16px;
+  text-align: center;
+  color: var(--gold);
+  font-size: 11px;
+}
+
+@media(max-width: 760px) {
+  .stock-search-container {
+    margin-bottom: 16px;
+  }
+
+  .stock-search-input {
+    font-size: 12px;
+    padding: 10px 40px 10px 12px;
+  }
+
+  .stock-search-results {
+    max-height: 300px;
+  }
+
+  .stock-search-item {
+    padding: 10px 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}

@@ -57,6 +57,7 @@ def test_qwen_sends_native_tools_and_reads_call_without_text() -> None:
             "messages": MESSAGES,
             "tools": TOOLS,
             "tool_choice": "auto",
+            "max_tokens": 1024,
         }
         assert request.headers["authorization"] == "Bearer test-only-key"
         assert request.extensions["timeout"]["read"] == 10.0

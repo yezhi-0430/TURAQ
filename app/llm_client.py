@@ -1,3 +1,5 @@
+from collections.abc import Mapping, Sequence
+from copy import copy
 from typing import Protocol
 
 import httpx
@@ -29,15 +31,19 @@ class ModelResponseError(Exception):
     pass
 
 
+class ModelOutputTruncatedError(ModelResponseError):
+    pass
+
+
 class ModelConfigurationError(Exception):
     pass
 
 
 class ModelClient(Protocol):
-    def chat(self, messages: list[dict[str, str]]) -> str: ...
+    def chat(self, messages: Sequence[Mapping[str, object]]) -> str: ...
 
     def chat_with_tools(
-        self, messages: list[dict[str, str]], tools: list[dict[str, object]]
+        self, messages: Sequence[Mapping[str, object]], tools: list[dict[str, object]]
     ) -> ToolReply: ...
 
 
@@ -46,11 +52,11 @@ class FakeModelClient:
         self.reply = reply
         self.tool_reply = tool_reply
 
-    def chat(self, messages: list[dict[str, str]]) -> str:
+    def chat(self, messages: Sequence[Mapping[str, object]]) -> str:
         return self.reply
 
     def chat_with_tools(
-        self, messages: list[dict[str, str]], tools: list[dict[str, object]]
+        self, messages: Sequence[Mapping[str, object]], tools: list[dict[str, object]]
     ) -> ToolReply:
         if self.tool_reply is not None:
             return self.tool_reply
@@ -69,8 +75,21 @@ class QwenModelClient:
         self.http_client = http_client
         self.model_name = model_name
         self.chat_url = f"{base_url.rstrip('/')}/chat/completions"
+        self.admission = None
+        self.output_tokens = None
 
-    def chat(self, messages: list[dict[str, str]]) -> str:
+    def with_admission(self, admission, *, purpose="default"):
+        client = copy(self)
+        client.admission = admission
+        client.output_tokens = {
+            "agent": admission.settings.agent_max_output_tokens,
+            "risk": admission.settings.risk_max_output_tokens,
+            "risk_document": admission.settings.risk_document_output_tokens,
+            "default": admission.settings.model_max_output_tokens,
+        }[purpose]
+        return client
+
+    def chat(self, messages: Sequence[Mapping[str, object]]) -> str:
         message = self._request_message(messages)
         try:
             content = message["content"]
@@ -81,7 +100,7 @@ class QwenModelClient:
         return content
 
     def chat_with_tools(
-        self, messages: list[dict[str, str]], tools: list[dict[str, object]]
+        self, messages: Sequence[Mapping[str, object]], tools: list[dict[str, object]]
     ) -> ToolReply:
         message = self._request_message(messages, tools)
         try:
@@ -90,19 +109,30 @@ class QwenModelClient:
             raise ModelResponseError("模型工具响应格式无效") from exc
 
     def _request_message(
-        self, messages: list[dict[str, str]], tools: list[dict[str, object]] | None = None
+        self, messages: Sequence[Mapping[str, object]], tools: list[dict[str, object]] | None = None
     ) -> dict[str, object]:
-        payload: dict[str, object] = {"model": self.model_name, "messages": messages}
+        payload: dict[str, object] = {"model": self.model_name, "messages": messages,
+                                    "max_tokens": self.output_tokens or 1024}
         if tools is not None:
             payload.update({"tools": tools, "tool_choice": "auto"})
         for attempt in range(2):
             try:
-                response = self.http_client.post(
-                    self.chat_url,
-                    headers={"Authorization": f"Bearer {self.api_key}"},
-                    json=payload,
-                    timeout=10.0,
-                )
+                headers = {"Authorization": f"Bearer {self.api_key}"}
+                if self.admission is not None:
+                    from app.model_limits import deadline_post
+
+                    timeout = self.admission.before_attempt()
+                    # MockTransport is an explicit isolated test transport, never live HTTP.
+                    transport = self.http_client._transport
+                    response = deadline_post(
+                        self.chat_url, headers, payload, timeout,
+                        deadline=self.admission.attempt_deadline,
+                        transport=transport if isinstance(transport, httpx.MockTransport) else None,
+                    )
+                else:
+                    response = self.http_client.post(
+                        self.chat_url, headers=headers, json=payload, timeout=10.0,
+                    )
                 break
             except httpx.ConnectError as exc:
                 if attempt == 1:
@@ -115,11 +145,14 @@ class QwenModelClient:
         if response.is_error:
             raise ModelAPIError(response.status_code)
         try:
-            message = response.json()["choices"][0]["message"]
+            choice = response.json()["choices"][0]
+            message = choice["message"]
         except (ValueError, KeyError, IndexError, TypeError) as exc:
             raise ModelResponseError("模型响应格式无效") from exc
         if not isinstance(message, dict):
             raise ModelResponseError("模型响应格式无效")
+        if choice.get("finish_reason") == "length":
+            raise ModelOutputTruncatedError("模型输出达到长度上限，结果未完整生成")
         return message
 
 

@@ -25,6 +25,48 @@ def test_fake_model_returns_configured_reply() -> None:
     assert reply == "这是一条测试回答"
 
 
+def test_truncated_completion_is_not_returned_as_a_complete_answer():
+    def respond(request):
+        return httpx.Response(
+            200,
+            json={"choices": [{"finish_reason": "length", "message": {"content": '{"facts": ['}}]},
+        )
+
+    with httpx.Client(transport=httpx.MockTransport(respond)) as http:
+        client = QwenModelClient(api_key="test-only-key", http_client=http)
+        with pytest.raises(ModelResponseError, match="输出达到长度上限"):
+            client.chat([{"role": "user", "content": "资料"}])
+
+
+def test_agent_and_risk_output_budgets_are_separate_per_request():
+    from types import SimpleNamespace
+
+    from app.model_limits import bind_model
+    from tests.unit.admission import offline_admission
+
+    admission = SimpleNamespace(
+        settings=offline_admission().settings,
+        before_attempt=lambda: 10,
+        attempt_deadline=None,
+    )
+    admission.settings.agent_max_output_tokens = 4096
+    admission.settings.risk_max_output_tokens = 1024
+    sent = []
+
+    def respond(request):
+        sent.append(json.loads(request.content)["max_tokens"])
+        return httpx.Response(200, json={"choices": [{"message": {"content": "ok"}}]})
+
+    with httpx.Client(transport=httpx.MockTransport(respond)) as http:
+        original = QwenModelClient(api_key="test-only-key", http_client=http)
+        agent = bind_model(original, admission, purpose="agent")
+        risk = bind_model(original, admission, purpose="risk")
+        agent.chat([])
+        risk.chat([])
+        agent.chat([])
+    assert sent == [4096, 1024, 4096]
+
+
 def test_qwen_client_sends_messages_and_reads_reply() -> None:
     messages = [{"role": "user", "content": "什么是日线？"}]
 
@@ -34,6 +76,7 @@ def test_qwen_client_sends_messages_and_reads_reply() -> None:
         assert json.loads(request.content) == {
             "model": "qwen-plus",
             "messages": messages,
+            "max_tokens": 1024,
         }
         return httpx.Response(
             200,

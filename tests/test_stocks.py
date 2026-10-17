@@ -2,12 +2,21 @@ import asyncio
 from datetime import date
 
 import httpx
+import pytest
 
 from app.database import DailyPrice, SessionLocal, Stock
 from app.main import app
 
 
-def test_get_stock_returns_normalized_symbol() -> None:
+@pytest.mark.parametrize("symbol,status", [
+    ("600519.sh", 200), ("600519.SH", 200), ("999999.SH", 404),
+])
+def test_get_stock_returns_normalized_catalog_record(client, monkeypatch, symbol, status) -> None:
+    from app.stock_list import stock_list_service
+
+    record = {"symbol": "600519.SH", "code": "sh600519", "name": "贵州茅台", "market": "sh"}
+    monkeypatch.setattr(stock_list_service, "symbol_map", {"600519.SH": record})
+
     async def request_stock() -> httpx.Response:
         transport = httpx.ASGITransport(app=app)
 
@@ -15,14 +24,18 @@ def test_get_stock_returns_normalized_symbol() -> None:
             transport=transport,
             base_url="http://test",
         ) as client:
-            return await client.get("/api/v1/stocks/600519.sh")
+            return await client.get(f"/api/v1/stocks/{symbol}")
 
     response = asyncio.run(request_stock())
 
-    assert response.status_code == 200
-    assert response.json() == {"symbol": "600519.SH"}
+    assert response.status_code == status
+    assert response.json() == (record if status == 200 else {"detail": "股票不存在"})
 
-def test_searches_stocks_by_name() -> None:
+def test_searches_stocks_by_name(client) -> None:
+    with SessionLocal() as session:
+        session.add(Stock(symbol="000001.SZ", name="平安银行"))
+        session.commit()
+
     async def request_stocks() -> httpx.Response:
         transport = httpx.ASGITransport(app=app)
 

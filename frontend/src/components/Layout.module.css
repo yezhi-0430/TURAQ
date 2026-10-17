@@ -1,0 +1,144 @@
+.layout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  grid-template-rows: 60px 1fr;
+  min-height: 100vh;
+}
+
+.header {
+  grid-column: 1 / -1;
+  background: var(--surface-1);
+  border-bottom: 1px solid var(--surface-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-lg);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.logo {
+  font-size: clamp(1rem, 1.2rem, 1.5rem);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.market-tickers {
+  display: flex;
+  gap: var(--space-lg);
+  font-size: 0.875rem;
+}
+
+.ticker {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.ticker-name {
+  color: var(--text-secondary);
+}
+
+.ticker-value {
+  color: var(--text-primary);
+}
+
+.ticker-change {
+  font-weight: 500;
+}
+
+.ticker-change.up {
+  color: var(--accent-green);
+}
+
+.ticker-change.down {
+  color: var(--accent-red);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.search-box {
+  background: var(--surface-3);
+  border-radius: var(--radius-pill);
+  padding: var(--space-sm) var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 240px;
+}
+
+.search-box input {
+  background: transparent;
+  color: var(--text-primary);
+  flex: 1;
+  font-size: 0.875rem;
+}
+
+.search-box input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.account-info {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.account-balance {
+  color: var(--accent-cyan);
+  font-weight: 500;
+  margin-left: var(--space-xs);
+}
+
+.sidebar {
+  background: var(--surface-1);
+  border-right: 1px solid var(--surface-3);
+  padding: var(--space-lg) 0;
+}
+
+.nav-list {
+  list-style: none;
+}
+
+.nav-item {
+  margin-bottom: var(--space-xs);
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  font-size: 0.9375rem;
+}
+
+.nav-link:hover {
+  background: var(--surface-2);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.nav-link.active {
+  background: var(--surface-3);
+  color: var(--text-primary);
+  border-right: 2px solid var(--accent-cyan);
+}
+
+.nav-icon {
+  font-size: 1.125rem;
+}
+
+.main-content {
+  background: var(--surface-0);
+  padding: var(--space-xl);
+  overflow-y: auto;
+}
