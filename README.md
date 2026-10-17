@@ -187,7 +187,7 @@ if (-not (Test-Path .env)) { Copy-Item .env.example .env }
 npm --prefix frontend ci
 ```
 
-当前 RAG/财报模块的部分依赖尚未全部列入 `pyproject.toml`，应用启动时会导入这些模块，因此也需要安装上述额外依赖。嵌入模型首次使用时需要可用的模型文件或下载环境。
+当前 RAG/财报模块的部分依赖尚未全部列入 `pyproject.toml`，使用相关功能前需补齐上述额外依赖。嵌入模型运行库与模型按需加载，首次使用时需要可用的模型文件或下载环境。
 
 ### 配置数据库、模型与站点
 

@@ -4,7 +4,6 @@
 负责将文本转换为向量表示
 """
 
-from sentence_transformers import SentenceTransformer
 from typing import List, Union
 import numpy as np
 
@@ -22,6 +21,9 @@ class EmbeddingService:
                        - BAAI/bge-large-zh-v1.5: 大模型，准确度高
                        - moka-ai/m3e-base: 中文优化
         """
+        # Load the heavy ML runtime only when knowledge retrieval needs a model.
+        from sentence_transformers import SentenceTransformer
+
         print(f"正在加载嵌入模型: {model_name}...")
         self.model = SentenceTransformer(model_name)
         print("嵌入模型加载完成")
