@@ -189,8 +189,8 @@ flowchart TD
 需要 Python 3.11+、Node.js/npm，以及可连接的 PostgreSQL 实例。先创建项目使用的数据库与数据库账号，并准备 `.env` 中相应配置。
 
 ```powershell
-git clone https://github.com/yezhi-0430/a-share-risk-agent.git
-cd a-share-risk-agent
+git clone https://github.com/yezhi-0430/TURAQ.git
+cd TURAQ
 
 python -m venv .venv
 if (-not (Test-Path .env)) { Copy-Item .env.example .env }
@@ -247,7 +247,7 @@ $env:AUTH_COOKIE_SECURE = 'false'
 另开终端启动前端：
 
 ```powershell
-cd a-share-risk-agent
+cd TURAQ
 npm --prefix frontend run dev
 ```
 
@@ -290,7 +290,7 @@ npm --prefix frontend run dev
 | `POST /api/analysis/upload` | 财报 PDF 上传演示 |
 
 ```text
-a-share-risk-agent/
+TURAQ/
 ├── app/
 │   ├── main.py                 # FastAPI 应用与路由注册
 │   ├── agent_api.py            # 研究助手接口
