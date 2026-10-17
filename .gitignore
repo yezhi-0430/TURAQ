@@ -20,3 +20,16 @@ frontend/dist/
 .superpowers/
 
 *.backup
+
+# Local agent/editor settings
+.claude/
+.plan/
+
+# Generated vector stores (rebuild from knowledge/)
+chroma_db/
+test_chroma_db/
+
+# Runtime logs and generated financial-report samples
+*.log
+/test_report.pdf
+/测试财报*.pdf

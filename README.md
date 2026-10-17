@@ -4,6 +4,16 @@
 
 TURAQ 是一个基于 AI Agent 的 A 股智能研究平台，集成了行情监控、风险分析、智能对话等功能。
 
+## 学习计划与进度
+
+项目功能开发与个人学习分别验收，功能已实现不代表学习任务已掌握。
+
+- [八周学习计划](docs/8-week-agent-learning-roadmap.md)：保留完整学习路线。
+- [学习入口与当前进度](learning/README.md)：从 Day 19 的离线课堂继续。
+- [Day 19 学习记录](docs/day-19-independent-reproduction.md)：辅助示例已完成，独立复现与集中复盘尚未验收，Day 20 尚未开始。
+
+历史设计、验收记录和课堂代码继续保留。早期 RAG 实验文档统一放在 [历史归档](docs/archive/README.md)。
+
 ## 技术栈
 
 ### 后端
@@ -29,7 +39,11 @@ TURAQ 是一个基于 AI Agent 的 A 股智能研究平台，集成了行情监�
 
 ```powershell
 # 进入项目目录
-cd C:\Users\LENOVO\Documents\Codex\2026-09-20\n\outputs\a-share-risk-agent
+cd a-share-risk-agent
+
+# 首次使用时创建虚拟环境，并按 .env.example 填写本机配置
+python -m venv .venv
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
 
 # 安装项目依赖（包含调度器）
 .\.venv\Scripts\python.exe -m pip install -e '.[dev]'
@@ -129,6 +143,26 @@ a-share-risk-agent/
 按 `.env.example` 填写 PostgreSQL 和模型配置。实际支持 `MODEL_PROVIDER=fake` 或 `qwen`；Qwen 使用 `DASHSCOPE_API_KEY`。`MODEL_ENABLED=false` 可停止研究调用而保留自选和行情。密钥只保存在本机配置中，不提交 Git。真实邮件与服务器配置留待最后验收。
 
 ## 开发建议
+
+### 仓库与本地数据
+
+`.env`、向量数据库、运行日志、虚拟环境、前端依赖和构建产物只保存在本机，不提交 Git。`knowledge/` 中的知识文档、`data/stocks_base.json` 股票目录、源码与测试保留在仓库。
+
+当前应用启动时会导入 RAG 与财报模块，除了 `pyproject.toml` 的基础依赖，还需要 `chromadb`、`sentence-transformers`、`PyPDF2`、`python-docx`、`python-multipart`。这些模块的依赖尚未全部纳入项目声明，重新搭建环境时需补齐。随后可从项目根目录执行 `python scripts/import_knowledge.py`，用知识文档重建本地索引。本机已有索引不会因本次清理而删除。
+
+### 验证命令
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests/unit --confcutdir=tests/unit -q -o addopts='' --tb=short
+.\.venv\Scripts\python.exe -m pytest tests/auth --confcutdir=tests/auth -q -o addopts='' --tb=short
+.\.venv\Scripts\python.exe -m pytest tests --ignore=tests/unit --ignore=tests/auth --ignore=tests/frontend -q -o addopts='' --tb=short
+$frontendTests = Get-ChildItem tests/frontend -Filter '*.test.mjs' | ForEach-Object FullName
+node --test @frontendTests
+npm --prefix frontend run build
+.\.venv\Scripts\python.exe -X utf8 -m unittest discover -s learning/day19-minimal-agent -p "test_*.py" -v
+```
+
+后端测试沿用已有验收方式，按上面三组分开运行，隔离不同夹具。认证与集成测试需要已配置、可连接的独立 PostgreSQL 测试数据库 `a_share_risk_agent_test`；不要指向业务数据库。旧测试库还需应用 `migrations/add_registration_method.sql`。Day 19 课堂测试使用离线样例，不依赖业务数据库。
 
 ### 前端开发
 1. 修改 `frontend/index.html`
