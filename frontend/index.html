@@ -126,7 +126,7 @@ html{scrollbar-gutter:stable}
 </section>
 <div class="workspace" id="app" hidden>
 <header class="topbar"><button class="brand home-button" data-home aria-label="返回首页"><span class="brand-mark">T</span>TURAQ</button><div class="topbar-right"><span class="pill" id="model-mode">检查模型状态…</span><div class="account-meta"><small id="account-email">未登录</small><button class="btn" type="button" id="account-button">登录</button></div></div></header>
-<aside class="sidebar"><div class="side-label">WORKSPACE</div><nav aria-label="工作台导航"><button class="nav-button" data-page="dashboard"><svg class="icon"><use href="#i-grid"/></svg>行情驾驶舱</button><button class="nav-button" data-page="watchlist"><svg class="icon"><use href="#i-list"/></svg>自选管理</button><button class="nav-button active" data-page="agent" aria-current="page"><svg class="icon"><use href="#i-spark"/></svg>AI 研究助手</button><button class="nav-button" data-page="risk"><svg class="icon"><use href="#i-shield"/></svg>风险监控</button><button class="nav-button" data-page="trading"><svg class="icon"><use href="#i-chart"/></svg>模拟交易</button><button class="nav-button" data-page="settings"><svg class="icon"><use href="#i-sliders"/></svg>系统设置</button><div class="side-label admin-section" id="admin-label" hidden>ADMIN</div>
+<aside class="sidebar"><div class="side-label">WORKSPACE</div><nav aria-label="工作台导航"><button class="nav-button" data-page="dashboard"><svg class="icon"><use href="#i-grid"/></svg>行情驾驶舱</button><button class="nav-button" data-page="watchlist"><svg class="icon"><use href="#i-list"/></svg>自选管理</button><button class="nav-button active" data-page="agent" aria-current="page"><svg class="icon"><use href="#i-spark"/></svg>AI 研究助手</button><button class="nav-button" data-page="analysis"><svg class="icon"><use href="#i-file"/></svg>财报分析</button><button class="nav-button" data-page="risk"><svg class="icon"><use href="#i-shield"/></svg>风险监控</button><button class="nav-button" data-page="trading"><svg class="icon"><use href="#i-chart"/></svg>模拟交易</button><button class="nav-button" data-page="settings"><svg class="icon"><use href="#i-sliders"/></svg>系统设置</button><div class="side-label admin-section" id="admin-label" hidden>ADMIN</div>
 <button class="nav-button admin-nav" data-page="admin-dashboard" id="admin-dashboard-nav" hidden><svg class="icon"><use href="#i-grid"/></svg>管理仪表盘</button>
 <button class="nav-button admin-nav" data-page="admin-users" id="admin-users-nav" hidden><svg class="icon"><use href="#i-list"/></svg>用户管理</button>
 <button class="nav-button admin-nav" data-page="admin-invites" id="admin-invites-nav" hidden><svg class="icon"><use href="#i-shield"/></svg>邀请码管理</button></nav><div class="side-bottom"><button class="home-button" data-home>← 返回首页</button><p>以研究理解市场。<br>以独立判断面对不确定性。</p><div class="eyebrow" style="font-size:8px">TURAQ / RESEARCH FIRST</div></div></aside>
@@ -143,6 +143,30 @@ html{scrollbar-gutter:stable}
  <details class="risk-panel risk-history-panel"><summary>分析历史 · 当前账号全部资料</summary><p>历史与事件范围筛选独立，包含未关联资料及失败请求。输入版本保留，成功结果可重新查看。</p><div id="risk-history"></div><div class="risk-pager"><span id="risk-history-note"></span><button id="risk-history-prev" class="btn" type="button" disabled>上一页</button><button id="risk-history-next" class="btn" type="button" disabled>下一页</button></div></details>
 </section>
 <dialog id="risk-analysis-dialog" class="risk-analysis-dialog" aria-labelledby="risk-analysis-title"><div class="risk-dialog-head"><h2 id="risk-analysis-title">分析公告/财报</h2><button class="btn" id="risk-analysis-close" type="button">关闭</button></div><p class="risk-note">粘贴原文，区分事实、推断与未知。填写的标题、日期与链接均标注为“用户提供”，不视为核验来源。</p><form id="risk-form" class="risk-form"><div class="risk-form-grid"><label>资料类型<select id="risk-material-type"><option value="announcement">公告</option><option value="financial">财报</option></select></label><label>关联自选股票（可选）<select id="risk-associate"><option value="">不关联股票</option></select></label><label>资料标题<input id="risk-title" maxlength="200" placeholder="用户提供的资料"></label><label>资料发布日期（可选）<input id="risk-published" type="date"></label><label>来源链接（可选）<input id="risk-url" type="url" maxlength="2000" placeholder="https://"></label><label>页码（可选）<input id="risk-source-page" maxlength="40" placeholder="例如：第 12–13 页"></label></div><label>公告 / 财报原文<textarea id="risk-text" maxlength="20000" required placeholder="粘贴资料原文，最多 20,000 字"></textarea><small id="risk-char-count">0 / 20,000 字</small></label><p class="risk-note" id="risk-form-status" role="status" aria-live="polite"></p><button class="btn primary" id="risk-submit" type="submit">提交分析并保存</button></form></dialog>
+<section id="analysis-page" hidden aria-label="财报分析">
+ <div style="padding: 20px; max-width: 1400px; margin: 0 auto;">
+  <div style="background: var(--panel); border-radius: 8px; padding: 30px; margin-bottom: 30px; text-align: center;">
+   <h2 style="margin-top: 0;">上传财报PDF</h2>
+   <p style="color: var(--muted); margin-bottom: 20px;">上传上市公司年报或半年报，系统将自动提取财务数据并进行风险分析</p>
+   <div id="upload-area" style="border: 2px dashed var(--line); border-radius: 8px; padding: 40px; cursor: pointer; transition: all 0.3s ease;">
+    <div style="font-size: 48px; margin-bottom: 10px;">📄</div>
+    <div id="upload-text" style="font-size: 16px; margin-bottom: 5px;">点击选择文件或拖拽到此处</div>
+    <div style="font-size: 14px; color: var(--muted);">支持PDF格式，最大50MB</div>
+    <input type="file" id="analysis-file-input" accept=".pdf" style="display: none;">
+   </div>
+   <div style="margin-top: 20px;">
+    <input type="text" id="analysis-company-name" placeholder="请输入公司名称（如：贵州茅台）" style="width: 100%; max-width: 400px; padding: 10px 15px; border: 1px solid var(--line); border-radius: 4px; font-size: 14px; background: var(--bg); color: var(--text);">
+   </div>
+   <button class="btn primary" id="analysis-upload-btn" disabled style="margin-top: 20px;">开始分析</button>
+   <button class="btn" id="analysis-test-btn" style="margin-top: 20px; margin-left: 10px; background: #6b7280;">使用测试数据（无需上传）</button>
+  </div>
+  <div id="analysis-loading" style="padding: 40px; text-align: center; display: none;">
+   <div style="width: 40px; height: 40px; border: 4px solid var(--line); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+   <div>正在分析中，请稍候...</div>
+  </div>
+  <div id="analysis-result-container"></div>
+ </div>
+</section>
 <section id="trading-page" hidden aria-label="模拟交易">
  <div class="paper-toolbar"><label>模拟账户<select id="paper-account" aria-label="选择模拟账户"></select></label><button class="btn" id="paper-open-create" type="button">新建账户</button><button class="btn" id="paper-refresh" type="button">刷新</button><span id="paper-market-state" class="paper-note"></span></div>
  <p id="paper-status" class="paper-note" role="status" aria-live="polite"></p>
@@ -238,6 +262,7 @@ const pages = {
  dashboard: ['行情驾驶舱', '市场概览界面正在筹备，行情数据尚未接入。你可以先在研究助手中查询已入库的股票资料与日线。'],
  watchlist: ['自选管理', '自选分组的页面操作尚未接入。当前可通过后端接口管理自选股。'],
  risk: ['风险监控', '跟踪自选公司的公告、财报与量价风险。'],
+ analysis: ['财报分析', '上传财报PDF，AI自动提取财务指标、识别风险并给出专业分析建议。'],
  trading: ['模拟交易', '用真实行情模拟 A 股委托与成交：涨跌停、T+1、整手与真实费率均按规则执行，不连接券商。'],
  settings: ['系统设置', '管理个人使用偏好、账号安全与全站运行配置。']
 };
@@ -377,6 +402,157 @@ window.researchStock = async stock => {
 };
 window.selectWorkspacePage=selectPage;
 renderMessages();
+
+// 财报分析页面逻辑
+if ($('analysis-page')) {
+ const uploadArea = $('upload-area');
+ const fileInput = $('analysis-file-input');
+ const companyNameInput = $('analysis-company-name');
+ const uploadBtn = $('analysis-upload-btn');
+ const testBtn = $('analysis-test-btn');
+ const loadingArea = $('analysis-loading');
+ const resultContainer = $('analysis-result-container');
+ let selectedFile = null;
+
+ uploadArea.onclick = () => fileInput.click();
+
+ fileInput.onchange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+   selectedFile = file;
+   $('upload-text').textContent = `已选择: ${file.name}`;
+   uploadBtn.disabled = false;
+  }
+ };
+
+ uploadArea.ondragover = (e) => {
+  e.preventDefault();
+  uploadArea.style.borderColor = 'var(--gold)';
+ };
+
+ uploadArea.ondragleave = () => {
+  uploadArea.style.borderColor = 'var(--line)';
+ };
+
+ uploadArea.ondrop = (e) => {
+  e.preventDefault();
+  uploadArea.style.borderColor = 'var(--line)';
+  const file = e.dataTransfer.files[0];
+  if (file && file.type === 'application/pdf') {
+   selectedFile = file;
+   $('upload-text').textContent = `已选择: ${file.name}`;
+   uploadBtn.disabled = false;
+  } else {
+   alert('请上传PDF文件');
+  }
+ };
+
+ uploadBtn.onclick = async () => {
+  if (!selectedFile) return;
+  const companyName = companyNameInput.value.trim() || '未知公司';
+  try {
+   loadingArea.style.display = 'block';
+   resultContainer.innerHTML = '';
+   const formData = new FormData();
+   formData.append('file', selectedFile);
+   const res = await fetch('/api/analysis/upload?company_name=' + encodeURIComponent(companyName), {
+    method: 'POST',
+    body: formData
+   });
+   if (!res.ok) throw new Error((await res.json()).detail || '上传失败');
+   const result = await res.json();
+   loadingArea.style.display = 'none';
+   renderAnalysisResult(result, resultContainer);
+   resultContainer.scrollIntoView({ behavior: 'smooth' });
+  } catch (error) {
+   loadingArea.style.display = 'none';
+   alert('分析失败: ' + error.message);
+  }
+ };
+
+ testBtn.onclick = async () => {
+  try {
+   loadingArea.style.display = 'block';
+   resultContainer.innerHTML = '';
+   const res = await fetch('/api/analysis/test');
+   if (!res.ok) throw new Error('测试失败');
+   const result = await res.json();
+   loadingArea.style.display = 'none';
+   renderAnalysisResult(result, resultContainer);
+   resultContainer.scrollIntoView({ behavior: 'smooth' });
+  } catch (error) {
+   loadingArea.style.display = 'none';
+   alert('测试失败: ' + error.message);
+  }
+ };
+
+ function renderAnalysisResult(result, container) {
+  const { company_name, indicators, ratios, risks, report } = result;
+  container.innerHTML = `
+   <div style="background: var(--panel); border-radius: 8px; padding: 25px; margin-bottom: 20px;">
+    <h3 style="margin-top: 0; border-bottom: 2px solid var(--line); padding-bottom: 10px;">财务指标</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+     <div style="background: var(--bg); border-radius: 6px; padding: 20px; text-align: center;">
+      <div style="font-size: 14px; color: var(--muted); margin-bottom: 10px;">营业收入</div>
+      <div style="font-size: 24px; font-weight: 600; color: var(--gold);">${formatMoney(indicators.revenue)}</div>
+     </div>
+     <div style="background: var(--bg); border-radius: 6px; padding: 20px; text-align: center;">
+      <div style="font-size: 14px; color: var(--muted); margin-bottom: 10px;">净利润</div>
+      <div style="font-size: 24px; font-weight: 600; color: var(--gold);">${formatMoney(indicators.net_profit)}</div>
+     </div>
+     <div style="background: var(--bg); border-radius: 6px; padding: 20px; text-align: center;">
+      <div style="font-size: 14px; color: var(--muted); margin-bottom: 10px;">总资产</div>
+      <div style="font-size: 24px; font-weight: 600; color: var(--gold);">${formatMoney(indicators.total_assets)}</div>
+     </div>
+    </div>
+   </div>
+   <div style="background: var(--panel); border-radius: 8px; padding: 25px; margin-bottom: 20px;">
+    <h3 style="margin-top: 0; border-bottom: 2px solid var(--line); padding-bottom: 10px;">综合评分</h3>
+    <div style="display: flex; align-items: center; gap: 30px; padding: 20px;">
+     <div style="width: 120px; height: 120px; border-radius: 50%; border: 4px solid ${getScoreColor(report.score)}; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <div style="font-size: 48px; font-weight: 700;">${report.score}</div>
+      <div style="font-size: 14px; color: var(--muted);">分</div>
+     </div>
+     <div style="flex: 1;">
+      <div style="font-size: 18px; font-weight: 600; margin-bottom: 10px;">${report.recommendation}</div>
+      <div style="font-size: 16px; color: var(--muted);">${report.action}</div>
+     </div>
+    </div>
+   </div>
+   <div style="background: var(--panel); border-radius: 8px; padding: 25px;">
+    <h3 style="margin-top: 0; border-bottom: 2px solid var(--line); padding-bottom: 10px;">风险识别 (${risks.length}个)</h3>
+    ${risks.length === 0 ? '<div style="padding: 30px; text-align: center; color: var(--green);">✓ 未检测到风险点</div>' : risks.map(r => `
+     <div style="background: var(--bg); border-radius: 6px; padding: 20px; margin-bottom: 15px; border-left: 4px solid ${getRiskColor(r.level)};">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+       <span style="padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: 600; color: white; background: ${getRiskColor(r.level)};">${r.level.toUpperCase()}</span>
+       <span style="font-size: 16px; font-weight: 600;">${r.name}</span>
+      </div>
+      <div style="font-size: 14px; color: var(--muted); margin-bottom: 10px;">实际值: ${r.value.toFixed(2)} | 阈值: ${r.threshold.toFixed(2)}</div>
+      ${r.cases && r.cases.length > 0 ? `<div style="font-size: 14px; color: var(--muted);">历史案例: ${r.cases.join('、')}</div>` : ''}
+     </div>
+    `).join('')}
+   </div>
+  `;
+ }
+
+ function formatMoney(value) {
+  if (!value) return '-';
+  return (value / 100000000).toFixed(2) + ' 亿元';
+ }
+
+ function getScoreColor(score) {
+  if (score >= 80) return 'var(--green)';
+  if (score >= 60) return 'var(--gold)';
+  return 'var(--red)';
+ }
+
+ function getRiskColor(level) {
+  if (level === 'high') return '#ef4444';
+  if (level === 'medium') return '#f59e0b';
+  return '#3b82f6';
+ }
+}
+
 </script>
 <dialog id="stock-detail" class="stock-detail" aria-labelledby="detail-name">
  <div class="detail-shell">
