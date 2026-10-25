@@ -5,7 +5,7 @@
 - 关闭启动窗口不会停止后台服务。
 - 命令行验收：`.\.venv\Scripts\python.exe scripts/launch_turaq.py --no-browser`；停止用 `--stop`。
 
-启动器相对自身定位项目，不依赖双击时的工作目录。后端使用 `.venv/Scripts/python.exe`，前端使用已安装的 Node.js 和本项目 Vite。为本地启动进程设置 SITE_BASE_URL=http://localhost:3000、AUTH_COOKIE_SECURE=false 与 8888 代理目标，不改写 `.env`，不输出密钥。
+启动器相对自身定位项目，不依赖双击时的工作目录。后端使用 `.venv/Scripts/python.exe`，前端使用已安装的 Node.js 和本项目 Vite。为本地启动进程设置 SITE_BASE_URL=http://localhost:3000、AUTH_COOKIE_SECURE=false 与 8888 代理目标，不输出密钥。若 `.env` 尚未设置 `SETTINGS_ENCRYPTION_KEY`，启动器会生成一个本机 Fernet 密钥并写回 `.env`，用于在「系统设置 → 模型服务」中加密更新模型密钥；已有值不会被覆盖。
 
 端口、进程归属、后端风险路由、前端页面和实际同源登录代理全部就绪后，才报告启动成功。重复点击通过文件锁串行化；已运行且健康的本项目服务复用。其他目录/程序占用端口时退出。新服务启动失败时只回收本次启动的进程。
 

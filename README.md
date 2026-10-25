@@ -281,7 +281,7 @@ npm --prefix frontend run dev
 
 打开 `http://localhost:3000` 并登录。Vite 将 `/api/` 请求代理到后端，浏览器页面与 API 保持同源；不要直接双击 HTML 文件打开工作台。
 
-已完成依赖和配置的 Windows 环境，可以双击根目录 **`一键启动.bat`** 或 **`start.bat`**，就绪后自动打开页面。**`停止服务.bat`** 用于停止本项目启动的服务。启动器支持健康检查、端口冲突提示与日志记录，说明见 [Windows 启动器](docs/windows-launcher.md)。
+已完成依赖和配置的 Windows 环境，可以双击根目录 **`一键启动.bat`** 或 **`start.bat`**，就绪后自动打开页面。**`停止服务.bat`** 用于停止本项目启动的服务。启动器支持健康检查、端口冲突提示与日志记录；首次启动若 `.env` 未设置 `SETTINGS_ENCRYPTION_KEY`，会自动生成并写回本机 `.env`，用于在管理界面加密更新模型密钥。说明见 [Windows 启动器](docs/windows-launcher.md)。
 
 ### 可选上下文与追踪服务
 

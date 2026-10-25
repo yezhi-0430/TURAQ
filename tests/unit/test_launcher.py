@@ -53,6 +53,39 @@ def test_launcher_batch_paths_are_relative_to_script_location():
     assert "--port 8000" not in content
 
 
+def test_launcher_generates_settings_key_once(tmp_path, monkeypatch):
+    from scripts import launch_turaq as launcher
+
+    (tmp_path / ".env").write_text(
+        "MODEL_PROVIDER=fake\nSETTINGS_ENCRYPTION_KEY=\n", encoding="utf-8"
+    )
+    monkeypatch.setattr(launcher, "ROOT", tmp_path)
+
+    launcher.ensure_settings_key()
+    text = (tmp_path / ".env").read_text(encoding="utf-8")
+    key = next(
+        line.split("=", 1)[1]
+        for line in text.splitlines()
+        if line.startswith("SETTINGS_ENCRYPTION_KEY=")
+    )
+    assert len(key) == 44
+
+    launcher.ensure_settings_key()
+    assert (tmp_path / ".env").read_text(encoding="utf-8") == text
+
+
+def test_launcher_appends_settings_key_when_missing(tmp_path, monkeypatch):
+    from scripts import launch_turaq as launcher
+
+    (tmp_path / ".env").write_text("MODEL_PROVIDER=fake\n", encoding="utf-8")
+    monkeypatch.setattr(launcher, "ROOT", tmp_path)
+
+    launcher.ensure_settings_key()
+    text = (tmp_path / ".env").read_text(encoding="utf-8")
+    assert "SETTINGS_ENCRYPTION_KEY=" in text
+    assert text.startswith("MODEL_PROVIDER=fake\n")
+
+
 def test_backend_loads_project_env_before_import_without_passing_file_to_frontend(
     tmp_path, monkeypatch
 ):

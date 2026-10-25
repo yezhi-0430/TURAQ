@@ -189,6 +189,33 @@ def launch_lock():
             msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
 
 
+def ensure_settings_key():
+    """Create the local Fernet key once so admins can update model keys in the UI."""
+    env_path = ROOT / ".env"
+    try:
+        text = env_path.read_text(encoding="utf-8")
+    except OSError:
+        return
+    pattern = re.compile(r"(?m)^SETTINGS_ENCRYPTION_KEY=(.*)$")
+    match = pattern.search(text)
+    if match and match.group(1).strip():
+        return
+    try:
+        from cryptography.fernet import Fernet
+    except ImportError:
+        say("未安装 cryptography，跳过 SETTINGS_ENCRYPTION_KEY 生成。")
+        return
+    line = f"SETTINGS_ENCRYPTION_KEY={Fernet.generate_key().decode()}"
+    if match:
+        text = pattern.sub(line, text, count=1)
+    else:
+        text = text.rstrip() + "\n" + line + "\n"
+    temporary = env_path.with_name(env_path.name + ".tmp")
+    temporary.write_text(text, encoding="utf-8")
+    os.replace(temporary, env_path)
+    say("已为本机生成 SETTINGS_ENCRYPTION_KEY（用于在系统设置中加密更新模型密钥）。")
+
+
 def run(stop=False, no_browser=False):
     rows = port_processes()
     for row in rows:
@@ -200,6 +227,7 @@ def run(stop=False, no_browser=False):
         return
     if not (ROOT / ".env").is_file():
         raise RuntimeError("缺少 .env，请参照 .env.example 配置数据库与模型。")
+    ensure_settings_key()
     node = shutil.which("node")
     vite = ROOT / "frontend/node_modules/vite/bin/vite.js"
     if not node or not vite.is_file():
