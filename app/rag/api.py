@@ -12,6 +12,7 @@ import tempfile
 
 from .core import get_rag_system
 from .crawler import get_crawler
+from .scoring import relevant_results
 
 
 router = APIRouter(prefix="/api/rag", tags=["RAG"])
@@ -195,15 +196,13 @@ async def enhance_query(request: QueryRequest):
 
         # 格式化为 AI 可用的上下文
         context = []
-        for item in result['results']:
-            similarity = 1 - item['distance']
-            if similarity >= 0.5:  # 只返回相似度 >= 50% 的结果
-                context.append({
-                    'text': item['text'],
-                    'similarity': similarity,
-                    'source': item['metadata'].get('filename', '知识库'),
-                    'stock_code': item['metadata'].get('stock_code', ''),
-                })
+        for item in relevant_results(result['results']):
+            context.append({
+                'text': item['text'],
+                'similarity': item['similarity'],
+                'source': item['metadata'].get('filename', '知识库'),
+                'stock_code': item['metadata'].get('stock_code', ''),
+            })
 
         return {
             'success': True,

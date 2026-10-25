@@ -16,6 +16,7 @@ from app.agent_api import router as agent_router
 from app.analysis.api import router as analysis_router
 from app.auth.api import router as auth_router
 from app.auth.dependencies import Actor, require_actor, require_admin
+from app.context_api import router as context_router
 from app.database import DailyPrice, SessionLocal, Stock, Watchlist, WatchlistItem
 from app.json_requests import DecimalJSONRoute
 from app.market_api import router as market_router
@@ -112,6 +113,7 @@ def create_app() -> FastAPI:
     application.include_router(paper_trading_router)
     application.include_router(rag_router)
     application.include_router(analysis_router)
+    application.include_router(context_router)
     price_router = APIRouter(route_class=DecimalJSONRoute)
 
     @application.exception_handler(RequestValidationError)

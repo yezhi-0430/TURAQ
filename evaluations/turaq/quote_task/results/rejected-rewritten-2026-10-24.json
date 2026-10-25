@@ -1,0 +1,540 @@
+{
+  "mode": "quote_only_offline_proposals",
+  "scope": "curated_pages_fact_and_citation_only",
+  "expected_ids": [
+    "moutai-revenue-2024",
+    "moutai-revenue-2023",
+    "moutai-profit-2024",
+    "moutai-cash-2024",
+    "pingan-revenue-2024",
+    "pingan-profit-2024",
+    "pingan-npl-2024",
+    "future-period",
+    "before-publication",
+    "wrong-security"
+  ],
+  "cases": [
+    {
+      "id": "moutai-revenue-2024",
+      "scores": {
+        "abstention": true,
+        "evidence": true,
+        "identity": true,
+        "value": true,
+        "contract": true
+      },
+      "task_error": null,
+      "scoring_error": null,
+      "output": {
+        "status": "supported",
+        "symbol": "600519.SH",
+        "metric": "营业收入",
+        "period": "2024",
+        "value": "170899152276.34",
+        "unit": "元",
+        "reason_code": null,
+        "citations": [
+          {
+            "document_id": "moutai-2024",
+            "page": 5,
+            "start": 232,
+            "end": 250,
+            "quote": "170,899,152,276.34"
+          }
+        ]
+      }
+    },
+    {
+      "id": "moutai-revenue-2023",
+      "scores": {
+        "abstention": true,
+        "evidence": true,
+        "identity": true,
+        "value": true,
+        "contract": true
+      },
+      "task_error": null,
+      "scoring_error": null,
+      "output": {
+        "status": "supported",
+        "symbol": "600519.SH",
+        "metric": "营业收入",
+        "period": "2023",
+        "value": "147693604994.14",
+        "unit": "元",
+        "reason_code": null,
+        "citations": [
+          {
+            "document_id": "moutai-2024",
+            "page": 5,
+            "start": 251,
+            "end": 269,
+            "quote": "147,693,604,994.14"
+          }
+        ]
+      }
+    },
+    {
+      "id": "moutai-profit-2024",
+      "scores": {
+        "abstention": true,
+        "evidence": false,
+        "identity": true,
+        "value": true,
+        "contract": false
+      },
+      "task_error": null,
+      "scoring_error": null,
+      "output": {
+        "status": "supported",
+        "symbol": "600519.SH",
+        "metric": "归母净利润",
+        "period": "2024",
+        "value": "86228146421.62",
+        "unit": "元",
+        "reason_code": null,
+        "citations": []
+      }
+    },
+    {
+      "id": "moutai-cash-2024",
+      "scores": {
+        "abstention": true,
+        "evidence": true,
+        "identity": true,
+        "value": true,
+        "contract": true
+      },
+      "task_error": null,
+      "scoring_error": null,
+      "output": {
+        "status": "supported",
+        "symbol": "600519.SH",
+        "metric": "经营活动现金流量净额",
+        "period": "2024",
+        "value": "92463692168.43",
+        "unit": "元",
+        "reason_code": null,
+        "citations": [
+          {
+            "document_id": "moutai-2024",
+            "page": 5,
+            "start": 474,
+            "end": 491,
+            "quote": "92,463,692,168.43"
+          }
+        ]
+      }
+    },
+    {
+      "id": "pingan-revenue-2024",
+      "scores": {
+        "abstention": true,
+        "evidence": true,
+        "identity": true,
+        "value": true,
+        "contract": true
+      },
+      "task_error": null,
+      "scoring_error": null,
+      "output": {
+        "status": "supported",
+        "symbol": "000001.SZ",
+        "metric": "营业收入",
+        "period": "2024",
+        "value": "146695",
+        "unit": "百万元",
+        "reason_code": null,
+        "citations": [
+          {
+            "document_id": "pingan-2024",
+            "page": 16,
+            "start": 108,
+            "end": 139,
+            "quote": "营业收入  146,695  164,699  (10.9%)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "pingan-profit-2024",
+      "scores": {
+        "abstention": true,
+        "evidence": true,
+        "identity": true,
+        "value": true,
+        "contract": true
+      },
+      "task_error": null,
+      "scoring_error": null,
+      "output": {
+        "status": "supported",
+        "symbol": "000001.SZ",
+        "metric": "归母净利润",
+        "period": "2024",
+        "value": "44508",
+        "unit": "百万元",
+        "reason_code": null,
+        "citations": [
+          {
+            "document_id": "pingan-2024",
+            "page": 16,
+            "start": 153,
+            "end": 159,
+            "quote": "44,508"
+          }
+        ]
+      }
+    },
+    {
+      "id": "pingan-npl-2024",
+      "scores": {
+        "abstention": true,
+        "evidence": true,
+        "identity": true,
+        "value": true,
+        "contract": true
+      },
+      "task_error": null,
+      "scoring_error": null,
+      "output": {
+        "status": "supported",
+        "symbol": "000001.SZ",
+        "metric": "不良贷款率",
+        "period": "2024-12-31",
+        "value": "1.06",
+        "unit": "%",
+        "reason_code": null,
+        "citations": [
+          {
+            "document_id": "pingan-2024",
+            "page": 16,
+            "start": 465,
+            "end": 487,
+            "quote": "不良贷款率  1.06%  1.06%  -"
+          }
+        ]
+      }
+    },
+    {
+      "id": "future-period",
+      "scores": {
+        "abstention": true,
+        "evidence": true,
+        "identity": true,
+        "value": true,
+        "contract": true
+      },
+      "task_error": null,
+      "scoring_error": null,
+      "output": {
+        "status": "insufficient",
+        "symbol": "600519.SH",
+        "metric": "营业收入",
+        "period": "2025",
+        "value": null,
+        "unit": null,
+        "reason_code": "period_not_present",
+        "citations": []
+      }
+    },
+    {
+      "id": "before-publication",
+      "scores": {
+        "abstention": true,
+        "evidence": true,
+        "identity": true,
+        "value": true,
+        "contract": true
+      },
+      "task_error": null,
+      "scoring_error": null,
+      "output": {
+        "status": "insufficient",
+        "symbol": "000001.SZ",
+        "metric": "营业收入",
+        "period": "2024",
+        "value": null,
+        "unit": null,
+        "reason_code": "not_yet_public",
+        "citations": []
+      }
+    },
+    {
+      "id": "wrong-security",
+      "scores": {
+        "abstention": true,
+        "evidence": true,
+        "identity": true,
+        "value": true,
+        "contract": true
+      },
+      "task_error": null,
+      "scoring_error": null,
+      "output": {
+        "status": "insufficient",
+        "symbol": "600519.SH",
+        "metric": "营业收入",
+        "period": "2024",
+        "value": null,
+        "unit": null,
+        "reason_code": "wrong_security",
+        "citations": []
+      }
+    }
+  ],
+  "unexpected_ids": [],
+  "cost": null,
+  "real_model_quality": "not_run",
+  "execution_claim": "offline_proposals_only",
+  "fingerprints": {
+    "corpus": "99f812b633dc4e7e6d321d78e9e6dd8fd4f0de9ec12e49ceb1d4877a077f0d56",
+    "scorer": "public-fact-citation-v1",
+    "scorer_code": "abf2c64e899445cec6be028e6eba270cefb976765ad970a2db0e57797b972caf",
+    "app_source_files": {
+      "app/__init__.py": "b3b73d37a32fd5e8bccd5068f416b86486e5b725850e98a62a057a5b9f68390b",
+      "app/admin/__init__.py": "26c5e0226797d1a4668a0b21bd697234c4fcc4d6118d9981fe5ee87697c244ed",
+      "app/admin/api.py": "e2a1d6a4f30a24d6a49039f205b62404334aacc4d44dac1809e63cc07b42b162",
+      "app/admin/invite_service.py": "b3707d90dd91f78e8aade22f7fc303205e337be7244c7cf05b992d4a3db6aa75",
+      "app/admin/stats_service.py": "b1f6df36e94dd1cc88887bf0aa40902d57c82f49c5af35dfe139d5e2c497bf9a",
+      "app/admin/user_service.py": "f00d3dfa9d176e5bd97f348fab0a56aa9421446a62ba3bf637edea7f401f6d5a",
+      "app/agent_actions.py": "d733bf86b8ab18e3459e88510a121dd98188b5c409858221a11eb689942d1fd2",
+      "app/agent_api.py": "80c3b0a9a29af9b29f2902d72b4423ffb79f09392716aea4819d60edad1b9bff",
+      "app/agent_loop.py": "4565227de7bc292bc149dec55c9a3b9c87ae4ece603b405a0703462c73e6317c",
+      "app/agent_loop_demo.py": "ed25b821deaa51663d2a95018a04064ded21e2da8c442270eee9e3518d2075f6",
+      "app/agent_market.py": "2c7e41347c91e1e10c4d365236a8b05039838c704d03c656befb194b074c2e8c",
+      "app/agent_policy.py": "3bb2b0b057089fd966d86b410ba556f12debcb80c3df9a3a312ee0e08cefe18b",
+      "app/agent_research.py": "b74bd093d95123c621d241c16e5e1ca7c49a7723b76d41b5ceb02891b20fe8d5",
+      "app/analysis/__init__.py": "cf60b363171ea68e355b6712bd2fc6c6c767a5abeb20653a6b2248312b446d71",
+      "app/analysis/api.py": "334f2ea855386f50c2793324996234968357cf5cccadb4b0b09735945e211e48",
+      "app/analysis/pdf_parser.py": "118a27ec9d454d90f691a751baabf1768933b1b6691fff89c49b4a4acb89c37d",
+      "app/analysis/risk_analyzer.py": "94ea118145f75daab38ec74b22c3cc6f1fe001762a68434b665f826aa6c567e1",
+      "app/audit/__init__.py": "6223d5695051f6899c2d0847fdd19e9e9ecbfefeb78774250ce6a69df0a2c4b7",
+      "app/audit/repository.py": "9c2bc3f1a1f34253454778fd244549a741c86e5c5a8c3501712516f930fbd01a",
+      "app/audit_demo.py": "e8a9f53234f6e019f74d94a92a3eac87b1debf7f45678206e26d63d2f7154ec3",
+      "app/auth/__init__.py": "f74751fac902e98d2409826563e948cd71ee8e53c52694e1e58141c4035fa3ab",
+      "app/auth/admin.py": "6f40bab93796c9b9eb2fb2a8a8f4f7a4edd522f1a79404415280c0fa568a4e99",
+      "app/auth/api.py": "2272753fde448dce0b2afeeed631d75d123b0a792624006a8a3d990188bb53b9",
+      "app/auth/dependencies.py": "76b2404db03995009afd6fb21aecf6400eabaf5f00f3db943653bd9cb53b277f",
+      "app/auth/mail.py": "8b3d6ef8b40ce0be4ce38021e234cb02bbe92229d8d351a5d309a57bcfcd8a97",
+      "app/auth/mail_jobs.py": "6235b06d7ada3378b864193c8e3f97716a12722e776beae1ecac1256714931ab",
+      "app/auth/models.py": "aed22719b53df554f452c6f9dc55ff777efa866a9d79a71cb672e1144dcb85c7",
+      "app/auth/schemas.py": "4413c9913b9c9e08b922f2fd640b651076aad9e2679069afa24ccd1f963e7d5b",
+      "app/auth/service.py": "7fadecfcd38f0a22026b1d14b3abd05ced04d57aa7ac285015434c005cf0976b",
+      "app/auth/throttle.py": "02c2ec765a9e4f55df9139fb0bc372c5986a3e549563dea2f136af1c28baae07",
+      "app/config.py": "0af4b995f32e4aa79c68c762221c8deb237a70930abfc4886950facb57946643",
+      "app/database.py": "c379395714583ee97fc2fb1d36987f3400d73038078a6d6e8095fb5a729e10c5",
+      "app/disclosures.py": "8646ec2d60c262569e98ab66f68e5c2032023485b76ea1305c0aff738506eb36",
+      "app/document_citations.py": "87047d8fa80e2a953cbb6907a132d7c954bb4279fc60c183df9ca908bd0a72ff",
+      "app/document_parser.py": "dc39632593138d403a5df89cb12c6d268246acb0f29679fcc26760ff0a257438",
+      "app/json_requests.py": "7dee69518ee29a8b70b1e7915fcad6a0ada1aa1388b1efeb8c1b5acbe87e39b3",
+      "app/llm_client.py": "b7f52b318d9cfbe6625fc15d0f84eabb59eb8263b2a4d7475e4e0b4fe2c16ca5",
+      "app/llm_types.py": "6177f0a28494221de57d91c1d6cce40a4ee338223c3f5abbb212f04f3d5249e8",
+      "app/main.py": "059b582be0b83e065ed244a178a0acde84d4029b0af88482b2134886209361de",
+      "app/market.py": "6ee38a66dbbcd497a0142b77b6a11c58cfbfb9e30e737cd557aabcaaf6311ed2",
+      "app/market_api.py": "2c8729bdc19a66a23c68f05f38f549280f35a6c8d23443f7a6305bc330641c9a",
+      "app/market_history.py": "8a63aaff21d71e75defd344d6c4e09ab2a0e9a6328229b37c4028937619873cd",
+      "app/market_risk.py": "9348c23afe9f7737689355a71179030e276c737c7c25ac349a4c3cd0e7932b71",
+      "app/model_http.py": "3071dd05c2ed62fc7fe1a155bb0cda6b3f3e15f6ee8ce733396428b972b39572",
+      "app/model_limits.py": "e42bc1c88440b94fb73eacbd06f13a46b7b7a28161fefbd1909c24f5ac594554",
+      "app/observability.py": "6cb01ad81db7b5bf5a1760928f077a8f77eb6d0c6bef28e81c186c799141ca07",
+      "app/paper_trading/__init__.py": "e7a88992833b068ef028b123616eb70f449ebcfc284d86c5eccbc0e98e19eb13",
+      "app/paper_trading/api.py": "6bf07ec84dc9ac1cfb4f401cae775bd861e2f8ad481af5db91407c7b9ca359b9",
+      "app/paper_trading/benchmark.py": "f537c6298f724e3b5ffe6e6b83f3144c6a2df4507215d15022d198154c20e464",
+      "app/paper_trading/models.py": "33965c680d3776c4ca82192693bd2c21f856778e10a4150bf61b1cc0dec14b0f",
+      "app/paper_trading/performance.py": "2e2f1f51e3b97b6ad60f57d5136ec07076fd3ad83900403d0c6ff4bfdfb68178",
+      "app/paper_trading/quotes.py": "2a0e84a20a7345ded78333cf942c5d30f0b6c3aec72ea34d17e368ff51cf9211",
+      "app/paper_trading/risk.py": "edb5c70c50f51c97f9296c2cc343bcac8b1472283900fb02124215fb206a7717",
+      "app/paper_trading/rules.py": "fbf08ddd792dc3a1da03dcba475056aec48d3d0b30e74aef3aa1410743bfbff9",
+      "app/paper_trading/service.py": "5f4b6456a9a7fc9405102dc7adf786f46054dd1a9900feceb5c22236fca8016a",
+      "app/paper_trading/tasks.py": "3f036da928df49d7ca7535931a394373fbf12e5177030489ccb5cfe334506d6f",
+      "app/rag/__init__.py": "c00a141dd005b992ae163337fec834d60991ee47083299bec3943e81a7f3fb97",
+      "app/rag/api.py": "39ec84f91741d6b4a06f45ff29e3f0d832c1cc7e6d70afa14880cf2cbd896ec3",
+      "app/rag/chunker.py": "a79a084a4e15184193e3e691d0a6d3ba5a05c7302f291bd50291a793c41e6743",
+      "app/rag/core.py": "7818d5dcff96aaa2624579cf137a5df7d690cdb2231be73968efb4c4369be0f6",
+      "app/rag/crawler.py": "e2e6b7d0af45e98316b184efeaa16fe0bdd8d9837a7e333fffaaeaa8144ac62e",
+      "app/rag/crawlers/__init__.py": "f9eafe97b52f04edd9da074d671f8d660ac02b8902da4e0f3f9376580f1e13f3",
+      "app/rag/crawlers/eastmoney_real_crawler.py": "6fe9f886a468d7c777294c992e03ce720cfda9ef55f6b6a97b60b5a0fe53f5f6",
+      "app/rag/crawlers/scheduler.py": "f794b8b469f47f3a658e875f5e40e08f74a081b6368e5acf9c2f2a4b851171c8",
+      "app/rag/crawlers/sector_crawler.py": "4e0b40dd9e9280f38e0c02434569baacc9972a4edb5040d738c17cf0d53bede8",
+      "app/rag/crawlers/stock_crawler.py": "8c0ce3378e91ecd4e6688a4103e5f68a1f7d11de61b2b2cfa88ecf61e4a1bfc1",
+      "app/rag/embeddings.py": "64bfc2c51e9f274676a35ae94160819be2ec5c4b454a1bb6e306870328d08ab1",
+      "app/rag/parsers.py": "360fe0ea914dcdc180dc45d47eb2c3ab55437c80ceccd05096a3f0f7483efd0b",
+      "app/rag/research_integration.py": "320bf2c2c73b31fb93054b2b57dbe2431fbc08168e75b9ca6211b49801817e0f",
+      "app/report_evidence_eval.py": "abf2c64e899445cec6be028e6eba270cefb976765ad970a2db0e57797b972caf",
+      "app/report_fact_eval.py": "45d1c5fc05a82c45c50a57e53e47f44f0d59815ae31b69b50ca04e91f47c8a04",
+      "app/report_fact_task.py": "729982cfcd884b116e99651a849b2044bf9749ee9eb9e01c7133c099ba940acb",
+      "app/report_quote_replay.py": "8aba4fcae6715e0025bb25ae4a8936fd30ad0811314494bb1dd3d1c27f299895",
+      "app/research_compare.py": "4ec7bdebd227a96b2c3d13e3941a3f9e0163f4feaf249094393c8aca1558e250",
+      "app/research_eval.py": "08001fc3a7eb32e3c73de31744b845966c3806cafe1dad72f7963057ab0cc08b",
+      "app/risk_api.py": "e6cd40f967208965066126d5cd28fd8a1db7dce57bff806d25f3807791752227",
+      "app/risk_reading.py": "19c0615a9ab3afed3a6854248d64ee906efc66418a846de3bb400708fe9f5a53",
+      "app/risk_records.py": "624d22ac934f28b9924ee6fe50056a201eb19f7e7178df8839003bdc853438c3",
+      "app/risk_schema.py": "67f1e5ccac964c33d31cd9dd5dd213181870eba02689d2a51437ff69ecb2ea05",
+      "app/risk_summary.py": "a62787f7be27c5628ee480265654b2c6bb2651d1a4caa553ef13a34d3d838613",
+      "app/risk_task_analysis.py": "3b2cf4d595d35fdb38a2791eef8a6227859fda94eddc7d556659b98342bc10da",
+      "app/risk_task_records.py": "f1752cf257dd651589a2c811902469a726621463cdf105c54cee599c7affe64e",
+      "app/risk_tasks.py": "b650299c0dd8c4ab9c79428eb4d8a8befab2bee4ed74e231dc0063c0a7a5173f",
+      "app/risk_workbench.py": "605596a7c62628649ba6b48ae9b94c9f215f567893f1fc8275c703dc9d081327",
+      "app/schema_upgrade.py": "f2c9a73e181e34f2f10d8349851a79b1290c889d15e055728fa3b47905e1a454",
+      "app/stock_list.py": "6a91b89d0a369066de982ee43cb158a06c6aa102286e86883dce2bb04c7b9c78",
+      "app/stock_list_api.py": "ae85ce52f590636e8b6dfc12c94a0593fd1b7fbe069e9338f35cb06c963d6b09",
+      "app/tasks.py": "9990a19d5a55562f3eec7a309616af2ae8d386e0187eb74cf6112e9dfaa855e2",
+      "app/tool_calling.py": "014d5de3af30434f8cd6f575a4851990d9ee4c42adf387d09e814d05ba19fb8e",
+      "app/tool_calling_demo.py": "456a3d2b4fa8f6f15f2f7a8043c32f6f437c7ab03678ca8e6f2ebdd57e69fc23",
+      "app/tool_feedback.py": "41ebf01969b4bb038747b78fe8d00a09d81f31801e5914a274942c190d39ba85",
+      "app/tool_messages.py": "fe749cea8a5e219de9b78feeeb8d58c00f7d4ff568bcb0cdd2489002a0058001",
+      "app/tools/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "app/tools/advanced_research.py": "a68bf810ac32bcc0009aa97048113563cb86b5a9064977fb7ffdc2462ab46012",
+      "app/tools/calculations.py": "9c810a9f3c2e219325d5233cad499f911b088e1ef9a6b4448e70e8b9eeb94626",
+      "app/tools/demo.py": "b5e5d7e1aeefe6a37c99e670e097014df17b7ae9e775793bd8d0dcebfb022c31",
+      "app/tools/documents.py": "aa2d87d1bce3f6e2128e61149fc5332557532bee7ae95e29a6417b9af098eb96",
+      "app/tools/executor.py": "8ab8be790dd5ad9a378c68b4d11ba504d0af3cbf3ec4b51aa5c47b47a297f168",
+      "app/tools/market_data.py": "395d9f74a3fe7296d5d46348c083cde5251238d26cfe550f148f6d71d907ef36",
+      "app/tools/provenance.py": "316f11a433e642ca5ca1c6fb4f9aa02d55bafb1f3251f3d13c34eaa49a7bca8b",
+      "app/tools/registry.py": "88e6d0d5c2fcd66ef68c34c88de7b96af1cf8b7b3289e7c77f535cd537a6f182",
+      "app/tools/research.py": "a8a5ad1fac7621a78e576794a04fe4a160fbe80b4f98afd128d97da509218c24",
+      "app/user_settings/__init__.py": "69dac43c109e017a3b1f076f6f0a9935bcb6c65f892d54fa86161c5db0b3b3c3",
+      "app/user_settings/api.py": "46582b69bb3c1e8cd58ff4c0cdaa131fc6e86469a7018d5743ad3002e22bc8e7",
+      "app/user_settings/models.py": "4ac65c8c77a773417225a6bcebd23183854e445591d8bab698d32161a1b6399e",
+      "app/user_settings/runtime.py": "2a47a0211bea85d6382d7020d4e6fb8483ab306192fe1308b6138ead3cc18c5c",
+      "app/user_settings/schemas.py": "205c07749a42cb655896f7631ce8068cc2a85c64d314a3208881ef04aba42c09",
+      "app/watchlists/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "app/watchlists/metadata.py": "8ce6eafddd2c8a403060b3724ff0618959d41f781a56c66f1e12049c1d75ac86",
+      "app/watchlists/repository.py": "344fea5b1d51c944ff95637bc877f1683cf19524f33853dcfbc72548df3c6cd5"
+    },
+    "prompt": "5be7b4d9dc825638a64e5cfa7bcaa9cf47f3cc4dae371075558d1d0e08e901c8",
+    "answer_schema": "83634ec6c8c3bc7adaabb87d30bcb0c86024283106c0251cafc4355500f71a3b",
+    "proposal_schema": "3fe01cbc59bc4d5c02f9d12169e1cb90f0908d3ecbea35172e2c0e329054b3b8",
+    "task_code": "729982cfcd884b116e99651a849b2044bf9749ee9eb9e01c7133c099ba940acb",
+    "runner_code": "45d1c5fc05a82c45c50a57e53e47f44f0d59815ae31b69b50ca04e91f47c8a04"
+  },
+  "requested": 10,
+  "task_errors": 0,
+  "scoring_errors": 0,
+  "scored": 10,
+  "passed": 9,
+  "integrity_ok": true,
+  "acceptance_ok": false,
+  "success_rate": 0.9,
+  "provider_calls": 0,
+  "task_version": "quote-only-server-location-v1",
+  "raw_responses": [
+    {
+      "raw_response": "{\"status\": \"supported\", \"symbol\": \"600519.SH\", \"metric\": \"营业收入\", \"period\": \"2024\", \"value\": \"170899152276.34\", \"unit\": \"元\", \"reason_code\": null, \"citations\": [{\"document_id\": \"moutai-2024\", \"page\": 5, \"quote\": \"170,899,152,276.34\"}]}",
+      "context_sha256": "1e88132fffe5d2da5ad361d7c30ed98dc8135212f2d081646d742ba658ce3796"
+    },
+    {
+      "raw_response": "{\"status\": \"supported\", \"symbol\": \"600519.SH\", \"metric\": \"营业收入\", \"period\": \"2023\", \"value\": \"147693604994.14\", \"unit\": \"元\", \"reason_code\": null, \"citations\": [{\"document_id\": \"moutai-2024\", \"page\": 5, \"quote\": \"147,693,604,994.14\"}]}",
+      "context_sha256": "893a022683e15749f0f6d6670265c70ba98e180999fae29e018e892a08993ad8"
+    },
+    {
+      "raw_response": "{\"status\": \"supported\", \"symbol\": \"600519.SH\", \"metric\": \"归母净利润\", \"period\": \"2024\", \"value\": \"86228146421.62\", \"unit\": \"元\", \"reason_code\": null, \"citations\": [{\"document_id\": \"moutai-2024\", \"page\": 5, \"quote\": \"rewritten table quote\"}]}",
+      "context_sha256": "8ee00b8e53f29ffbe37b9b5eb81b64f56235a0e9e2585f2f56840636498696c7"
+    },
+    {
+      "raw_response": "{\"status\": \"supported\", \"symbol\": \"600519.SH\", \"metric\": \"经营活动现金流量净额\", \"period\": \"2024\", \"value\": \"92463692168.43\", \"unit\": \"元\", \"reason_code\": null, \"citations\": [{\"document_id\": \"moutai-2024\", \"page\": 5, \"quote\": \"92,463,692,168.43\"}]}",
+      "context_sha256": "0f18514c327f9a3f96546fa9f7479712c726dc51726de187ea5d73c84d90daa2"
+    },
+    {
+      "raw_response": "{\"status\": \"supported\", \"symbol\": \"000001.SZ\", \"metric\": \"营业收入\", \"period\": \"2024\", \"value\": \"146695\", \"unit\": \"百万元\", \"reason_code\": null, \"citations\": [{\"document_id\": \"pingan-2024\", \"page\": 16, \"quote\": \"营业收入  146,695  164,699  (10.9%)\"}]}",
+      "context_sha256": "839343df46b6f10bedf2f3348f96ced3043031661c5b088a433f05033bb87b05"
+    },
+    {
+      "raw_response": "{\"status\": \"supported\", \"symbol\": \"000001.SZ\", \"metric\": \"归母净利润\", \"period\": \"2024\", \"value\": \"44508\", \"unit\": \"百万元\", \"reason_code\": null, \"citations\": [{\"document_id\": \"pingan-2024\", \"page\": 16, \"quote\": \"44,508\"}]}",
+      "context_sha256": "777c4025852e6982653308d547d5fda637fab70e30c80fcf0a1eee6a3dfa1288"
+    },
+    {
+      "raw_response": "{\"status\": \"supported\", \"symbol\": \"000001.SZ\", \"metric\": \"不良贷款率\", \"period\": \"2024-12-31\", \"value\": \"1.06\", \"unit\": \"%\", \"reason_code\": null, \"citations\": [{\"document_id\": \"pingan-2024\", \"page\": 16, \"quote\": \"不良贷款率  1.06%  1.06%  -\"}]}",
+      "context_sha256": "e95e638fa09d7138f5e95421509cb4ae521562c3e09f69be9735904d4eb1ccf6"
+    },
+    {
+      "raw_response": "{\"status\": \"insufficient\", \"symbol\": \"600519.SH\", \"metric\": \"营业收入\", \"period\": \"2025\", \"value\": null, \"unit\": null, \"reason_code\": \"period_not_present\", \"citations\": []}",
+      "context_sha256": "a8642eb7ee1ad67bdd6a3a7ed8e6ac4b425bc432c3fb039aefce002376feb3d9"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "moutai-revenue-2024",
+      "context_sha256": "1e88132fffe5d2da5ad361d7c30ed98dc8135212f2d081646d742ba658ce3796",
+      "source": "model_proposal",
+      "state": "quote_located",
+      "reasons": [],
+      "scope": "quote_location_only_not_semantic_verification"
+    },
+    {
+      "id": "moutai-revenue-2023",
+      "context_sha256": "893a022683e15749f0f6d6670265c70ba98e180999fae29e018e892a08993ad8",
+      "source": "model_proposal",
+      "state": "quote_located",
+      "reasons": [],
+      "scope": "quote_location_only_not_semantic_verification"
+    },
+    {
+      "id": "moutai-profit-2024",
+      "context_sha256": "8ee00b8e53f29ffbe37b9b5eb81b64f56235a0e9e2585f2f56840636498696c7",
+      "source": "model_proposal",
+      "state": "unresolved",
+      "reasons": [
+        "quote_not_in_batch"
+      ],
+      "scope": "quote_location_only_not_semantic_verification"
+    },
+    {
+      "id": "moutai-cash-2024",
+      "context_sha256": "0f18514c327f9a3f96546fa9f7479712c726dc51726de187ea5d73c84d90daa2",
+      "source": "model_proposal",
+      "state": "quote_located",
+      "reasons": [],
+      "scope": "quote_location_only_not_semantic_verification"
+    },
+    {
+      "id": "pingan-revenue-2024",
+      "context_sha256": "839343df46b6f10bedf2f3348f96ced3043031661c5b088a433f05033bb87b05",
+      "source": "model_proposal",
+      "state": "quote_located",
+      "reasons": [],
+      "scope": "quote_location_only_not_semantic_verification"
+    },
+    {
+      "id": "pingan-profit-2024",
+      "context_sha256": "777c4025852e6982653308d547d5fda637fab70e30c80fcf0a1eee6a3dfa1288",
+      "source": "model_proposal",
+      "state": "quote_located",
+      "reasons": [],
+      "scope": "quote_location_only_not_semantic_verification"
+    },
+    {
+      "id": "pingan-npl-2024",
+      "context_sha256": "e95e638fa09d7138f5e95421509cb4ae521562c3e09f69be9735904d4eb1ccf6",
+      "source": "model_proposal",
+      "state": "quote_located",
+      "reasons": [],
+      "scope": "quote_location_only_not_semantic_verification"
+    },
+    {
+      "id": "future-period",
+      "context_sha256": "a8642eb7ee1ad67bdd6a3a7ed8e6ac4b425bc432c3fb039aefce002376feb3d9",
+      "source": "model_proposal",
+      "state": "model_abstention",
+      "reasons": [],
+      "scope": "model_abstention_only"
+    },
+    {
+      "id": "before-publication",
+      "context_sha256": "b262d080b88f719e9cff515334cb7f4f77f21b83e15969c97767d22d83f62092",
+      "source": "server_exclusion_rule",
+      "state": "insufficient",
+      "reason": "not_yet_public"
+    },
+    {
+      "id": "wrong-security",
+      "context_sha256": "3c9be7d2879b0e7894d75ea03ef02dad0c13ca46494a298ea7e1f97d3fa572ba",
+      "source": "server_exclusion_rule",
+      "state": "insufficient",
+      "reason": "wrong_security"
+    }
+  ],
+  "automatic_promotion": false,
+  "input_sha256": "389c6cf43990c55028d43a18f715e25127c8523ff1ba9fcf8b2b12d4ff42e0f9"
+}

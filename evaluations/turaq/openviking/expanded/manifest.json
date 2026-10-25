@@ -1,0 +1,39 @@
+{
+  "version": "openviking-expanded-v1",
+  "expected_ids": [
+    "moutai-revenue-2024",
+    "moutai-revenue-2023",
+    "moutai-profit-2024",
+    "moutai-cash-2024",
+    "pingan-revenue-2024",
+    "pingan-profit-2024",
+    "pingan-npl-2024",
+    "moutai23-revenue-2023",
+    "moutai23-revenue-2022",
+    "moutai23-profit-2023",
+    "moutai23-profit-2022-adjusted",
+    "moutai23-cash-2023",
+    "moutai23-assets-2023",
+    "moutai23-revenue-2023q3",
+    "boundary-future-period",
+    "boundary-before-publication",
+    "boundary-wrong-security",
+    "boundary-wrong-report",
+    "boundary-other-user",
+    "boundary-withdrawn-version"
+  ],
+  "files": {
+    "cases.json": "5bec002174c4e895c5f34e2b1bde8cfd3608f8fe4877ac6c25bbfa1f95492469",
+    "documents.json": "4c2e4dafcb1d8f966f04d985d99bb26fca8e35ae47a69c154bb1708493ff2f23",
+    "fixture_answers.json": "e30f68c7919ad32a52f9be8ab8d96a2b54fb832fb731abbe61761676083f1bf5",
+    "gold.json": "7b3d326f0e5919e358fd9cace8d58d8d6a9071aec64409cc4f238a6319e948b2",
+    "page-selection.json": "282a2e4fcc4b8e6bcf6cabb865a4e66bf89b8d2f340a5dcfbe98938d05feec60",
+    "sources/moutai-2023.pages.json": "e0591c555c7b982ec18d1e28482d0010d729919294afa02d6bcfb59607b080bb",
+    "sources/moutai-2023.pdf": "2125ff97a452ea79b0d784e2432f7d224b6aecc330b644b593477d69e22f4ed1",
+    "sources/moutai-2024.pages.json": "fa3fa8e7b6b675638975e551faf55a211e75f7fce8635c0e5c968b472ae98182",
+    "sources/moutai-2024.pdf": "5299f4940e2ce4e91084b73dc457d558b9d335fa76fbfee6227e4254eb7f4a30",
+    "sources/pingan-2024.pages.json": "02a36e60a13b7e3813401383fd26e611d92428607edb53730956cda50c4859ba",
+    "sources/pingan-2024.pdf": "e88d8e6a8a4e83dc77501cfcf6dec687aa1b1407cd5c2937c0894da50bd0e397"
+  },
+  "scope": "3 reports, 48 selected physical pages; evidence pages oversampled plus deterministic spread; not full-PDF or blind held-out"
+}

@@ -1,0 +1,64 @@
+{
+  "all_inputs_algorithm_harness_and_history_unchanged": true,
+  "extraction_normalizer_matches_saved_source_metadata": true,
+  "reference_counts": {
+    "factual_requests": 16,
+    "supported_facts": 16,
+    "boundary_requests": 6,
+    "indexed_pages": 64
+  },
+  "source_audit": {
+    "pages": 64,
+    "units": 368,
+    "table_rows": 170,
+    "source_spans_verified": true,
+    "non_whitespace_coverage": true
+  },
+  "unit_tests": {
+    "passed": 692,
+    "warnings": 3,
+    "seconds": 43.43
+  },
+  "new_regression_cases": 19,
+  "independent_review": {
+    "reviewers": 1,
+    "completed_after_same_review_resumed": true,
+    "important_found": 1,
+    "important_fixed_red_green": 1,
+    "important_remaining": 0,
+    "reference_facts_checked": 16,
+    "minor_deferred": "Check five boundary ids individually; current scope checks5empty rows, no paired-error trigger observed."
+  },
+  "new_python_ruff": "passed",
+  "python_compile": "passed",
+  "diff_whitespace": "passed",
+  "frontend_changed": false,
+  "model_evaluation_run": false,
+  "provider_attempts": 0,
+  "model_answer_accuracy": null,
+  "plaintext_secret_scan": {
+    "scope": "new code/docs, frozen text references and experiment JSON; configured secrets>=8chars; official PDF binaries validated by SHA256",
+    "files": 17,
+    "findings": []
+  },
+  "business_index_or_routing_changed": false,
+  "artifact_sha256": {
+    "app/unseen_report_validation.py": "66248001f792b0c3ebffcada32b6dbf084f5b30b1bfaff7d8427ea5ee89b3ef0",
+    "scripts/run_unseen_report_eval.py": "3e6e9f939f5f6993ed33ceeddbcf491f92affc95dc7f2cb730d1c819451c58cc",
+    "tests/unit/test_unseen_report_validation.py": "3a15d67fe0e0fe7b59f7d7160c327d6ee810aee7446668134d41b1cd2c046d3d",
+    "docs/implementation/2026-10-24-unseen-report-validation.md": "5668073100cee7a540eceb7420f75e781512e69b6e3dd4cd2b34a349e311cb76",
+    "docs/research/2026-10-24-unseen-report-results.md": "63e3376717b26e9701775a68066b4f0a261cb66de890af20d7bf6889cdd29907",
+    "evaluations/turaq/unseen-reports/annotations.json": "be94738a248f0a3b5cad5a0f51205080a1034e2ab47b9915828731b91f2b0200",
+    "evaluations/turaq/unseen-reports/cases.json": "12b0ebc37cc12a8bd5d99d4d8a52f0106f838160aa98aabc3615041010218dd1",
+    "evaluations/turaq/unseen-reports/documents.json": "cb7c725254d5756f742133663563b73d77363787a9da1c898e7797f7f84b2261",
+    "evaluations/turaq/unseen-reports/fixture_answers.json": "fa1eb89219d89ddb978ec554b9effd1b85c43d3c3f67948cd5303f238b5d3cfb",
+    "evaluations/turaq/unseen-reports/gold.json": "5e49adc8c63d45ce3cd7eb953bb9d9ceefc32ad57900285bdf7433371e4bdbca",
+    "evaluations/turaq/unseen-reports/manifest.json": "5e8d8d29ce3e8608f96e638fccd1b3539393287bc0f8f7728d06c33c50af009d",
+    "evaluations/turaq/unseen-reports/protocol.json": "91dc281be9782d4faebd47e9de69f4d644c8c94bddaa8d44a8af596255f32421",
+    "evaluations/turaq/unseen-reports/results/analysis-2026-10-24.json": "ca71e0abbbaf8c76ea832c56004a002308c44b7c369bac900e25a317406e7c6a",
+    "evaluations/turaq/unseen-reports/results/extraction-audit-2026-10-24.json": "8f05ab91f38ee93ca2ea6f9bd423020b0a6c54b17497332dad3cbb19eca845cc",
+    "evaluations/turaq/unseen-reports/results/unseen-reports-2026-10-24-v1.json": "594460ebf50e3307e37a5545bfe613f870fad3f13172626200dcb343b446ccd5",
+    "evaluations/turaq/unseen-reports/sources/cmb-2024.pages.json": "d96e5e11b239002f1ff07c1e6af34da37e1a983a804ebd77b046d1b841e51d1b",
+    "evaluations/turaq/unseen-reports/sources/midea-2024.pages.json": "67ad1093a65c0a2fbd4a3440bf8214c6ffc49b937b9a80694ac7a424660b46c7"
+  }
+}

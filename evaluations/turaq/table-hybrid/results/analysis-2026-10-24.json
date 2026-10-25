@@ -1,0 +1,133 @@
+{
+  "scope": "post-run analysis; preserve raw/gold/scorer",
+  "result_sha256": "698be73faf1bb5cbc852d2311984d60d8c848193a37d7df2da6a5c826c31eb80",
+  "all_frozen_files_unchanged": true,
+  "algorithm_unchanged_since_run_start": true,
+  "index_audit": {
+    "pages": 48,
+    "units": 551,
+    "table_rows": 419,
+    "source_spans_verified": true,
+    "non_whitespace_coverage": true
+  },
+  "retrieval": {
+    "lexical": {
+      "requested": 20,
+      "recorded": 20,
+      "errors": 0,
+      "evidence": {
+        "denominator": 14,
+        "at1": 9,
+        "at3": 12
+      },
+      "median_retrieval_seconds": 0.0133,
+      "median_visible_characters": 518.5,
+      "max_visible_characters": 1176,
+      "scope_boundaries_empty": true
+    },
+    "hybrid": {
+      "requested": 20,
+      "recorded": 20,
+      "errors": 0,
+      "evidence": {
+        "denominator": 14,
+        "at1": 10,
+        "at3": 12
+      },
+      "median_retrieval_seconds": 0.30000000000000004,
+      "median_visible_characters": 699.0,
+      "max_visible_characters": 1127,
+      "scope_boundaries_empty": true
+    }
+  },
+  "answer_summary": {
+    "all_cases": {
+      "requested": 20,
+      "scored": 17,
+      "passed": 16,
+      "missing": [],
+      "task_or_scoring_errors": 3,
+      "integrity_ok": false
+    },
+    "facts": {
+      "requested": 14,
+      "scored": 11,
+      "passed": 10,
+      "missing": [],
+      "task_or_scoring_errors": 3,
+      "integrity_ok": false
+    },
+    "boundaries": {
+      "requested": 6,
+      "scored": 6,
+      "passed": 6,
+      "missing": [],
+      "task_or_scoring_errors": 0,
+      "integrity_ok": true
+    },
+    "program_only_boundaries": 5
+  },
+  "usage": {
+    "attempts": 15,
+    "request_chars": 52182,
+    "total_tokens": 25618,
+    "known_total_tokens": 25618,
+    "unknown_usage_attempts": 0,
+    "cache_hits": 0,
+    "cost": null
+  },
+  "task_error_replay": [
+    {
+      "id": "moutai-revenue-2023",
+      "error_type": "ValueError",
+      "classification": "unseen quote outside retrieved fragment"
+    },
+    {
+      "id": "moutai23-revenue-2022",
+      "error_type": "ValueError",
+      "classification": "unseen quote outside retrieved fragment"
+    },
+    {
+      "id": "moutai23-assets-2023",
+      "error_type": "ValueError",
+      "classification": "inconsistent model abstention"
+    }
+  ],
+  "scored_failures": [
+    {
+      "id": "moutai23-cash-2023",
+      "scores": {
+        "abstention": true,
+        "evidence": false,
+        "identity": true,
+        "value": true,
+        "contract": false
+      },
+      "output": {
+        "status": "supported",
+        "symbol": "600519.SH",
+        "metric": "经营活动现金流量净额",
+        "period": "2023",
+        "value": "66593247721.09",
+        "unit": "元",
+        "reason_code": null,
+        "citations": [
+          {
+            "document_id": "moutai-2023",
+            "page": 67,
+            "start": 388,
+            "end": 441,
+            "quote": "  经营活动产生的现金流量净额  66,593,247,721.09  36,698,595,830.03"
+          }
+        ]
+      }
+    }
+  ],
+  "notes": [
+    "Same 14 factual denominator and six boundaries; never report 10/11 as accuracy.",
+    "Five boundary cases are program gating; only one boundary uses a model.",
+    "Cash-flow value is correct with an exact quote on physical page67, but outside frozen allowed anchors; score retained false.",
+    "Same known selected48pages; no held-out accuracy claim.",
+    "No business routing/index or gold changed; no automatic promotion."
+  ]
+}

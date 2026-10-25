@@ -1,0 +1,58 @@
+{
+  "verified_at": "2026-10-24T03:19:52.319302+00:00",
+  "parent_file_sha256": "a8e29557e3437ba61bceafa2ee11a69741dffa37ec7df18e1fd294f234feba79",
+  "replay_file_sha256": "bd4444cbedd7730f39640bc9ef16e59c12967020c91246290c38d603cb86b3e9",
+  "adapter_sha256": "8aba4fcae6715e0025bb25ae4a8936fd30ad0811314494bb1dd3d1c27f299895",
+  "scorer_code_sha256": "abf2c64e899445cec6be028e6eba270cefb976765ad970a2db0e57797b972caf",
+  "raw_contract": {
+    "passed": 2,
+    "requested": 10,
+    "acceptance_ok": false
+  },
+  "offline_replay_contract": {
+    "passed": 8,
+    "requested": 10,
+    "acceptance_ok": false
+  },
+  "changed_cases_coordinates_only": [
+    "moutai-revenue-2024",
+    "moutai-revenue-2023",
+    "moutai-cash-2024",
+    "pingan-revenue-2024",
+    "pingan-profit-2024",
+    "pingan-npl-2024"
+  ],
+  "additional_provider_calls": 0,
+  "original_provider_attempts": 10,
+  "original_usage": {
+    "prompt_tokens": 27378,
+    "completion_tokens": 1425,
+    "total_tokens": 28803
+  },
+  "original_cached_input_tokens": 1280,
+  "cost": null,
+  "tests": {
+    "targeted": 12,
+    "isolated_unit": 549,
+    "warnings": 3,
+    "exit_code": 0,
+    "command": ".venv/Scripts/python.exe -m pytest tests/unit --confcutdir=tests/unit -q -o addopts="
+  },
+  "static_checks": {
+    "ruff": "passed for new replay module and tests",
+    "compileall": "passed for new replay module and tests",
+    "tracked_diff_check": "passed"
+  },
+  "independent_review": {
+    "reviewer": "live_baseline_review",
+    "finding": "P2 incomplete usage ledger must not be reported as known total",
+    "status": "fixed and independently rechecked; 12 tests passed; no new important issues"
+  },
+  "scope": "same cached answers, same visible frozen context, same strict scorer; no model rerun or automatic promotion",
+  "not_run": [
+    "database integration",
+    "production live run",
+    "held-out evaluation",
+    "provider bill verification"
+  ]
+}

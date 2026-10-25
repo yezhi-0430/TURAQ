@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-23",
+  "unit": {
+    "command": ".venv/Scripts/python.exe -m pytest tests/unit --confcutdir=tests/unit -o addopts= -q --tb=short",
+    "passed": 488,
+    "warnings": 3
+  },
+  "admission_and_access": {
+    "command": ".venv/Scripts/python.exe -m pytest tests/auth/test_limits.py tests/auth/test_limits_deadline.py tests/auth/test_risk_access.py --confcutdir=tests/auth -o addopts= -q --tb=short",
+    "passed": 29,
+    "warnings": 3
+  },
+  "frontend": {
+    "command": "node --test tests/frontend/*.test.mjs",
+    "passed": 70
+  },
+  "sdk": {
+    "version": "5.0.4",
+    "network": "all HTTP mocked",
+    "local_spans": 2,
+    "result": "passed"
+  },
+  "static_checks": "scoped Ruff, compileall, git diff --check passed",
+  "real_model_quality": "not_run",
+  "postgres_integration": "not_run",
+  "external_langfuse": "not_run"
+}

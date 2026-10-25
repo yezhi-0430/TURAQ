@@ -1,0 +1,179 @@
+{
+  "scope": "Post-run diagnosis only; no reruns, tuning or reference edits",
+  "metric": "located-source-span-v1",
+  "model_answer_accuracy": null,
+  "target_model_calls": 0,
+  "corpora": {
+    "regression": {
+      "raw_result_sha256": "fb7f9d9eb8b3195b2cc464bbe238e71c946c9af0991e85a446b63556c9ff7de7",
+      "index_audit": {
+        "pages": 64,
+        "units": 726,
+        "table_rows": 549,
+        "source_spans_verified": true,
+        "non_whitespace_coverage": true
+      },
+      "engines": {
+        "lexical": {
+          "summary": {
+            "requested": 22,
+            "recorded": 22,
+            "errors": 0,
+            "evidence": {
+              "denominator": 16,
+              "at1": 16,
+              "at3": 16
+            },
+            "metric": "located-source-span-v1",
+            "median_retrieval_seconds": 0.025,
+            "median_visible_characters": 731.0,
+            "max_visible_characters": 1197,
+            "scope_boundary_count": 5,
+            "scope_boundaries_empty": true
+          },
+          "by_company": {
+            "midea-2024": {
+              "requested": 8,
+              "at1": 8,
+              "at3": 8,
+              "missed_at1": [],
+              "missed_at3": []
+            },
+            "cmb-2024": {
+              "requested": 8,
+              "at1": 8,
+              "at3": 8,
+              "missed_at1": [],
+              "missed_at3": []
+            }
+          }
+        },
+        "hybrid": {
+          "summary": {
+            "requested": 22,
+            "recorded": 22,
+            "errors": 0,
+            "evidence": {
+              "denominator": 16,
+              "at1": 12,
+              "at3": 16
+            },
+            "metric": "located-source-span-v1",
+            "median_retrieval_seconds": 0.39544999999999997,
+            "median_visible_characters": 674.5,
+            "max_visible_characters": 1174,
+            "scope_boundary_count": 5,
+            "scope_boundaries_empty": true
+          },
+          "by_company": {
+            "midea-2024": {
+              "requested": 8,
+              "at1": 8,
+              "at3": 8,
+              "missed_at1": [],
+              "missed_at3": []
+            },
+            "cmb-2024": {
+              "requested": 8,
+              "at1": 4,
+              "at3": 8,
+              "missed_at1": [
+                "cmb-2024-fact-03",
+                "cmb-2024-fact-04",
+                "cmb-2024-fact-06",
+                "cmb-2024-fact-07"
+              ],
+              "missed_at3": []
+            }
+          }
+        }
+      },
+      "reference_fixtures_passed": 22
+    },
+    "fresh": {
+      "raw_result_sha256": "a219ae8fc32ea465ed2396d66135cb339acd50a5569c6090a5b1178b4fb6ae19",
+      "index_audit": {
+        "pages": 32,
+        "units": 297,
+        "table_rows": 206,
+        "source_spans_verified": true,
+        "non_whitespace_coverage": true
+      },
+      "engines": {
+        "lexical": {
+          "summary": {
+            "requested": 14,
+            "recorded": 14,
+            "errors": 0,
+            "evidence": {
+              "denominator": 8,
+              "at1": 5,
+              "at3": 7
+            },
+            "metric": "located-source-span-v1",
+            "median_retrieval_seconds": 0.0335,
+            "median_visible_characters": 636.0,
+            "max_visible_characters": 1217,
+            "scope_boundary_count": 5,
+            "scope_boundaries_empty": true
+          },
+          "by_company": {
+            "yili-2024": {
+              "requested": 8,
+              "at1": 5,
+              "at3": 7,
+              "missed_at1": [
+                "yili-2024-fact-05",
+                "yili-2024-fact-06",
+                "yili-2024-fact-07"
+              ],
+              "missed_at3": [
+                "yili-2024-fact-05"
+              ]
+            }
+          }
+        },
+        "hybrid": {
+          "summary": {
+            "requested": 14,
+            "recorded": 14,
+            "errors": 0,
+            "evidence": {
+              "denominator": 8,
+              "at1": 6,
+              "at3": 8
+            },
+            "metric": "located-source-span-v1",
+            "median_retrieval_seconds": 0.32775,
+            "median_visible_characters": 633.0,
+            "max_visible_characters": 1108,
+            "scope_boundary_count": 5,
+            "scope_boundaries_empty": true
+          },
+          "by_company": {
+            "yili-2024": {
+              "requested": 8,
+              "at1": 6,
+              "at3": 8,
+              "missed_at1": [
+                "yili-2024-fact-06",
+                "yili-2024-fact-07"
+              ],
+              "missed_at3": []
+            }
+          }
+        }
+      },
+      "reference_fixtures_passed": 14
+    }
+  },
+  "limitations": [
+    "Known regression is no longer unseen; fresh Yili method frozen before acquisition, references same-author and pre-retrieval",
+    "Source span hits do not prove model disambiguation of concatenated financial columns",
+    "Only first32physical pages per report indexed",
+    "Five source-isolation boundaries passed; future-period answer abstention not model-tested",
+    "Existing business caches and indexes not migrated",
+    "CMB full report serial34.792sec; concurrent unit load exceeded original45sec timeout",
+    "OCR unavailable; unsupported inherited-only Form textfont rejected safely"
+  ]
+}

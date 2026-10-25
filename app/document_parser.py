@@ -8,8 +8,12 @@ import sys
 
 from pypdf import PdfReader
 
+from app.pdf_cmap import FONT_ERROR, STRUCTURE_ERROR, StandardCIDMapper
+from app.pdf_text_quality import QUALITY_ERROR, text_quality_issue
+
 _job_handle = None
 MAX_PAGES = 1500
+PARSER_VERSION = "pypdf-standard-cid-v2"
 # Only these messages are shown to users; anything else stays generic.
 SAFE_ERRORS = (
     "PDF无效或超过20MiB",
@@ -17,6 +21,9 @@ SAFE_ERRORS = (
     f"PDF超过{MAX_PAGES}页解析上限",
     "PDF页内容超过解析上限",
     "未提取到文字，可能为扫描件；OCR尚未接通",
+    FONT_ERROR,
+    STRUCTURE_ERROR,
+    QUALITY_ERROR,
 )
 _WIDE_SPACE = re.compile(r" {3,}")
 _TRAILING = re.compile(r"[ 	]+$", re.M)
@@ -96,24 +103,46 @@ def extract(data):
     if len(reader.pages) > MAX_PAGES:
         raise ValueError(f"PDF超过{MAX_PAGES}页解析上限")
     pages, warnings = [], []
+    mapper = StandardCIDMapper(reader)
     for index, page in enumerate(reader.pages):
         contents = page.get_contents()
         if contents is not None and len(contents.get_data()) > 8 * 1024 * 1024:
             raise ValueError("PDF页内容超过解析上限")
         # Blank pages (no content stream) make pypdf's layout mode raise KeyError.
+        repaired_fonts = mapper.prepare_page(page)
+        mode = "plain" if mapper.text_forms else "layout"
         text = (
-            page.extract_text(extraction_mode="layout", layout_mode_space_vertically=False) or ""
+            page.extract_text(extraction_mode=mode, layout_mode_space_vertically=False) or ""
             if contents is not None
             else ""
         )
-        pages.append(dict(page=index + 1, text=compact(text)))
+        text = compact(text)
+        if text_quality_issue(text):
+            raise ValueError(QUALITY_ERROR)
+        pages.append(
+            dict(
+                page=index + 1,
+                text=text,
+                extraction=dict(
+                    parser_version=PARSER_VERSION, standard_cid_fonts=repaired_fonts, mode=mode
+                ),
+            )
+        )
     if not any(p["text"].strip() for p in pages):
         raise ValueError("未提取到文字，可能为扫描件；OCR尚未接通")
-    return dict(pages=pages, warnings=warnings)
+    if mapper.repaired:
+        warnings.append("已使用标准字形映射提取文字；表格与数值仍需对照原PDF核验。")
+    return dict(pages=pages, warnings=warnings, parser_version=PARSER_VERSION)
 
 
 if __name__ == "__main__":
     try:
+        # Third-party warnings can contain font dictionaries or document strings.
+        # Emit only our bounded JSON protocol from this disposable child.
+        import logging
+
+        logging.getLogger("pypdf").setLevel(logging.ERROR)
+        logging.getLogger("pdfminer").setLevel(logging.ERROR)
         limit_process_memory()
         result = extract(sys.stdin.buffer.read(20 * 1024 * 1024 + 1))
         sys.stdout.buffer.write(json.dumps(result, ensure_ascii=False).encode("utf-8"))

@@ -81,7 +81,7 @@
    <div class="settings-layout"><nav id="settings-nav" class="settings-nav" aria-label="设置分类"></nav><div class="settings-body"><header class="settings-section-heading"><span class="eyebrow" id="settings-scope"></span><h2 id="settings-title"></h2><p id="settings-subtitle"></p></header>
    <p id="settings-status" class="settings-status" role="status" aria-live="polite"></p>
    <form id="settings-personal-form"><div id="settings-personal-fields"></div></form><form id="settings-admin-form" hidden><div id="settings-admin-fields"></div></form>
-   <section id="settings-security" hidden></section><section id="settings-secrets" hidden></section><section id="settings-diagnostics" hidden></section><section id="settings-audit" hidden></section>
+   <section id="settings-memory" hidden></section><section id="settings-security" hidden></section><section id="settings-secrets" hidden></section><section id="settings-diagnostics" hidden></section><section id="settings-audit" hidden></section>
    <footer class="settings-footer" id="settings-footer"><div><strong id="settings-dirty"></strong><small id="settings-version"></small></div><div class="settings-footer-actions"><button type="button" class="btn" id="settings-reload">重新加载</button><button type="button" class="btn" id="settings-reset">恢复默认</button><button type="button" class="btn primary" id="settings-save">保存设置</button></div></footer>
    <div class="settings-transfer" id="settings-transfer"><span>配置备份</span><button type="button" class="settings-link" id="settings-export">导出 JSON</button><button type="button" class="settings-link" id="settings-import">导入个人配置</button><input id="settings-file" type="file" accept=".json,application/json" hidden></div>
    </div></div><dialog id="settings-confirm-dialog" class="settings-dialog" aria-labelledby="settings-confirm-title"><h2 id="settings-confirm-title">确认操作</h2><p id="settings-confirm-text"></p><div class="settings-footer-actions"><button class="btn" type="button" id="settings-confirm-cancel">取消</button><button class="btn primary" type="button" id="settings-confirm-ok">确认</button></div></dialog>`;
@@ -133,6 +133,7 @@
   note('');controls();
   if(isGlobal())await loadAdmin();
   if(tab==='security')await loadSessions();
+  if(window.contextMemory)await window.contextMemory.show(tab==='research',$('settings-memory'));
   if(tab==='audit'){auditOffset=0;await loadAudit();}
  }
  function apply(data){

@@ -1,0 +1,45 @@
+{
+  "frozen_unchanged": true,
+  "plaintext_secret_scan": {
+    "scope": "new RAG repair text files and public experiment JSON only; configured secrets >=8 chars; PDF binaries excluded",
+    "files": 13,
+    "findings": []
+  },
+  "checks": {
+    "source_fidelity_regressions": 33,
+    "frontend_tests_passed": 83,
+    "vite_build": "passed",
+    "rag_manager_syntax": "passed",
+    "new_python_ruff": "passed",
+    "python_compile": "passed",
+    "diff_whitespace": "passed",
+    "unit_final": {
+      "passed": 658,
+      "warnings": 3,
+      "seconds": 35.1
+    }
+  },
+  "independent_review": {
+    "reviewers": 1,
+    "important_findings": 1,
+    "fixed_with_red_green": 1,
+    "deferred_findings": 0,
+    "frozen_chunks_unchanged_after_fix": true
+  },
+  "paid_calls_after_review_fix": 0,
+  "artifacts_sha256": {
+    "app/rag/chunker.py": "ee9dab6b65dd0c668f04ca2169cdd179f90105ef7727a9cb666ba7613d37eabd",
+    "app/rag/scoring.py": "630b125cb1814823909c7914a277652be18bb003c47ad6572e90616c1a7d8b0e",
+    "app/rag/core.py": "3ca4e820d840f86afa901c44f708b9c5b3213b13b66d5dfe325779add3eaa3c1",
+    "app/rag/research_integration.py": "39caf190403f16c125f24d4371591f3e7cbf5c8fb051a5d082a88c9496643e42",
+    "app/rag/api.py": "ea44f001d727231a9b4f7cb8866f41add47e15e11e45557823f51049d74d4c51",
+    "frontend/rag-manager.js": "d4c9210f256ad129cee88f771502110044840ecf738fb8194fb73ad61ae92782",
+    "scripts/run_rag_repair_eval.py": "add6a88106b19ed583c87c72d5bb9374426247cf2a8ce76087671e45850b04e6",
+    "tests/unit/test_rag_source_fidelity.py": "4a83d113187565a0bb43b74a75c6660c881140a6250f8098b695d70fac73b71f",
+    "docs/research/2026-10-24-rag-source-fix-results.md": "b13ce38785b0cff07eb8a9872b38bcaadb47e4835b31f96fda69aa5de6e2e351",
+    "docs/implementation/2026-10-24-rag-source-fix.md": "a7265c70b4c9d2e1205510282ec649123fe24c010b834edd0fe9ba6f338e3072",
+    "evaluations/turaq/rag-repair/results/analysis-2026-10-24.json": "cc9981d28dbf08aecb930d335119b6f85ca011358551fa39fc69658de9e52856",
+    "evaluations/turaq/rag-repair/results/rag-repair-2026-10-24-live-v1.json": "c8f216d24d2bf3e6f5fcd2f41de609f7ae20aac56b1efc1369ba4025f091a521",
+    "evaluations/turaq/rag-repair/results/rag-repair-2026-10-24-offline-v1.json": "81d70089e04ae9d9e2b32116540b495bae3cb90f8dc2ec7e1dc9cf591c8d643f"
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "state": "incomplete",
+  "corpus_fingerprint": "7b9cfe9c87246acd5ac619b2a3c5ca417b5eac8cc009246f19a0a134642562f5",
+  "requested": 20,
+  "resource_pages": 48,
+  "task_version": "quote-only-server-location-v1",
+  "live": true,
+  "automatic_promotion": false,
+  "comparison_scope": "3 reports / 48 selected pages; BGE512 vs Qwen1024; system comparison",
+  "chroma_similarity_gate": "existing research wrapper: 1-distance >= 0.5",
+  "cost": null,
+  "resumed_workspace": "openviking-pilot-2026-10-24-memory-check",
+  "service_ready": true,
+  "chroma_setup_seconds": 33.705,
+  "engines": {
+    "chroma_bge": [],
+    "lexical": [],
+    "openviking": []
+  },
+  "usage": {
+    "attempts": 13,
+    "request_chars": 17242,
+    "total_tokens": 12243,
+    "known_total_tokens": 12243,
+    "unknown_usage_attempts": 0,
+    "cache_hits": 3,
+    "cost": null,
+    "records": [
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 1064,
+          "total_tokens": 1064
+        },
+        "elapsed_seconds": 0.469
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 1034,
+          "total_tokens": 1034
+        },
+        "elapsed_seconds": 0.286
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 1150,
+          "total_tokens": 1150
+        },
+        "elapsed_seconds": 0.278
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 713,
+          "total_tokens": 713
+        },
+        "elapsed_seconds": 0.263
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 346,
+          "total_tokens": 346
+        },
+        "elapsed_seconds": 0.374
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 637,
+          "total_tokens": 637
+        },
+        "elapsed_seconds": 0.263
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 1540,
+          "total_tokens": 1540
+        },
+        "elapsed_seconds": 0.334
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 1137,
+          "total_tokens": 1137
+        },
+        "elapsed_seconds": 0.281
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 863,
+          "total_tokens": 863
+        },
+        "elapsed_seconds": 0.282
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 764,
+          "total_tokens": 764
+        },
+        "elapsed_seconds": 0.239
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 1526,
+          "total_tokens": 1526
+        },
+        "elapsed_seconds": 0.286
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 790,
+          "total_tokens": 790
+        },
+        "elapsed_seconds": 0.296
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 679,
+          "total_tokens": 679
+        },
+        "elapsed_seconds": 0.274
+      }
+    ]
+  },
+  "services_stopped_after_experiment": true,
+  "error_type": "RuntimeError"
+}

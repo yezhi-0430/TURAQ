@@ -1,0 +1,80 @@
+{
+  "verified_at": "2026-10-25T06:34:16.340553+00:00",
+  "frozen_files_verified": 52,
+  "legacy_files_unchanged": 44,
+  "candidate_snapshots_match": 3,
+  "offline_replay_cases": 36,
+  "new_tests": {
+    "red": 36,
+    "green": 36
+  },
+  "unit_suite": {
+    "passed": 761,
+    "warnings": 3,
+    "seconds": 68.75,
+    "command": ".venv/Scripts/python.exe -X utf8 -m pytest tests/unit --confcutdir=tests/unit -o addopts='' -q"
+  },
+  "ruff": "passed on all newPython",
+  "compile": "passed",
+  "secret_scan": {
+    "files": 14,
+    "findings": []
+  },
+  "strict_facts": {
+    "baseline_passed": 20,
+    "v2_passed": 23,
+    "denominator": 24
+  },
+  "model_future": {
+    "passed": 2,
+    "requested": 2
+  },
+  "program_boundaries": {
+    "passed": 10,
+    "requested": 10
+  },
+  "provider_attempts": 26,
+  "total_tokens": 38536,
+  "unknown_usage_attempts": 0,
+  "cost": null,
+  "paid_reruns": 0,
+  "gold_scorer_or_retrieval_changed": false,
+  "postresponse_value_or_unit_normalization": false,
+  "business_routing_changed": false,
+  "automatic_promotion": false,
+  "remaining_issue": "CMB EPS outputunit元/股 vs frozen元; amount/citation correct; strictfailure retained",
+  "independent_review": {
+    "reviewers": 1,
+    "critical": 0,
+    "important": 0,
+    "minor": 0,
+    "frozen_files_checked": 52,
+    "legacy_files_checked": 44,
+    "snapshots_checked": 3,
+    "replayed_cases": 36,
+    "declined_to_judge": [
+      "Financial truth/PDF fidelity/gold/EPS business unit policy not independently established",
+      "Provider authenticity/billing/exactweights/historical timing/other activity not independently attested",
+      "Earlier RED/full761suite/Ruff/durations are executor evidence, not independently rerun",
+      "Production authorization beyond the trusted-caller contract and frozen experiment path not assessed",
+      "No unseen/fullreport/businessintegration/deployment/generalworkspace claim"
+    ]
+  },
+  "artifacts": {
+    "evaluations/turaq/evidence-id-v2/analysis.json": "9b81b371216c741a1c08798abf1c32e9a6f4058102aea285e0f6a46b8b6e0f07",
+    "evaluations/turaq/evidence-id-v2/analyze.py": "bfd5bc80dc02416c175853da38d84e423010461c61841d509e1ba0a31f505423",
+    "evaluations/turaq/evidence-id-v2/fresh-live-v2.json": "321a6a655649e92f5bd86031210a00e31f9373bc2a0e2b661f2292eb100d7256",
+    "evaluations/turaq/evidence-id-v2/preflight.json": "37d0aa761be7f47d27e3fe3857f2955b43d033e7183d27b3ec03bbeba6ff4868",
+    "evaluations/turaq/evidence-id-v2/protocol.json": "a86c761de16021b124b85cbe960e79c3c6c9f9cb569592a83863c9858b7777f3",
+    "evaluations/turaq/evidence-id-v2/regression-live-v2.json": "d73b3446711823c53304a093aa59abf3f0fea6e6ce75d80cf2b7d8f36606ad95",
+    "evaluations/turaq/evidence-id-v2/run.py": "1a92c5d0c54a518bc929793e488021bc5d0b842a76920cdb7c9332c7f5ae9e37",
+    "evaluations/turaq/evidence-id-v2/method-snapshot/app/report_evidence_task.py": "a2e26bc3931da9b5ea6109c854456e01272e134d701f43423cd2eede788d05a1",
+    "evaluations/turaq/evidence-id-v2/method-snapshot/tests/unit/test_report_evidence_task.py": "4796402063f877f9c2317b19dbffb003866d186fa12926e0bdc53765709fccfd",
+    "evaluations/turaq/evidence-id-v2/method-snapshot/evaluations/turaq/evidence-id-v2/run.py": "1a92c5d0c54a518bc929793e488021bc5d0b842a76920cdb7c9332c7f5ae9e37",
+    "app/report_evidence_task.py": "a2e26bc3931da9b5ea6109c854456e01272e134d701f43423cd2eede788d05a1",
+    "tests/unit/test_report_evidence_task.py": "4796402063f877f9c2317b19dbffb003866d186fa12926e0bdc53765709fccfd",
+    "docs/research/2026-10-25-evidence-id-generation-results.md": "e9f03e02652a26497741b88371dca0fe43f8a16f0ccfda92b4386bbf874d2651",
+    "docs/implementation/2026-10-25-evidence-id-generation.md": "6788ea10f8047e7b9284390abd90dc7c7339b0fd9512721babc56959777cd0a0"
+  },
+  "complete_strict_acceptance_passed": false
+}

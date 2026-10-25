@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.llm_client import ModelClient
+from app.observability import observed_run
 from app.tool_calling import run_tool_turn
 from app.tool_messages import require_answer_or_calls, tool_result_messages
 from app.tools.executor import ToolExecutionRecord
@@ -22,6 +23,7 @@ class AgentLoopResult(BaseModel):
     executions: list[ToolExecutionRecord]
 
 
+@observed_run
 def run_agent_loop(
     client: ModelClient,
     messages: Sequence[Mapping[str, object]],

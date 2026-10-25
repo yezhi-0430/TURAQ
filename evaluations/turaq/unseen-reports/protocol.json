@@ -1,0 +1,116 @@
+{
+  "version": "unseen-reports-prefix-v1",
+  "frozen_at": "2026-10-24T11:17:27.435219+00:00",
+  "issuers": [
+    {
+      "id": "midea-2024",
+      "symbol": "000333.SZ"
+    },
+    {
+      "id": "cmb-2024",
+      "symbol": "600036.SH"
+    }
+  ],
+  "report_period": "2024",
+  "selected_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32
+  ],
+  "factual_specs": [
+    {
+      "metric": "营业收入",
+      "period": "2024"
+    },
+    {
+      "metric": "营业收入",
+      "period": "2023"
+    },
+    {
+      "metric": "归母净利润",
+      "period": "2024"
+    },
+    {
+      "metric": "经营活动现金流量净额",
+      "period": "2024"
+    },
+    {
+      "metric": "总资产",
+      "period": "2024-12-31"
+    },
+    {
+      "metric": "基本每股收益",
+      "period": "2024"
+    },
+    {
+      "metric": "加权平均净资产收益率",
+      "period": "2024"
+    },
+    {
+      "metric": "营业收入",
+      "period": "2024Q3"
+    }
+  ],
+  "factual_requests": 16,
+  "boundary_requests": 6,
+  "total_requests": 22,
+  "algorithm_sha256": {
+    "app/rag/table_chunks.py": "2b0671a9490834e542e3f6d10db995c9436e9db2a165d311b8a3549bdca1f232",
+    "app/rag/hybrid.py": "c432773459b1625417727c183c6bf3a500abfd1e7f1779cc2651ad56050872d4",
+    "app/rag/chunker.py": "ee9dab6b65dd0c668f04ca2169cdd179f90105ef7727a9cb666ba7613d37eabd",
+    "app/rag/scoring.py": "630b125cb1814823909c7914a277652be18bb003c47ad6572e90616c1a7d8b0e",
+    "app/openviking_benchmark.py": "349a99a73eaa9dde7bbd529cd8c1e7ef3a329bb5340f06c8288a42c60cfae8d8",
+    "app/report_evidence_eval.py": "abf2c64e899445cec6be028e6eba270cefb976765ad970a2db0e57797b972caf",
+    "app/report_fact_task.py": "729982cfcd884b116e99651a849b2044bf9749ee9eb9e01c7133c099ba940acb",
+    "app/openviking_gateway.py": "85afa75735d95caad005c41e3910c7797e144fc887d4c1a707ff7d6cb136dd01",
+    "scripts/run_table_hybrid_eval.py": "5be45bdaf3c4056fa33724377f645bf76da255abe6b6b8fefc4417125703187a",
+    "scripts/run_rag_repair_eval.py": "add6a88106b19ed583c87c72d5bb9374426247cf2a8ce76087671e45850b04e6"
+  },
+  "prior_sha256": {
+    "evaluations/turaq/table-hybrid/results/table-hybrid-2026-10-24-v1.json": "698be73faf1bb5cbc852d2311984d60d8c848193a37d7df2da6a5c826c31eb80",
+    "evaluations/turaq/rag-repair/results/rag-repair-2026-10-24-live-v1.json": "c8f216d24d2bf3e6f5fcd2f41de609f7ae20aac56b1efc1369ba4025f091a521",
+    "evaluations/turaq/openviking/expanded/results/comparison-2026-10-24-live-v5.json": "cf07961bd93fa475fcc879d52a24bf7c8abdeeee1fd85626293fff94928ed588",
+    "evaluations/turaq/public_reports/results/live-baseline-2026-10-23.json": "a8e29557e3437ba61bceafa2ee11a69741dffa37ec7df18e1fd294f234feba79"
+  },
+  "limits": {
+    "max_calls": 24,
+    "max_chars": 220000,
+    "max_output_tokens": 1024,
+    "seconds": 480
+  },
+  "gate": {
+    "supported_evidence_at3_fraction": 0.75,
+    "errors": 0,
+    "all_scope_boundaries_empty": true
+  },
+  "scope": "First-transfer diagnostic; same-author annotations after algorithm freeze; not double blind or full-PDF. No prior retrieval on these two reports."
+}

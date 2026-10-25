@@ -1,0 +1,44 @@
+{
+  "accepted": true,
+  "decision": "no_mechanism_regression",
+  "compatible": true,
+  "compatibility_errors": [],
+  "score_mismatches": {
+    "baseline": [],
+    "candidate": []
+  },
+  "baseline": {
+    "requested": 7,
+    "task_errors": 0,
+    "scoring_errors": 0,
+    "scored": 7,
+    "passed": 7,
+    "integrity_ok": true,
+    "acceptance_ok": true,
+    "success_rate": 1.0
+  },
+  "candidate": {
+    "requested": 7,
+    "task_errors": 0,
+    "scoring_errors": 0,
+    "scored": 7,
+    "passed": 7,
+    "integrity_ok": true,
+    "acceptance_ok": true,
+    "success_rate": 1.0
+  },
+  "improved": [],
+  "regressed": [],
+  "unchanged": [
+    "tool-calculate-v1",
+    "unknown-tool-recovery-v1",
+    "invalid-arguments-recovery-v1",
+    "round-cap-v1",
+    "deadline-v1",
+    "full-document-lineage-v1",
+    "security-period-source-v1"
+  ],
+  "real_model_quality": "not_run",
+  "automatic_promotion": false,
+  "note": "Local mechanism comparison; report execution authenticity is not attested."
+}

@@ -1,0 +1,61 @@
+{
+  "verified_at": "2026-10-24T17:04:34.889668+00:00",
+  "inputs_method_protocol_registered_files_unchanged": 44,
+  "offline_replay_cases": 36,
+  "strict_factual_passed": 20,
+  "factual_denominator": 24,
+  "model_future_passed": 2,
+  "model_future_denominator": 2,
+  "program_boundaries_passed": 10,
+  "provider_attempts": 26,
+  "reported_total_tokens": 43536,
+  "unknown_usage_attempts": 0,
+  "monetary_cost": null,
+  "related_tests": {
+    "passed": 84,
+    "warnings": 1,
+    "seconds": 10.54,
+    "scope": "task,strict scorer,gateway,boundaries; no real provider in tests"
+  },
+  "source_changed": false,
+  "scorer_gold_prompt_changed": false,
+  "automatic_promotion": false,
+  "frontend_business_index_changed": false,
+  "secret_scan": {
+    "files": 9,
+    "findings": []
+  },
+  "experiment_python_F_I": "passed",
+  "experiment_compile": "passed",
+  "independent_review": {
+    "reviewers": 1,
+    "critical": 0,
+    "important": 0,
+    "minor": 0,
+    "hashes_independently_verified": 44,
+    "offline_cases_independently_replayed": 36,
+    "declined_to_judge": [
+      "Frozen references not independently reannotated or visually audited in this review",
+      "No population/full-report/blind/OpenViking-superiority inference from this sample",
+      "Provider billing/exactweights/remote receipt/calls outside local saved runs not independently attested",
+      "Current hashes prove current correspondence, not cryptographic historical attestation",
+      "Selected-file freeze, not complete environment freeze or hypothetical timeout verification",
+      "84tests and configured-secret scan are executor evidence, not independently rerun",
+      "Unrelated edits/repository-wide regressions/business DB/deployment excluded",
+      "Future generation fixes/rescoring not implemented or approved as adoption in this experiment"
+    ]
+  },
+  "artifacts": {
+    "evaluations/turaq/pdf-answer-acceptance-2026-10-25/analysis.json": "f8f0b4bd3b9dfd41db7801dfc9ba7122ba79300817bd0dd42dea599478d66b27",
+    "evaluations/turaq/pdf-answer-acceptance-2026-10-25/analyze.py": "62542b64e6722e0a8133b39b2d5e51415474298a6246ed3bfcd572b6d859eaca",
+    "evaluations/turaq/pdf-answer-acceptance-2026-10-25/fresh-live-v1.json": "e31ab9c1244b2d5e7088e90f4d94d54160bf54a6142d5ef7c38b0946acf2c88a",
+    "evaluations/turaq/pdf-answer-acceptance-2026-10-25/preflight.json": "df2fef75d55242aa92a347edccaca3fb2df2885620846a8c119e18bb72ef7b6a",
+    "evaluations/turaq/pdf-answer-acceptance-2026-10-25/protocol.json": "fad108f7f1e4b9eaad2d09269d046f9309635a09270f2427ee1da60c0ae9bafb",
+    "evaluations/turaq/pdf-answer-acceptance-2026-10-25/regression-live-v1.json": "6f656c15a703d71b6eda9aac9445a23eb4cad5cf71f985aa30fd6697ab7a2410",
+    "evaluations/turaq/pdf-answer-acceptance-2026-10-25/run.py": "1eac5a27e679e3bc66a115dc532ddf19989ef09c27554488ad9d3c7ae6725b31",
+    "docs/research/2026-10-25-pdf-answer-acceptance-results.md": "e521c52c2ca90ae87ae5cd0d238900da33561c784bb4e4d1267a6e131bc47526",
+    "docs/implementation/2026-10-25-pdf-answer-acceptance.md": "65e2e2665f7e478bd92123384cea6fd6de17884b4dbbc0fa4eee43359df41b86"
+  },
+  "complete_acceptance_passed": false,
+  "paid_reruns": 0
+}

@@ -1,0 +1,46 @@
+{
+  "frozen_files_unchanged": true,
+  "algorithm_unchanged_since_run_start": true,
+  "source_audit": {
+    "pages": 48,
+    "units": 551,
+    "table_rows": 419,
+    "source_spans_verified": true,
+    "non_whitespace_coverage": true
+  },
+  "unit_tests": {
+    "passed": 673,
+    "warnings": 3,
+    "seconds": 54.44
+  },
+  "new_regression_cases": 15,
+  "independent_review": {
+    "reviewers": 1,
+    "P1_P2_findings": 0,
+    "deferred_items": 0,
+    "independent_tests_passed": 15
+  },
+  "new_python_ruff": "passed",
+  "python_compile": "passed",
+  "frontend_changed": false,
+  "plaintext_secret_scan": {
+    "scope": "new text artifacts and public experiment JSON; configured secrets >=8 chars; PDF binaries excluded",
+    "files": 8,
+    "findings": []
+  },
+  "paid_runs": 1,
+  "paid_calls": 15,
+  "known_tokens": 25618,
+  "unknown_usage_attempts": 0,
+  "business_index_or_routing_changed": false,
+  "artifacts_sha256": {
+    "app/rag/table_chunks.py": "2b0671a9490834e542e3f6d10db995c9436e9db2a165d311b8a3549bdca1f232",
+    "app/rag/hybrid.py": "c432773459b1625417727c183c6bf3a500abfd1e7f1779cc2651ad56050872d4",
+    "scripts/run_table_hybrid_eval.py": "5be45bdaf3c4056fa33724377f645bf76da255abe6b6b8fefc4417125703187a",
+    "tests/unit/test_table_hybrid_retrieval.py": "0900f284606ef74e8f48fb70f80db2ed839005a7101cfd59d33eeb902be51600",
+    "docs/implementation/2026-10-24-table-hybrid-retrieval.md": "622ab0b2d6ed6e1071c68273a240bc63cf4824960bb8831d3565fed3ba8969ad",
+    "docs/research/2026-10-24-table-hybrid-results.md": "82795d5a711000334c7a1b2d8c8b47b2aa77a66f7ef5f8559cac80cb81d538e5",
+    "evaluations/turaq/table-hybrid/results/analysis-2026-10-24.json": "1b481e06b96066ac6737c3be51e4294bab6127d078ccc5287bee81268297fb80",
+    "evaluations/turaq/table-hybrid/results/table-hybrid-2026-10-24-v1.json": "698be73faf1bb5cbc852d2311984d60d8c848193a37d7df2da6a5c826c31eb80"
+  }
+}

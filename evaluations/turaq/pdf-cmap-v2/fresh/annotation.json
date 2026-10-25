@@ -1,0 +1,189 @@
+{
+  "frozen_before_retrieval_at": "2026-10-24T15:55:38.653782+00:00",
+  "review": "Same-author visual review; no independent fresh-gold review or double-blind claim",
+  "rendered_physical_pages": [
+    7,
+    8,
+    18,
+    24
+  ],
+  "method_frozen_before_acquisition": true,
+  "original_text_unchanged": true,
+  "matching": "Literal substrings at exact rendered-column positions, including concatenated adjacent numbers. No inserted spaces or changed values.",
+  "limitations": [
+    "First32physical pages only",
+    "Columns concatenate; no model answering evaluated",
+    "Reference fixtures verify scorer/coordinates, not generated output"
+  ],
+  "candidates": [
+    {
+      "case_id": "yili-2024-fact-01",
+      "anchor": {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 367,
+        "end": 385,
+        "quote": "115,393,310,976.69"
+      },
+      "accepted": true,
+      "reason": "Rendered matching metric/period/unit row on physical7/8/18/24",
+      "excerpt": "会计数据和财务指标\n  (一)主要会计数据\n  单位：元  币种：人民币\n  主要会计数据  2024年  2023年  本期比上年同期  2022年\n  增减(%)\n营业收入  115,393,310,976.69125,758,168,916.51  -8.24  122,698,004,080.99\n归属于上市公司股东的净利润  8,452,859"
+    },
+    {
+      "case_id": "yili-2024-fact-01",
+      "anchor": {
+        "document_id": "yili-2024",
+        "page": 18,
+        "start": 669,
+        "end": 687,
+        "quote": "115,393,310,976.69"
+      },
+      "accepted": true,
+      "reason": "Rendered matching metric/period/unit row on physical7/8/18/24",
+      "excerpt": "知度和认可度。\n  (一)主营业务分析\n  1、利润表及现金流量表相关科目变动分析表\n  单位：元  币种：人民币\n  科目  本期数  上年同期数  变动比例（%）\n营业收入  115,393,310,976.69125,758,168,916.51 -8.24\n营业成本  76,298,833,033.9384,788,592,077.34  -10"
+    },
+    {
+      "case_id": "yili-2024-fact-02",
+      "anchor": {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 385,
+        "end": 403,
+        "quote": "125,758,168,916.51"
+      },
+      "accepted": true,
+      "reason": "Rendered matching metric/period/unit row on physical7/8/18/24",
+      "excerpt": "计数据\n  单位：元  币种：人民币\n  主要会计数据  2024年  2023年  本期比上年同期  2022年\n  增减(%)\n营业收入  115,393,310,976.69125,758,168,916.51  -8.24  122,698,004,080.99\n归属于上市公司股东的净利润  8,452,859,993.1810,428,540,"
+    },
+    {
+      "case_id": "yili-2024-fact-02",
+      "anchor": {
+        "document_id": "yili-2024",
+        "page": 18,
+        "start": 687,
+        "end": 705,
+        "quote": "125,758,168,916.51"
+      },
+      "accepted": true,
+      "reason": "Rendered matching metric/period/unit row on physical7/8/18/24",
+      "excerpt": "析\n  1、利润表及现金流量表相关科目变动分析表\n  单位：元  币种：人民币\n  科目  本期数  上年同期数  变动比例（%）\n营业收入  115,393,310,976.69125,758,168,916.51 -8.24\n营业成本  76,298,833,033.9384,788,592,077.34  -10.01\n销售费用  21,982,3"
+    },
+    {
+      "case_id": "yili-2024-fact-03",
+      "anchor": {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 446,
+        "end": 462,
+        "quote": "8,452,859,993.18"
+      },
+      "accepted": true,
+      "reason": "Rendered matching metric/period/unit row on physical7/8/18/24",
+      "excerpt": "减(%)\n营业收入  115,393,310,976.69125,758,168,916.51  -8.24  122,698,004,080.99\n归属于上市公司股东的净利润  8,452,859,993.1810,428,540,457.94  -18.94  9,431,064,679.78\n归属于上市公司股东的扣除非  6,011,274,9"
+    },
+    {
+      "case_id": "yili-2024-fact-04",
+      "anchor": {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 606,
+        "end": 623,
+        "quote": "21,739,740,393.38"
+      },
+      "accepted": true,
+      "reason": "Rendered matching metric/period/unit row on physical7/8/18/24",
+      "excerpt": "扣除非  6,011,274,945.9210,026,171,076.03  -40.04  8,585,692,731.44\n经常性损益的净利润\n经营活动产生的现金流量净额  21,739,740,393.3818,290,357,650.56  18.86  13,420,320,580.36\n  2024年末  2023年末  本期末比上年同 "
+    },
+    {
+      "case_id": "yili-2024-fact-04",
+      "anchor": {
+        "document_id": "yili-2024",
+        "page": 18,
+        "start": 957,
+        "end": 974,
+        "quote": "21,739,740,393.38"
+      },
+      "accepted": true,
+      "reason": "Rendered matching metric/period/unit row on physical7/8/18/24",
+      "excerpt": "649,416.42 -152,848,163.48  不适用\n研发费用  869,976,531.80  850,146,147.17  2.33\n经营活动产生的现金流量净额  21,739,740,393.3818,290,357,650.56  18.86\n投资活动产生的现金流量净额  -32,709,427,280.73-16,044,497,"
+    },
+    {
+      "case_id": "yili-2024-fact-04",
+      "anchor": {
+        "document_id": "yili-2024",
+        "page": 24,
+        "start": 712,
+        "end": 729,
+        "quote": "21,739,740,393.38"
+      },
+      "accepted": true,
+      "reason": "Rendered matching metric/period/unit row on physical7/8/18/24",
+      "excerpt": "公司未来发展的影响\n  □适用  √不适用\n  5、现金流\n  √适用  □不适用\n  单位：元\n  科目  本期数  上年同期数  变动比例（%）\n经营活动产生的现金流量净额  21,739,740,393.3818,290,357,650.5618.86\n投资活动产生的现金流量净额  -32,709,427,280.73-16,044,497,91"
+    },
+    {
+      "case_id": "yili-2024-fact-05",
+      "anchor": {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 792,
+        "end": 810,
+        "quote": "153,718,003,927.97"
+      },
+      "accepted": true,
+      "reason": "Rendered matching metric/period/unit row on physical7/8/18/24",
+      "excerpt": " 期末增减（%）\n归属于上市公司股东的净资产  53,179,935,140.8053,539,331,413.16  -0.67  50,267,883,832.15\n总资产  153,718,003,927.97151,620,252,657.98  1.38  130,965,302,299.22\n  (二)主要财务指标\n  主要财务指标  202"
+    },
+    {
+      "case_id": "yili-2024-fact-06",
+      "anchor": {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 924,
+        "end": 928,
+        "quote": "1.33"
+      },
+      "accepted": true,
+      "reason": "Rendered matching metric/period/unit row on physical7/8/18/24",
+      "excerpt": "  130,965,302,299.22\n  (二)主要财务指标\n  主要财务指标  2024年  2023年  本期比上年同期增减(%)  2022年\n基本每股收益（元／股）  1.33  1.64  -18.90  1.48\n稀释每股收益（元／股）  1.33  1.64  -18.90  1.48\n扣除非经常性损益后的基"
+    },
+    {
+      "case_id": "yili-2024-fact-06",
+      "anchor": {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 962,
+        "end": 966,
+        "quote": "1.33"
+      },
+      "accepted": false,
+      "reason": "Diluted EPS row; basic EPS requested",
+      "excerpt": "务指标  2024年  2023年  本期比上年同期增减(%)  2022年\n基本每股收益（元／股）  1.33  1.64  -18.90  1.48\n稀释每股收益（元／股）  1.33  1.64  -18.90  1.48\n扣除非经常性损益后的基本每股收益（元／股）  0.95  1.57  -39.49  1.34\n加"
+    },
+    {
+      "case_id": "yili-2024-fact-07",
+      "anchor": {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 1050,
+        "end": 1055,
+        "quote": "15.81"
+      },
+      "accepted": true,
+      "reason": "Rendered matching metric/period/unit row on physical7/8/18/24",
+      "excerpt": "  1.33  1.64  -18.90  1.48\n扣除非经常性损益后的基本每股收益（元／股）  0.95  1.57  -39.49  1.34\n加权平均净资产收益率（%）  15.81  20.20  减少4.39个百分点  19.23\n扣除非经常性损益后的加权平均净资产收益率（%）  11.24  19.36  减少8."
+    },
+    {
+      "case_id": "yili-2024-fact-08",
+      "anchor": {
+        "document_id": "yili-2024",
+        "page": 8,
+        "start": 267,
+        "end": 284,
+        "quote": "29,037,177,483.84"
+      },
+      "accepted": true,
+      "reason": "Rendered matching metric/period/unit row on physical7/8/18/24",
+      "excerpt": "第三季度  第四季度\n  （1-3月份）  （4-6月份）  （7-9月份）  （10-12月份）\n营业收入  32,462,896,350.5427,232,860,611.0529,037,177,483.8426,660,376,531.26\n归属于上市公司股东的净利润  5,922,814,507.711,608,319,620.913,337"
+    }
+  ]
+}

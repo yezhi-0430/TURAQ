@@ -13,6 +13,7 @@ assert(assets.includes('stock-search-input'),'stock catalog component is bundled
 assert(assets.includes('/stocks/search?q='),'catalog API adapter is bundled');
 assert(assets.includes('X-CSRF-Token'),'central CSRF client is bundled');
 assert(assets.includes('theme-select-trigger'),'themed controls are bundled');
+assert(assets.includes('/context/preferences'),'explicit research memory controls are bundled');
 assert(!/https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?\/api/.test(html+assets),'no cross-origin localhost API URL in build');
 for(const match of html.matchAll(/<link[^>]*href="([^"]+)"/g)){const href=match[1];if(!/^https?:/.test(href))assert(fs.existsSync(path.join(root,href.replace(/^\//,''))),`built stylesheet exists: ${href}`);}
 console.log('PASS: stock catalog/auth bundled, CSS present, no cross-origin localhost API');

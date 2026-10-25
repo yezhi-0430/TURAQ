@@ -33,3 +33,10 @@ test_chroma_db/
 *.log
 /test_report.pdf
 /测试财报*.pdf
+
+# Personal documents and task scratch files are local, not project source.
+/output/
+/tmp/
+/resume-original-1.png
+/resume-original-2.png
+/resume-photo.jpeg

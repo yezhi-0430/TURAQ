@@ -1,0 +1,510 @@
+{
+  "visual_reviewed_pages": {
+    "midea-2024": [
+      9,
+      10
+    ],
+    "cmb-2024": [
+      5,
+      8,
+      14,
+      15,
+      19,
+      26
+    ]
+  },
+  "references": [
+    {
+      "id": "midea-2024-fact-01",
+      "physical_page": 9,
+      "printed_page": 8,
+      "value": "407149600",
+      "unit": "千元",
+      "allowed_anchors": [
+        {
+          "document_id": "midea-2024",
+          "page": 9,
+          "start": 458,
+          "end": 469,
+          "quote": "407,149,600"
+        }
+      ],
+      "visual_check": "Chinese rendered row/period/unit checked; coordinates refer to uncorrected extracted text."
+    },
+    {
+      "id": "midea-2024-fact-02",
+      "physical_page": 9,
+      "printed_page": 8,
+      "value": "372037280",
+      "unit": "千元",
+      "allowed_anchors": [
+        {
+          "document_id": "midea-2024",
+          "page": 9,
+          "start": 471,
+          "end": 482,
+          "quote": "372,037,280"
+        }
+      ],
+      "visual_check": "Chinese rendered row/period/unit checked; coordinates refer to uncorrected extracted text."
+    },
+    {
+      "id": "midea-2024-fact-03",
+      "physical_page": 9,
+      "printed_page": 8,
+      "value": "38537237",
+      "unit": "千元",
+      "allowed_anchors": [
+        {
+          "document_id": "midea-2024",
+          "page": 9,
+          "start": 523,
+          "end": 533,
+          "quote": "38,537,237"
+        },
+        {
+          "document_id": "midea-2024",
+          "page": 10,
+          "start": 400,
+          "end": 410,
+          "quote": "38,537,237"
+        }
+      ],
+      "visual_check": "Chinese rendered row/period/unit checked; coordinates refer to uncorrected extracted text."
+    },
+    {
+      "id": "midea-2024-fact-04",
+      "physical_page": 9,
+      "printed_page": 8,
+      "value": "60511572",
+      "unit": "千元",
+      "allowed_anchors": [
+        {
+          "document_id": "midea-2024",
+          "page": 9,
+          "start": 658,
+          "end": 668,
+          "quote": "60,511,572"
+        }
+      ],
+      "visual_check": "Chinese rendered row/period/unit checked; coordinates refer to uncorrected extracted text."
+    },
+    {
+      "id": "midea-2024-fact-05",
+      "physical_page": 10,
+      "printed_page": 9,
+      "value": "604351853",
+      "unit": "千元",
+      "allowed_anchors": [
+        {
+          "document_id": "midea-2024",
+          "page": 10,
+          "start": 9,
+          "end": 20,
+          "quote": "604,351,853"
+        }
+      ],
+      "visual_check": "Chinese rendered row/period/unit checked; coordinates refer to uncorrected extracted text."
+    },
+    {
+      "id": "midea-2024-fact-06",
+      "physical_page": 9,
+      "printed_page": 8,
+      "value": "5.44",
+      "unit": "元/股",
+      "allowed_anchors": [
+        {
+          "document_id": "midea-2024",
+          "page": 9,
+          "start": 714,
+          "end": 718,
+          "quote": "5.44"
+        }
+      ],
+      "visual_check": "Chinese rendered row/period/unit checked; coordinates refer to uncorrected extracted text."
+    },
+    {
+      "id": "midea-2024-fact-07",
+      "physical_page": 9,
+      "printed_page": 8,
+      "value": "21.29",
+      "unit": "%",
+      "allowed_anchors": [
+        {
+          "document_id": "midea-2024",
+          "page": 9,
+          "start": 791,
+          "end": 797,
+          "quote": "21.29%"
+        }
+      ],
+      "visual_check": "Chinese rendered row/period/unit checked; coordinates refer to uncorrected extracted text."
+    },
+    {
+      "id": "midea-2024-fact-08",
+      "physical_page": 10,
+      "printed_page": 9,
+      "value": "101700575",
+      "unit": "千元",
+      "allowed_anchors": [
+        {
+          "document_id": "midea-2024",
+          "page": 10,
+          "start": 762,
+          "end": 773,
+          "quote": "101,700,575"
+        }
+      ],
+      "visual_check": "Chinese rendered row/period/unit checked; coordinates refer to uncorrected extracted text."
+    },
+    {
+      "id": "cmb-2024-fact-01",
+      "physical_page": 14,
+      "printed_page": 13,
+      "value": "337488",
+      "unit": "百万元",
+      "allowed_anchors": [
+        {
+          "document_id": "cmb-2024",
+          "page": 14,
+          "start": 140,
+          "end": 147,
+          "quote": "337,488"
+        }
+      ],
+      "visual_check": "Chinese rendered row/period/unit checked; coordinates refer to uncorrected extracted text."
+    },
+    {
+      "id": "cmb-2024-fact-02",
+      "physical_page": 14,
+      "printed_page": 13,
+      "value": "339123",
+      "unit": "百万元",
+      "allowed_anchors": [
+        {
+          "document_id": "cmb-2024",
+          "page": 14,
+          "start": 149,
+          "end": 156,
+          "quote": "339,123"
+        }
+      ],
+      "visual_check": "Chinese rendered row/period/unit checked; coordinates refer to uncorrected extracted text."
+    },
+    {
+      "id": "cmb-2024-fact-03",
+      "physical_page": 14,
+      "printed_page": 13,
+      "value": "148391",
+      "unit": "百万元",
+      "allowed_anchors": [
+        {
+          "document_id": "cmb-2024",
+          "page": 14,
+          "start": 307,
+          "end": 314,
+          "quote": "148,391"
+        },
+        {
+          "document_id": "cmb-2024",
+          "page": 19,
+          "start": 1118,
+          "end": 1125,
+          "quote": "148,391"
+        }
+      ],
+      "visual_check": "Chinese rendered row/period/unit checked; coordinates refer to uncorrected extracted text."
+    },
+    {
+      "id": "cmb-2024-fact-04",
+      "physical_page": 14,
+      "printed_page": 13,
+      "value": "447023",
+      "unit": "百万元",
+      "allowed_anchors": [
+        {
+          "document_id": "cmb-2024",
+          "page": 14,
+          "start": 412,
+          "end": 419,
+          "quote": "447,023"
+        }
+      ],
+      "visual_check": "Chinese rendered row/period/unit checked; coordinates refer to uncorrected extracted text."
+    },
+    {
+      "id": "cmb-2024-fact-05",
+      "physical_page": 15,
+      "printed_page": 14,
+      "value": "12152036",
+      "unit": "百万元",
+      "allowed_anchors": [
+        {
+          "document_id": "cmb-2024",
+          "page": 15,
+          "start": 153,
+          "end": 163,
+          "quote": "12,152,036"
+        },
+        {
+          "document_id": "cmb-2024",
+          "page": 26,
+          "start": 755,
+          "end": 765,
+          "quote": "12,152,036"
+        }
+      ],
+      "visual_check": "Chinese rendered row/period/unit checked; coordinates refer to uncorrected extracted text."
+    },
+    {
+      "id": "cmb-2024-fact-06",
+      "physical_page": 14,
+      "printed_page": 13,
+      "value": "5.66",
+      "unit": "元",
+      "allowed_anchors": [
+        {
+          "document_id": "cmb-2024",
+          "page": 14,
+          "start": 521,
+          "end": 525,
+          "quote": "5.66"
+        }
+      ],
+      "visual_check": "Chinese rendered row/period/unit checked; coordinates refer to uncorrected extracted text."
+    },
+    {
+      "id": "cmb-2024-fact-07",
+      "physical_page": 14,
+      "printed_page": 13,
+      "value": "14.49",
+      "unit": "%",
+      "allowed_anchors": [
+        {
+          "document_id": "cmb-2024",
+          "page": 14,
+          "start": 872,
+          "end": 877,
+          "quote": "14.49"
+        }
+      ],
+      "visual_check": "Chinese rendered row/period/unit checked; coordinates refer to uncorrected extracted text."
+    },
+    {
+      "id": "cmb-2024-fact-08",
+      "physical_page": 15,
+      "printed_page": 14,
+      "value": "79764",
+      "unit": "百万元",
+      "allowed_anchors": [
+        {
+          "document_id": "cmb-2024",
+          "page": 15,
+          "start": 1493,
+          "end": 1499,
+          "quote": "79,764"
+        }
+      ],
+      "visual_check": "Chinese rendered row/period/unit checked; coordinates refer to uncorrected extracted text."
+    }
+  ],
+  "all_exact_value_candidates_in_fixed_prefix": [
+    {
+      "id": "midea-2024-fact-01",
+      "page": 9,
+      "start": 458,
+      "quote": "407,149,600",
+      "accepted": true,
+      "decision": "Same metric/period/unit confirmed in rendered table"
+    },
+    {
+      "id": "midea-2024-fact-02",
+      "page": 9,
+      "start": 471,
+      "quote": "372,037,280",
+      "accepted": true,
+      "decision": "Same metric/period/unit confirmed in rendered table"
+    },
+    {
+      "id": "midea-2024-fact-03",
+      "page": 9,
+      "start": 523,
+      "quote": "38,537,237",
+      "accepted": true,
+      "decision": "Same metric/period/unit confirmed in rendered table"
+    },
+    {
+      "id": "midea-2024-fact-03",
+      "page": 10,
+      "start": 400,
+      "quote": "38,537,237",
+      "accepted": true,
+      "decision": "Same metric/period/unit confirmed in rendered table"
+    },
+    {
+      "id": "midea-2024-fact-04",
+      "page": 9,
+      "start": 658,
+      "quote": "60,511,572",
+      "accepted": true,
+      "decision": "Same metric/period/unit confirmed in rendered table"
+    },
+    {
+      "id": "midea-2024-fact-05",
+      "page": 10,
+      "start": 9,
+      "quote": "604,351,853",
+      "accepted": true,
+      "decision": "Same metric/period/unit confirmed in rendered table"
+    },
+    {
+      "id": "midea-2024-fact-06",
+      "page": 9,
+      "start": 714,
+      "quote": "5.44",
+      "accepted": true,
+      "decision": "Same metric/period/unit confirmed in rendered table"
+    },
+    {
+      "id": "midea-2024-fact-07",
+      "page": 9,
+      "start": 791,
+      "quote": "21.29%",
+      "accepted": true,
+      "decision": "Same metric/period/unit confirmed in rendered table"
+    },
+    {
+      "id": "midea-2024-fact-08",
+      "page": 10,
+      "start": 762,
+      "quote": "101,700,575",
+      "accepted": true,
+      "decision": "Same metric/period/unit confirmed in rendered table"
+    },
+    {
+      "id": "cmb-2024-fact-01",
+      "page": 14,
+      "start": 140,
+      "quote": "337,488",
+      "accepted": true,
+      "decision": "Same metric/period/unit confirmed in rendered table"
+    },
+    {
+      "id": "cmb-2024-fact-02",
+      "page": 14,
+      "start": 149,
+      "quote": "339,123",
+      "accepted": true,
+      "decision": "Same metric/period/unit confirmed in rendered table"
+    },
+    {
+      "id": "cmb-2024-fact-03",
+      "page": 14,
+      "start": 307,
+      "quote": "148,391",
+      "accepted": true,
+      "decision": "Same metric/period/unit confirmed in rendered table"
+    },
+    {
+      "id": "cmb-2024-fact-03",
+      "page": 19,
+      "start": 1118,
+      "quote": "148,391",
+      "accepted": true,
+      "decision": "Same metric/period/unit confirmed in rendered table"
+    },
+    {
+      "id": "cmb-2024-fact-04",
+      "page": 14,
+      "start": 412,
+      "quote": "447,023",
+      "accepted": true,
+      "decision": "Same metric/period/unit confirmed in rendered table"
+    },
+    {
+      "id": "cmb-2024-fact-05",
+      "page": 15,
+      "start": 153,
+      "quote": "12,152,036",
+      "accepted": true,
+      "decision": "Same metric/period/unit confirmed in rendered table"
+    },
+    {
+      "id": "cmb-2024-fact-05",
+      "page": 26,
+      "start": 755,
+      "quote": "12,152,036",
+      "accepted": true,
+      "decision": "Same metric/period/unit confirmed in rendered table"
+    },
+    {
+      "id": "cmb-2024-fact-06",
+      "page": 14,
+      "start": 521,
+      "quote": "5.66",
+      "accepted": true,
+      "decision": "Same metric/period/unit confirmed in rendered table"
+    },
+    {
+      "id": "cmb-2024-fact-06",
+      "page": 14,
+      "start": 565,
+      "quote": "5.66",
+      "accepted": false,
+      "decision": "Different metric variant: diluted EPS or average rather than weighted ROE; same numeric value is insufficient"
+    },
+    {
+      "id": "cmb-2024-fact-07",
+      "page": 5,
+      "start": 281,
+      "quote": "14.49",
+      "accepted": false,
+      "decision": "Different metric variant: diluted EPS or average rather than weighted ROE; same numeric value is insufficient"
+    },
+    {
+      "id": "cmb-2024-fact-07",
+      "page": 8,
+      "start": 845,
+      "quote": "14.49",
+      "accepted": false,
+      "decision": "Different metric variant: diluted EPS or average rather than weighted ROE; same numeric value is insufficient"
+    },
+    {
+      "id": "cmb-2024-fact-07",
+      "page": 14,
+      "start": 815,
+      "quote": "14.49",
+      "accepted": false,
+      "decision": "Different metric variant: diluted EPS or average rather than weighted ROE; same numeric value is insufficient"
+    },
+    {
+      "id": "cmb-2024-fact-07",
+      "page": 14,
+      "start": 872,
+      "quote": "14.49",
+      "accepted": true,
+      "decision": "Same metric/period/unit confirmed in rendered table"
+    },
+    {
+      "id": "cmb-2024-fact-07",
+      "page": 19,
+      "start": 311,
+      "quote": "14.49",
+      "accepted": false,
+      "decision": "Different metric variant: diluted EPS or average rather than weighted ROE; same numeric value is insufficient"
+    },
+    {
+      "id": "cmb-2024-fact-08",
+      "page": 15,
+      "start": 1493,
+      "quote": "79,764",
+      "accepted": true,
+      "decision": "Same metric/period/unit confirmed in rendered table"
+    }
+  ],
+  "extraction_limitations": [
+    "CMB key-table pages14/15/19/26 have zero Han characters in extracted text although Chinese rendering is normal. Numeric values remain.",
+    "pypdf emitted fontTools/CFF-font encoding warnings. No font/OCR/parser change or label repair applied."
+  ],
+  "scope": "64prefix pages selected before retrieval; not double-blind; no gold passed to ranker."
+}

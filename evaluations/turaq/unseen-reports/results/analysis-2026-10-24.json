@@ -1,0 +1,159 @@
+{
+  "scope": "Post-run only; no source/model/retrieval rerun or label corrections",
+  "raw_result_sha256": "594460ebf50e3307e37a5545bfe613f870fad3f13172626200dcb343b446ccd5",
+  "all_inputs_algorithm_and_history_unchanged": true,
+  "reference_counts": {
+    "factual_requests": 16,
+    "supported_facts": 16,
+    "boundary_requests": 6,
+    "indexed_pages": 64
+  },
+  "index_audit": {
+    "pages": 64,
+    "units": 368,
+    "table_rows": 170,
+    "source_spans_verified": true,
+    "non_whitespace_coverage": true
+  },
+  "engines": {
+    "lexical": {
+      "summary": {
+        "requested": 22,
+        "recorded": 22,
+        "errors": 0,
+        "evidence": {
+          "denominator": 16,
+          "at1": 8,
+          "at3": 8
+        },
+        "metric": "located-source-span-v1",
+        "median_retrieval_seconds": 0.01925,
+        "median_visible_characters": 1222.0,
+        "max_visible_characters": 1462,
+        "scope_boundary_count": 5,
+        "scope_boundaries_empty": true
+      },
+      "by_company": {
+        "midea-2024": {
+          "requested": 8,
+          "evidence_at1": 8,
+          "evidence_at3": 8
+        },
+        "cmb-2024": {
+          "requested": 8,
+          "evidence_at1": 0,
+          "evidence_at3": 0
+        }
+      },
+      "all_factual_ids": [
+        "midea-2024-fact-01",
+        "midea-2024-fact-02",
+        "midea-2024-fact-03",
+        "midea-2024-fact-04",
+        "midea-2024-fact-05",
+        "midea-2024-fact-06",
+        "midea-2024-fact-07",
+        "midea-2024-fact-08",
+        "cmb-2024-fact-01",
+        "cmb-2024-fact-02",
+        "cmb-2024-fact-03",
+        "cmb-2024-fact-04",
+        "cmb-2024-fact-05",
+        "cmb-2024-fact-06",
+        "cmb-2024-fact-07",
+        "cmb-2024-fact-08"
+      ],
+      "scope_boundary_ids": [
+        "boundary-before_publication",
+        "boundary-wrong_security",
+        "boundary-wrong_report",
+        "boundary-other_owner",
+        "boundary-withdrawn"
+      ]
+    },
+    "hybrid": {
+      "summary": {
+        "requested": 22,
+        "recorded": 22,
+        "errors": 0,
+        "evidence": {
+          "denominator": 16,
+          "at1": 8,
+          "at3": 8
+        },
+        "metric": "located-source-span-v1",
+        "median_retrieval_seconds": 0.25645,
+        "median_visible_characters": 1096.0,
+        "max_visible_characters": 1457,
+        "scope_boundary_count": 5,
+        "scope_boundaries_empty": true
+      },
+      "by_company": {
+        "midea-2024": {
+          "requested": 8,
+          "evidence_at1": 8,
+          "evidence_at3": 8
+        },
+        "cmb-2024": {
+          "requested": 8,
+          "evidence_at1": 0,
+          "evidence_at3": 0
+        }
+      },
+      "all_factual_ids": [
+        "midea-2024-fact-01",
+        "midea-2024-fact-02",
+        "midea-2024-fact-03",
+        "midea-2024-fact-04",
+        "midea-2024-fact-05",
+        "midea-2024-fact-06",
+        "midea-2024-fact-07",
+        "midea-2024-fact-08",
+        "cmb-2024-fact-01",
+        "cmb-2024-fact-02",
+        "cmb-2024-fact-03",
+        "cmb-2024-fact-04",
+        "cmb-2024-fact-05",
+        "cmb-2024-fact-06",
+        "cmb-2024-fact-07",
+        "cmb-2024-fact-08"
+      ],
+      "scope_boundary_ids": [
+        "boundary-before_publication",
+        "boundary-wrong_security",
+        "boundary-wrong_report",
+        "boundary-other_owner",
+        "boundary-withdrawn"
+      ]
+    }
+  },
+  "gate": {
+    "required_fraction": 0.75,
+    "measured_fraction": 0.5,
+    "passed": false
+  },
+  "model_evaluation_run": false,
+  "answer_accuracy": null,
+  "usage": {
+    "attempts": 0,
+    "request_chars": 0,
+    "total_tokens": 0,
+    "known_total_tokens": 0,
+    "unknown_usage_attempts": 0,
+    "cost": null
+  },
+  "findings": [
+    "Midea8/8 first and top3 hits; CMB0/8, unchanged between lexical and hybrid.",
+    "CMB reference table pages have zero extracted Han characters although rendered labels are Chinese and numeric values survive. This is an observed upstream extraction failure, not proof of a specific dependency cause.",
+    "Evidence means exact registered source location, not a correct generated answer. No model answers were run; never report answer accuracy0/16 or8/16.",
+    "Five scope boundaries have empty retrieval; future-period boundary was not model evaluated.",
+    "This is first-transfer on2newissuers/fixed64prefixpages; same-author labeling with independent reference review, not a full-PDF or double-blind representative benchmark."
+  ],
+  "review": {
+    "important_found": 1,
+    "important_fixed_red_green": 1,
+    "targeted_passed": 19,
+    "independent_reference_checked": 16,
+    "minor_deferred": "Check five named boundary ids individually rather than counting five empty-scope rows; no observed paired-filter-error trigger."
+  }
+}

@@ -1,0 +1,584 @@
+{
+  "state": "completed",
+  "openviking_version": "0.5.2",
+  "resource_pages": 7,
+  "service_ready": true,
+  "model_calls_authorized": true,
+  "metric": "gold evidence-page coverage@3; not answer accuracy",
+  "comparison": "independent lexical baseline; not production Chroma/BGE",
+  "retrieval_eligible": 7,
+  "lexical_baseline": [
+    {
+      "id": "moutai-revenue-2024",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "moutai-revenue-2023",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "moutai-profit-2024",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "moutai-cash-2024",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "pingan-revenue-2024",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "pingan-profit-2024",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "pingan-npl-2024",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "future-period",
+      "evidence_retrieved": null
+    },
+    {
+      "id": "before-publication",
+      "evidence_retrieved": null
+    },
+    {
+      "id": "wrong-security",
+      "evidence_retrieved": null
+    }
+  ],
+  "resumed_workspace": "openviking-pilot-2026-10-24-warm-start",
+  "imports": [
+    {
+      "id": "73c28a565a66ecaa32401c25c52123471667c7c9702b69a0d37a96255d3b9860",
+      "document_id": "moutai-2024",
+      "page": 1,
+      "uri": "viking://user/pilot-a/resources/turaq-pilot-73c28a565a66ecaa"
+    },
+    {
+      "id": "0f43f98575ac26a1f64f070104c66f47de4718aeccf79452f54b98f302cc86f4",
+      "document_id": "moutai-2024",
+      "page": 5,
+      "uri": "viking://user/pilot-a/resources/turaq-pilot-0f43f98575ac26a1"
+    },
+    {
+      "id": "f5cca3ccde94ebd02768a692549e639bb0e2ae8c9260f905fd01082aa48bd9a2",
+      "document_id": "moutai-2024",
+      "page": 6,
+      "uri": "viking://user/pilot-a/resources/turaq-pilot-f5cca3ccde94ebd0"
+    },
+    {
+      "id": "306cb23f39e0cf5a536ae55e11c9e8a63869aa6f4c6765b357a50964090b0f01",
+      "document_id": "pingan-2024",
+      "page": 1,
+      "uri": "viking://user/pilot-a/resources/turaq-pilot-306cb23f39e0cf5a"
+    },
+    {
+      "id": "6cdb583d7b702b6856b5d19b4a8db5b5c8ff7cb8dc203e96c66184812749915f",
+      "document_id": "pingan-2024",
+      "page": 16,
+      "uri": "viking://user/pilot-a/resources/turaq-pilot-6cdb583d7b702b68"
+    },
+    {
+      "id": "4eb001ca9d39f070323836ccaee4ee5c2ddc088a3cb3743455d4f969ab641839",
+      "document_id": "pingan-2024",
+      "page": 17,
+      "uri": "viking://user/pilot-a/resources/turaq-pilot-4eb001ca9d39f070"
+    },
+    {
+      "id": "cb5e3d11515ae7634518113445f410e811fc0a39d7e73dfe66f2b6fa65b590bb",
+      "document_id": "pingan-2024",
+      "page": 19,
+      "uri": "viking://user/pilot-a/resources/turaq-pilot-cb5e3d11515ae763"
+    }
+  ],
+  "openviking_retrieval": [
+    {
+      "id": "moutai-revenue-2024",
+      "evidence_retrieved": true,
+      "error": null,
+      "found": [
+        {
+          "document_id": "moutai-2024",
+          "page": 1
+        },
+        {
+          "document_id": "moutai-2024",
+          "page": 5
+        },
+        {
+          "document_id": "moutai-2024",
+          "page": 6
+        }
+      ],
+      "elapsed_seconds": 0.593
+    },
+    {
+      "id": "moutai-revenue-2023",
+      "evidence_retrieved": true,
+      "error": null,
+      "found": [
+        {
+          "document_id": "moutai-2024",
+          "page": 1
+        },
+        {
+          "document_id": "moutai-2024",
+          "page": 5
+        },
+        {
+          "document_id": "moutai-2024",
+          "page": 6
+        }
+      ],
+      "elapsed_seconds": 0.369
+    },
+    {
+      "id": "moutai-profit-2024",
+      "evidence_retrieved": true,
+      "error": null,
+      "found": [
+        {
+          "document_id": "moutai-2024",
+          "page": 1
+        },
+        {
+          "document_id": "moutai-2024",
+          "page": 5
+        },
+        {
+          "document_id": "moutai-2024",
+          "page": 6
+        }
+      ],
+      "elapsed_seconds": 0.254
+    },
+    {
+      "id": "moutai-cash-2024",
+      "evidence_retrieved": true,
+      "error": null,
+      "found": [
+        {
+          "document_id": "moutai-2024",
+          "page": 1
+        },
+        {
+          "document_id": "moutai-2024",
+          "page": 5
+        },
+        {
+          "document_id": "moutai-2024",
+          "page": 6
+        }
+      ],
+      "elapsed_seconds": 1.205
+    },
+    {
+      "id": "pingan-revenue-2024",
+      "evidence_retrieved": true,
+      "error": null,
+      "found": [
+        {
+          "document_id": "pingan-2024",
+          "page": 16
+        },
+        {
+          "document_id": "pingan-2024",
+          "page": 17
+        },
+        {
+          "document_id": "pingan-2024",
+          "page": 1
+        }
+      ],
+      "elapsed_seconds": 0.263
+    },
+    {
+      "id": "pingan-profit-2024",
+      "evidence_retrieved": true,
+      "error": null,
+      "found": [
+        {
+          "document_id": "pingan-2024",
+          "page": 16
+        },
+        {
+          "document_id": "pingan-2024",
+          "page": 17
+        },
+        {
+          "document_id": "pingan-2024",
+          "page": 19
+        }
+      ],
+      "elapsed_seconds": 0.449
+    },
+    {
+      "id": "pingan-npl-2024",
+      "evidence_retrieved": true,
+      "error": null,
+      "found": [
+        {
+          "document_id": "pingan-2024",
+          "page": 16
+        },
+        {
+          "document_id": "pingan-2024",
+          "page": 19
+        },
+        {
+          "document_id": "pingan-2024",
+          "page": 17
+        }
+      ],
+      "elapsed_seconds": 0.25
+    },
+    {
+      "id": "future-period",
+      "evidence_retrieved": null,
+      "error": null,
+      "found": [
+        {
+          "document_id": "moutai-2024",
+          "page": 1
+        },
+        {
+          "document_id": "moutai-2024",
+          "page": 5
+        },
+        {
+          "document_id": "moutai-2024",
+          "page": 6
+        }
+      ],
+      "elapsed_seconds": 0.217
+    },
+    {
+      "id": "before-publication",
+      "evidence_retrieved": null,
+      "error": null,
+      "found": [],
+      "elapsed_seconds": 0.0
+    },
+    {
+      "id": "wrong-security",
+      "evidence_retrieved": null,
+      "error": null,
+      "found": [
+        {
+          "document_id": "moutai-2024",
+          "page": 1
+        },
+        {
+          "document_id": "moutai-2024",
+          "page": 5
+        },
+        {
+          "document_id": "moutai-2024",
+          "page": 6
+        }
+      ],
+      "elapsed_seconds": 0.246
+    }
+  ],
+  "memory": {
+    "commit_task_status": "completed",
+    "archive_accepted": true,
+    "new_session_created": true,
+    "retrieved": 0,
+    "preference_found": false,
+    "synthetic_only": true
+  },
+  "native_isolation": {
+    "other_user_direct_read_status": 403,
+    "other_user_retrieved": 0,
+    "other_user_search_status": 403
+  },
+  "correction": {
+    "synthetic_only": true,
+    "application_rejects_changed_body": true
+  },
+  "deletion": {
+    "read_status": 404,
+    "application_rejects_stale_uri": true
+  },
+  "usage": {
+    "attempts": 29,
+    "request_chars": 36792,
+    "total_tokens": 14101,
+    "known_total_tokens": 14101,
+    "unknown_usage_attempts": 0,
+    "cache_hits": 0,
+    "cost": null,
+    "records": [
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 87,
+          "total_tokens": 87
+        },
+        "elapsed_seconds": 0.981
+      },
+      {
+        "kind": "chat",
+        "status": 200,
+        "usage": {
+          "total_tokens": 1555,
+          "completion_tokens": 527,
+          "prompt_tokens": 1028
+        },
+        "elapsed_seconds": 12.467
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 1046,
+          "total_tokens": 1046
+        },
+        "elapsed_seconds": 0.277
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 913,
+          "total_tokens": 913
+        },
+        "elapsed_seconds": 1.023
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 34,
+          "total_tokens": 34
+        },
+        "elapsed_seconds": 0.473
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 1026,
+          "total_tokens": 1026
+        },
+        "elapsed_seconds": 0.251
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 943,
+          "total_tokens": 943
+        },
+        "elapsed_seconds": 0.346
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 1010,
+          "total_tokens": 1010
+        },
+        "elapsed_seconds": 0.622
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 31,
+          "total_tokens": 31
+        },
+        "elapsed_seconds": 0.432
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 31,
+          "total_tokens": 31
+        },
+        "elapsed_seconds": 0.262
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 33,
+          "total_tokens": 33
+        },
+        "elapsed_seconds": 0.198
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 35,
+          "total_tokens": 35
+        },
+        "elapsed_seconds": 1.152
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 32,
+          "total_tokens": 32
+        },
+        "elapsed_seconds": 0.209
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 34,
+          "total_tokens": 34
+        },
+        "elapsed_seconds": 0.339
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 40,
+          "total_tokens": 40
+        },
+        "elapsed_seconds": 0.196
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 26,
+          "total_tokens": 26
+        },
+        "elapsed_seconds": 0.172
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 26,
+          "total_tokens": 26
+        },
+        "elapsed_seconds": 0.2
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 186,
+          "total_tokens": 186
+        },
+        "elapsed_seconds": 0.22
+      },
+      {
+        "kind": "chat",
+        "status": 200,
+        "usage": {
+          "total_tokens": 1599,
+          "completion_tokens": 517,
+          "prompt_tokens": 1082
+        },
+        "elapsed_seconds": 11.863
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 633,
+          "total_tokens": 633
+        },
+        "elapsed_seconds": 0.455
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 31,
+          "total_tokens": 31
+        },
+        "elapsed_seconds": 0.211
+      },
+      {
+        "kind": "chat",
+        "status": 200,
+        "usage": {
+          "total_tokens": 2253,
+          "completion_tokens": 57,
+          "prompt_tokens": 2196
+        },
+        "elapsed_seconds": 1.807
+      },
+      {
+        "kind": "chat",
+        "status": 200,
+        "usage": {
+          "total_tokens": 1647,
+          "completion_tokens": 610,
+          "prompt_tokens": 1037
+        },
+        "elapsed_seconds": 14.234
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 135,
+          "total_tokens": 135
+        },
+        "elapsed_seconds": 3.079
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 10,
+          "total_tokens": 10
+        },
+        "elapsed_seconds": 0.224
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 598,
+          "total_tokens": 598
+        },
+        "elapsed_seconds": 0.295
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 44,
+          "total_tokens": 44
+        },
+        "elapsed_seconds": 0.22
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 46,
+          "total_tokens": 46
+        },
+        "elapsed_seconds": 0.324
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 17,
+          "total_tokens": 17
+        },
+        "elapsed_seconds": 0.245
+      }
+    ]
+  },
+  "services_stopped_after_experiment": true
+}

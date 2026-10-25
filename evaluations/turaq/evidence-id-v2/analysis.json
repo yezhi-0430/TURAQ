@@ -1,0 +1,176 @@
+{
+  "task_version": "source-evidence-ids-v2",
+  "by_company": {
+    "yili-2024": {
+      "requested": 8,
+      "baseline_passed": 6,
+      "v2_passed": 8,
+      "dimensions": {
+        "identity": 8,
+        "value": 8,
+        "evidence": 8,
+        "abstention": 8
+      }
+    },
+    "midea-2024": {
+      "requested": 8,
+      "baseline_passed": 7,
+      "v2_passed": 8,
+      "dimensions": {
+        "identity": 8,
+        "value": 8,
+        "evidence": 8,
+        "abstention": 8
+      }
+    },
+    "cmb-2024": {
+      "requested": 8,
+      "baseline_passed": 7,
+      "v2_passed": 7,
+      "dimensions": {
+        "identity": 8,
+        "value": 7,
+        "evidence": 8,
+        "abstention": 8
+      }
+    }
+  },
+  "groups": {
+    "fresh": {
+      "result_sha256": "321a6a655649e92f5bd86031210a00e31f9373bc2a0e2b661f2292eb100d7256",
+      "summary": {
+        "all_cases": {
+          "requested": 14,
+          "scored": 14,
+          "passed": 14,
+          "missing": [],
+          "task_or_scoring_errors": 0,
+          "integrity_ok": true
+        },
+        "facts": {
+          "requested": 8,
+          "scored": 8,
+          "passed": 8,
+          "missing": [],
+          "task_or_scoring_errors": 0,
+          "integrity_ok": true
+        },
+        "boundaries": {
+          "requested": 6,
+          "scored": 6,
+          "passed": 6,
+          "missing": [],
+          "task_or_scoring_errors": 0,
+          "integrity_ok": true
+        },
+        "program_only_boundaries": 5
+      },
+      "usage": {
+        "attempts": 9,
+        "request_chars": 27743,
+        "total_tokens": 13417,
+        "known_total_tokens": 13417,
+        "unknown_usage_attempts": 0,
+        "cache_hits": 0,
+        "cost": null
+      },
+      "offline_replay_matches": true
+    },
+    "regression": {
+      "result_sha256": "d73b3446711823c53304a093aa59abf3f0fea6e6ce75d80cf2b7d8f36606ad95",
+      "summary": {
+        "all_cases": {
+          "requested": 22,
+          "scored": 22,
+          "passed": 21,
+          "missing": [],
+          "task_or_scoring_errors": 0,
+          "integrity_ok": true
+        },
+        "facts": {
+          "requested": 16,
+          "scored": 16,
+          "passed": 15,
+          "missing": [],
+          "task_or_scoring_errors": 0,
+          "integrity_ok": true
+        },
+        "boundaries": {
+          "requested": 6,
+          "scored": 6,
+          "passed": 6,
+          "missing": [],
+          "task_or_scoring_errors": 0,
+          "integrity_ok": true
+        },
+        "program_only_boundaries": 5
+      },
+      "usage": {
+        "attempts": 17,
+        "request_chars": 52460,
+        "total_tokens": 25119,
+        "known_total_tokens": 25119,
+        "unknown_usage_attempts": 0,
+        "cache_hits": 0,
+        "cost": null
+      },
+      "offline_replay_matches": true
+    }
+  },
+  "failures": [
+    {
+      "id": "cmb-2024-fact-06",
+      "group": "regression",
+      "scores": {
+        "abstention": true,
+        "evidence": true,
+        "identity": true,
+        "value": false
+      },
+      "output": {
+        "status": "supported",
+        "symbol": "600036.SH",
+        "metric": "基本每股收益",
+        "period": "2024",
+        "value": "5.66",
+        "unit": "元/股",
+        "reason_code": null,
+        "citations": [
+          {
+            "document_id": "cmb-2024",
+            "page": 14,
+            "start": 402,
+            "end": 455,
+            "quote": "每股计 （人民币元）\n归属于本行普通股股东的基本每股收益 (1) 5.66 5.63 0.53 5.26\n"
+          }
+        ]
+      },
+      "expected": {
+        "value": "5.66",
+        "unit": "元"
+      }
+    }
+  ],
+  "aggregate": {
+    "factual_requested": 24,
+    "factual_passed": 23,
+    "baseline_factual_passed": 20,
+    "model_future_requested": 2,
+    "model_future_passed": 2,
+    "program_requested": 10,
+    "program_passed": 10,
+    "cases": 36,
+    "strict_passed": 35,
+    "scored": 36,
+    "task_errors": 0,
+    "attempts": 26,
+    "request_chars": 80203,
+    "known_total_tokens": 38536,
+    "unknown_usage_attempts": 0,
+    "monetary_cost": null
+  },
+  "scope": "Known repair set; no normalization, score changes or extra live calls",
+  "registered_files_unchanged": true,
+  "automatic_promotion": false,
+  "remaining_issue": "CMB EPS unit 元/股 vs frozen元; value/citation correct, strict failure retained"
+}

@@ -1,0 +1,46 @@
+{
+  "parser_version": "pypdf-standard-cid-v2",
+  "frozen_at": "2026-10-24T15:46:27.428770+00:00",
+  "files": {
+    "app/pdf_cmap.py": "62335d94039c86fc7a99d19e20bb7fdb3f603c27f2973ac3f14a96d37b7f321a",
+    "app/pdf_text_quality.py": "419a8cc27d5a3dc32852e35066352aa6d3089989764f926c07a49565e172c184",
+    "app/pdf_cmap_validation.py": "395809e8999f57f6694d8375aa363c9f9170a88b0f2381a54eed48d89ef40afb",
+    "app/document_parser.py": "0635f2b33b4b6e318fda21dd6fa6294ef69f1a2ec7d08beb52a9ce4068394b86",
+    "app/analysis/quality.py": "ba24fed7d52fe8e3621ad680d151b38ac598d3487fb8dcd24994b41c104ddff1",
+    "app/disclosures.py": "ed9d340365814028fad399863adc8bf5519579c2906d6ec226cf6e7c449705fc",
+    "app/unseen_report_validation.py": "51bb3afba5a333374d191dd5a903d13e9b642b903a5f3e20f039ab1fd4d4fce2",
+    "scripts/run_unseen_report_eval.py": "694dea93c9ad955ad2dcde1dd6c1a94b8f56c9e8ddad871cd774619da3ba5855",
+    "scripts/run_pdf_cmap_validation.py": "4d1697193005f059a9b64a133c9f7711d33130394f71f86883c8c7f7b4223dc3",
+    "scripts/run_table_hybrid_eval.py": "5be45bdaf3c4056fa33724377f645bf76da255abe6b6b8fefc4417125703187a",
+    "scripts/run_rag_repair_eval.py": "add6a88106b19ed583c87c72d5bb9374426247cf2a8ce76087671e45850b04e6",
+    "app/rag/hybrid.py": "c432773459b1625417727c183c6bf3a500abfd1e7f1779cc2651ad56050872d4",
+    "app/rag/table_chunks.py": "2b0671a9490834e542e3f6d10db995c9436e9db2a165d311b8a3549bdca1f232",
+    "app/rag/chunker.py": "ee9dab6b65dd0c668f04ca2169cdd179f90105ef7727a9cb666ba7613d37eabd",
+    "app/rag/scoring.py": "630b125cb1814823909c7914a277652be18bb003c47ad6572e90616c1a7d8b0e",
+    "app/rag/embeddings.py": "64bfc2c51e9f274676a35ae94160819be2ec5c4b454a1bb6e306870328d08ab1",
+    "app/openviking_benchmark.py": "349a99a73eaa9dde7bbd529cd8c1e7ef3a329bb5340f06c8288a42c60cfae8d8",
+    "app/report_evidence_eval.py": "abf2c64e899445cec6be028e6eba270cefb976765ad970a2db0e57797b972caf",
+    "app/report_fact_task.py": "729982cfcd884b116e99651a849b2044bf9749ee9eb9e01c7133c099ba940acb",
+    "pyproject.toml": "09468f5a01b8aea1f4660c8433eca1a04d2ffcf8cb7c658d8892410437d6190e"
+  },
+  "dependency_versions": {
+    "pypdf": "6.20.1",
+    "pdfminer.six": "20260107",
+    "sentence-transformers": "6.1.0",
+    "numpy": "2.5.4",
+    "chromadb": "1.5.9"
+  },
+  "source_archive": "method-snapshot/",
+  "new_issuer_not_yet_acquired": true,
+  "review": {
+    "important_found": 3,
+    "fixed_in_one_pass": 3,
+    "new_regressions": 33,
+    "unit_passed": 725
+  },
+  "performance": {
+    "serial_cmb_full_seconds": 34.786,
+    "under_full_unit_concurrency": "45sec timeout, limit retained"
+  },
+  "target_model_calls": 0
+}

@@ -1,0 +1,63 @@
+{
+  "state": "incomplete",
+  "openviking_version": "0.5.2",
+  "resource_pages": 7,
+  "service_ready": false,
+  "model_calls_authorized": true,
+  "metric": "gold evidence-page coverage@3; not answer accuracy",
+  "comparison": "independent lexical baseline; not production Chroma/BGE",
+  "retrieval_eligible": 7,
+  "lexical_baseline": [
+    {
+      "id": "moutai-revenue-2024",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "moutai-revenue-2023",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "moutai-profit-2024",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "moutai-cash-2024",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "pingan-revenue-2024",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "pingan-profit-2024",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "pingan-npl-2024",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "future-period",
+      "evidence_retrieved": null
+    },
+    {
+      "id": "before-publication",
+      "evidence_retrieved": null
+    },
+    {
+      "id": "wrong-security",
+      "evidence_retrieved": null
+    }
+  ],
+  "usage": {
+    "attempts": 0,
+    "request_chars": 0,
+    "total_tokens": null,
+    "known_total_tokens": 0,
+    "unknown_usage_attempts": 0,
+    "cost": null,
+    "records": []
+  },
+  "services_stopped_after_experiment": true,
+  "error_type": "TimeoutError"
+}

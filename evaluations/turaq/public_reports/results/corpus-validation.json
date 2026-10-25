@@ -1,0 +1,7 @@
+{
+  "mode": "validate",
+  "corpus_valid": true,
+  "documents": 2,
+  "requested": 10,
+  "real_model_quality": "not_run"
+}

@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-24",
+  "scope": "independent pilot, no production integration",
+  "unit_tests_passed": 609,
+  "targeted_tests_passed": 19,
+  "ruff": "passed",
+  "compileall": "passed",
+  "review_findings_fixed": 2,
+  "provider_attempts": 97,
+  "provider_total_tokens": 25504,
+  "cost": null,
+  "public_evidence_retrieval_at3": {
+    "openviking": [
+      7,
+      7
+    ],
+    "lexical_baseline": [
+      7,
+      7
+    ],
+    "quality_gain_proven": false
+  },
+  "persisted_memory_found": true,
+  "native_isolation": {
+    "other_user_direct_read_status": 403,
+    "other_user_retrieved": 0,
+    "other_user_search_status": 403
+  },
+  "correction": {
+    "synthetic_only": true,
+    "application_rejects_changed_body": true
+  },
+  "deletion": {
+    "read_status": 404,
+    "application_rejects_stale_uri": true
+  },
+  "secret_scan_passed": true,
+  "experimental_service_stopped": true,
+  "business_services": {
+    "backend": "unavailable",
+    "frontend": "unavailable"
+  },
+  "sha256": {
+    "app/openviking_gateway.py": "85afa75735d95caad005c41e3910c7797e144fc887d4c1a707ff7d6cb136dd01",
+    "app/openviking_pilot.py": "f836cbbb8bfaff2f645151a74ccb272d7b4b94f7e13222aa7fda18a1db54bc33",
+    "scripts/run_openviking_pilot.py": "d70218220cf0778de1daa6c1637d898191a7758f290c7070fab4f4059ce49d0b",
+    "tests/unit/test_openviking_gateway.py": "240aa7c8ee94cd98fc9761d1f90f5d2877f4c361d81f333fb610da0f9f375f32",
+    "tests/unit/test_openviking_pilot.py": "4137b5fe6f124d079a0adb7afc904825f503ae8589459d2e0f2962803c6adebe",
+    "evaluations/turaq/openviking/runtime-requirements-2026-10-24.txt": "cdd436822877af5d7363951adba252a16992bb53b2ebe49d7d2e87704507aeb6",
+    "evaluations/turaq/openviking/results/pilot-2026-10-24.json": "4e8f6296814a50663c9368353c4c5630dfa1cefea1c98d71de79d16371c51538",
+    "evaluations/turaq/openviking/results/pilot-2026-10-24-warm-start.json": "7a144c3f22a43ab6f4889c575d6c8fad137c7bdacd47be7a0e649abc8fa10eeb",
+    "evaluations/turaq/openviking/results/pilot-2026-10-24-cached.json": "9174c55e52acb1cb6147aac9ad24af6f80f6b6793b4e346f112f1e8d2c939791",
+    "evaluations/turaq/openviking/results/pilot-2026-10-24-memory-check.json": "8920cf315a197c345f25026a87edfb3f0e171177c1e16ab036c0e57a0fa7c68f"
+  }
+}

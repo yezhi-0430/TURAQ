@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-23",
+  "mode": "production_batch_frozen_public_page_with_fake_model",
+  "targeted_tests": 14,
+  "unit": {
+    "passed": 537,
+    "warnings": 3
+  },
+  "admission_access": {
+    "passed": 29,
+    "warnings": 3
+  },
+  "frontend": {
+    "passed": 70
+  },
+  "static_checks": "scoped Ruff, compileall, git diff --check passed",
+  "proof": {
+    "located": "located.json",
+    "unresolved": "unresolved.json",
+    "actual_pdf_hash_checked": true,
+    "source_offset_slice_checked": true
+  },
+  "old_mechanism": {
+    "passed": 7,
+    "self_comparison_accepted": true
+  },
+  "public_report_fixture": {
+    "passed": 10,
+    "quality_measurement": false
+  },
+  "review": "independent read-only review; no important findings; synthesis payload observation fixed by RED-GREEN test",
+  "paid_model_calls": 0,
+  "real_model_quality": "not_run",
+  "postgres_full_integration": "not_run",
+  "external_langfuse": "not_run",
+  "source_fingerprints": {
+    "app/document_citations.py": "87047d8fa80e2a953cbb6907a132d7c954bb4279fc60c183df9ca908bd0a72ff",
+    "app/risk_reading.py": "19c0615a9ab3afed3a6854248d64ee906efc66418a846de3bb400708fe9f5a53",
+    "app/risk_summary.py": "a62787f7be27c5628ee480265654b2c6bb2651d1a4caa553ef13a34d3d838613",
+    "app/llm_client.py": "b7f52b318d9cfbe6625fc15d0f84eabb59eb8263b2a4d7475e4e0b4fe2c16ca5",
+    "tests/unit/test_document_citations.py": "fd8e4f2fdfd06f6694cea8a8d9057efe80842c505a72d41df7fd0400e4d6ad55"
+  }
+}

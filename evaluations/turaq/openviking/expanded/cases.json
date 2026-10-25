@@ -1,0 +1,663 @@
+[
+  {
+    "id": "moutai-revenue-2024",
+    "question": "依据2024年年度报告，请按原表单位提取600519.SH 2024的营业收入，标注数值所在PDF页和原文位置。",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2024",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "moutai-2024"
+    ],
+    "context_pages": {
+      "moutai-2024": [
+        1,
+        5,
+        6,
+        10,
+        20,
+        29,
+        39,
+        48,
+        58,
+        67,
+        77,
+        86,
+        96,
+        105,
+        115,
+        124
+      ]
+    },
+    "owner": "pilot-a",
+    "report_period": "2024"
+  },
+  {
+    "id": "moutai-revenue-2023",
+    "question": "依据2024年年度报告，请按原表单位提取600519.SH 2023的营业收入，标注数值所在PDF页和原文位置。",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2023",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "moutai-2024"
+    ],
+    "context_pages": {
+      "moutai-2024": [
+        1,
+        5,
+        6,
+        10,
+        20,
+        29,
+        39,
+        48,
+        58,
+        67,
+        77,
+        86,
+        96,
+        105,
+        115,
+        124
+      ]
+    },
+    "owner": "pilot-a",
+    "report_period": "2024"
+  },
+  {
+    "id": "moutai-profit-2024",
+    "question": "依据2024年年度报告，请按原表单位提取600519.SH 2024的归母净利润，标注数值所在PDF页和原文位置。",
+    "symbol": "600519.SH",
+    "metric": "归母净利润",
+    "period": "2024",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "moutai-2024"
+    ],
+    "context_pages": {
+      "moutai-2024": [
+        1,
+        5,
+        6,
+        10,
+        20,
+        29,
+        39,
+        48,
+        58,
+        67,
+        77,
+        86,
+        96,
+        105,
+        115,
+        124
+      ]
+    },
+    "owner": "pilot-a",
+    "report_period": "2024"
+  },
+  {
+    "id": "moutai-cash-2024",
+    "question": "依据2024年年度报告，请按原表单位提取600519.SH 2024的经营活动现金流量净额，标注数值所在PDF页和原文位置。",
+    "symbol": "600519.SH",
+    "metric": "经营活动现金流量净额",
+    "period": "2024",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "moutai-2024"
+    ],
+    "context_pages": {
+      "moutai-2024": [
+        1,
+        5,
+        6,
+        10,
+        20,
+        29,
+        39,
+        48,
+        58,
+        67,
+        77,
+        86,
+        96,
+        105,
+        115,
+        124
+      ]
+    },
+    "owner": "pilot-a",
+    "report_period": "2024"
+  },
+  {
+    "id": "pingan-revenue-2024",
+    "question": "依据2024年年度报告，请按原表单位提取000001.SZ 2024的营业收入，标注数值所在PDF页和原文位置。",
+    "symbol": "000001.SZ",
+    "metric": "营业收入",
+    "period": "2024",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "pingan-2024"
+    ],
+    "context_pages": {
+      "pingan-2024": [
+        1,
+        16,
+        17,
+        19,
+        21,
+        40,
+        60,
+        80,
+        99,
+        119,
+        139,
+        158,
+        178,
+        198,
+        217,
+        237
+      ]
+    },
+    "owner": "pilot-a",
+    "report_period": "2024"
+  },
+  {
+    "id": "pingan-profit-2024",
+    "question": "依据2024年年度报告，请按原表单位提取000001.SZ 2024的归母净利润，标注数值所在PDF页和原文位置。",
+    "symbol": "000001.SZ",
+    "metric": "归母净利润",
+    "period": "2024",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "pingan-2024"
+    ],
+    "context_pages": {
+      "pingan-2024": [
+        1,
+        16,
+        17,
+        19,
+        21,
+        40,
+        60,
+        80,
+        99,
+        119,
+        139,
+        158,
+        178,
+        198,
+        217,
+        237
+      ]
+    },
+    "owner": "pilot-a",
+    "report_period": "2024"
+  },
+  {
+    "id": "pingan-npl-2024",
+    "question": "依据2024年年度报告，请按原表单位提取000001.SZ 2024-12-31的不良贷款率，标注数值所在PDF页和原文位置。",
+    "symbol": "000001.SZ",
+    "metric": "不良贷款率",
+    "period": "2024-12-31",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "pingan-2024"
+    ],
+    "context_pages": {
+      "pingan-2024": [
+        1,
+        16,
+        17,
+        19,
+        21,
+        40,
+        60,
+        80,
+        99,
+        119,
+        139,
+        158,
+        178,
+        198,
+        217,
+        237
+      ]
+    },
+    "owner": "pilot-a",
+    "report_period": "2024"
+  },
+  {
+    "id": "moutai23-revenue-2023",
+    "question": "依据贵州茅台2023年年度报告，提取2023的营业收入，使用原表单位并给出PDF原文引用。",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2023",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "moutai-2023"
+    ],
+    "context_pages": {
+      "moutai-2023": [
+        1,
+        5,
+        6,
+        10,
+        20,
+        29,
+        39,
+        48,
+        58,
+        67,
+        77,
+        86,
+        96,
+        105,
+        115,
+        124
+      ]
+    },
+    "owner": "pilot-a",
+    "report_period": "2023"
+  },
+  {
+    "id": "moutai23-revenue-2022",
+    "question": "依据贵州茅台2023年年度报告，提取2022的营业收入，使用原表单位并给出PDF原文引用。",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2022",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "moutai-2023"
+    ],
+    "context_pages": {
+      "moutai-2023": [
+        1,
+        5,
+        6,
+        10,
+        20,
+        29,
+        39,
+        48,
+        58,
+        67,
+        77,
+        86,
+        96,
+        105,
+        115,
+        124
+      ]
+    },
+    "owner": "pilot-a",
+    "report_period": "2023"
+  },
+  {
+    "id": "moutai23-profit-2023",
+    "question": "依据贵州茅台2023年年度报告，提取2023的归母净利润，使用原表单位并给出PDF原文引用。",
+    "symbol": "600519.SH",
+    "metric": "归母净利润",
+    "period": "2023",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "moutai-2023"
+    ],
+    "context_pages": {
+      "moutai-2023": [
+        1,
+        5,
+        6,
+        10,
+        20,
+        29,
+        39,
+        48,
+        58,
+        67,
+        77,
+        86,
+        96,
+        105,
+        115,
+        124
+      ]
+    },
+    "owner": "pilot-a",
+    "report_period": "2023"
+  },
+  {
+    "id": "moutai23-profit-2022-adjusted",
+    "question": "依据贵州茅台2023年年度报告，提取2022的归母净利润，使用原表单位并给出PDF原文引用。使用2022年调整后口径，不能使用调整前数值。",
+    "symbol": "600519.SH",
+    "metric": "归母净利润",
+    "period": "2022",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "moutai-2023"
+    ],
+    "context_pages": {
+      "moutai-2023": [
+        1,
+        5,
+        6,
+        10,
+        20,
+        29,
+        39,
+        48,
+        58,
+        67,
+        77,
+        86,
+        96,
+        105,
+        115,
+        124
+      ]
+    },
+    "owner": "pilot-a",
+    "report_period": "2023"
+  },
+  {
+    "id": "moutai23-cash-2023",
+    "question": "依据贵州茅台2023年年度报告，提取2023的经营活动现金流量净额，使用原表单位并给出PDF原文引用。",
+    "symbol": "600519.SH",
+    "metric": "经营活动现金流量净额",
+    "period": "2023",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "moutai-2023"
+    ],
+    "context_pages": {
+      "moutai-2023": [
+        1,
+        5,
+        6,
+        10,
+        20,
+        29,
+        39,
+        48,
+        58,
+        67,
+        77,
+        86,
+        96,
+        105,
+        115,
+        124
+      ]
+    },
+    "owner": "pilot-a",
+    "report_period": "2023"
+  },
+  {
+    "id": "moutai23-assets-2023",
+    "question": "依据贵州茅台2023年年度报告，提取2023的总资产，使用原表单位并给出PDF原文引用。",
+    "symbol": "600519.SH",
+    "metric": "总资产",
+    "period": "2023",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "moutai-2023"
+    ],
+    "context_pages": {
+      "moutai-2023": [
+        1,
+        5,
+        6,
+        10,
+        20,
+        29,
+        39,
+        48,
+        58,
+        67,
+        77,
+        86,
+        96,
+        105,
+        115,
+        124
+      ]
+    },
+    "owner": "pilot-a",
+    "report_period": "2023"
+  },
+  {
+    "id": "moutai23-revenue-2023q3",
+    "question": "依据贵州茅台2023年年度报告，提取2023Q3的营业收入，使用原表单位并给出PDF原文引用。期间指第三季度7至9月，不是前三季度累计。",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2023Q3",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "moutai-2023"
+    ],
+    "context_pages": {
+      "moutai-2023": [
+        1,
+        5,
+        6,
+        10,
+        20,
+        29,
+        39,
+        48,
+        58,
+        67,
+        77,
+        86,
+        96,
+        105,
+        115,
+        124
+      ]
+    },
+    "owner": "pilot-a",
+    "report_period": "2023"
+  },
+  {
+    "id": "boundary-future-period",
+    "question": "仅依据茅台2024年年报，提取2026年营业收入，不得补造未来数据。",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2026",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "moutai-2024"
+    ],
+    "context_pages": {
+      "moutai-2024": [
+        1,
+        5,
+        6,
+        10,
+        20,
+        29,
+        39,
+        48,
+        58,
+        67,
+        77,
+        86,
+        96,
+        105,
+        115,
+        124
+      ]
+    },
+    "owner": "pilot-a",
+    "report_period": "2024"
+  },
+  {
+    "id": "boundary-before-publication",
+    "question": "截至2025年1月1日，依据可见的茅台2024年年报提取营业收入。",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2024",
+    "as_of": "2025-01-01",
+    "document_ids": [
+      "moutai-2024"
+    ],
+    "context_pages": {
+      "moutai-2024": [
+        1,
+        5,
+        6,
+        10,
+        20,
+        29,
+        39,
+        48,
+        58,
+        67,
+        77,
+        86,
+        96,
+        105,
+        115,
+        124
+      ]
+    },
+    "owner": "pilot-a",
+    "report_period": "2024"
+  },
+  {
+    "id": "boundary-wrong-security",
+    "question": "仅提供平安银行2024年年报，请提取贵州茅台2024年营业收入。",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2024",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "pingan-2024"
+    ],
+    "context_pages": {
+      "pingan-2024": [
+        1,
+        16,
+        17,
+        19,
+        21,
+        40,
+        60,
+        80,
+        99,
+        119,
+        139,
+        158,
+        178,
+        198,
+        217,
+        237
+      ]
+    },
+    "owner": "pilot-a",
+    "report_period": "2024"
+  },
+  {
+    "id": "boundary-wrong-report",
+    "question": "指定贵州茅台2025年年度报告，提取2024年营业收入；不能用2024年报告替代。",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2024",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "moutai-2024"
+    ],
+    "context_pages": {
+      "moutai-2024": [
+        1,
+        5,
+        6,
+        10,
+        20,
+        29,
+        39,
+        48,
+        58,
+        67,
+        77,
+        86,
+        96,
+        105,
+        115,
+        124
+      ]
+    },
+    "owner": "pilot-a",
+    "report_period": "2025"
+  },
+  {
+    "id": "boundary-other-user",
+    "question": "在当前用户私有资料中提取茅台2024年营业收入。",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2024",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "moutai-2024"
+    ],
+    "context_pages": {
+      "moutai-2024": [
+        1,
+        5,
+        6,
+        10,
+        20,
+        29,
+        39,
+        48,
+        58,
+        67,
+        77,
+        86,
+        96,
+        105,
+        115,
+        124
+      ]
+    },
+    "owner": "pilot-b",
+    "report_period": "2024"
+  },
+  {
+    "id": "boundary-withdrawn-version",
+    "question": "目标资料版本已被撤回，请在有效版本中提取茅台2024年营业收入。",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2024",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "moutai-2024"
+    ],
+    "context_pages": {
+      "moutai-2024": [
+        1,
+        5,
+        6,
+        10,
+        20,
+        29,
+        39,
+        48,
+        58,
+        67,
+        77,
+        86,
+        96,
+        105,
+        115,
+        124
+      ]
+    },
+    "owner": "pilot-a",
+    "report_period": "2024",
+    "withdrawn": true
+  }
+]

@@ -36,7 +36,7 @@ def parser_error(output):
     except (ValueError, AttributeError):
         message = ""
     if message in SAFE_ERRORS:
-        return message + "，未生成文档事实"
+        return message if "未生成文档事实" in message else message + "，未生成文档事实"
     return "PDF解析失败（文件损坏或格式不受支持），未生成文档事实"
 
 

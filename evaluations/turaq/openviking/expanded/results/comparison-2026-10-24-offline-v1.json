@@ -1,0 +1,12 @@
+{
+  "state": "validated",
+  "corpus_fingerprint": "7b9cfe9c87246acd5ac619b2a3c5ca417b5eac8cc009246f19a0a134642562f5",
+  "requested": 20,
+  "resource_pages": 48,
+  "task_version": "quote-only-server-location-v1",
+  "live": false,
+  "automatic_promotion": false,
+  "comparison_scope": "3 reports / 48 selected pages; BGE512 vs Qwen1024; system comparison",
+  "chroma_similarity_gate": "existing research wrapper: 1-distance >= 0.5",
+  "cost": null
+}

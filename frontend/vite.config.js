@@ -1,14 +1,13 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  plugins: [react(), {
+  plugins: [{
     name: 'bundle-workspace-scripts',
     apply: 'build',
     transformIndexHtml: {
       order: 'pre',
       handler: html => html.replace(
-        /<script src="(\.\/(?:api|auth|admin|actions|entrance|market-chart|market-detail|market|watchlist|stock-search|risk|risk-auto|paper-trading|theme-ui|markdown|conversation|settings)\.js)" defer><\/script>/g,
+        /<script src="(\.\/(?:api|auth|admin|actions|entrance|market-chart|market-detail|market|watchlist|stock-search|risk|risk-auto|paper-trading|theme-ui|markdown|conversation|context-memory|settings)\.js)" defer><\/script>/g,
         '<script type="module" src="$1"></script>'
       )
     }

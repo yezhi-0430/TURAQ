@@ -1,0 +1,82 @@
+{
+  "mode": "isolated functional fixtures and saved-real-response explanation; NOT new model accuracy",
+  "provider_attempts": 0,
+  "actual_model_quality": "not_run",
+  "source_coverage": [
+    {
+      "id": "moutai-revenue-2024",
+      "located_evidence": true,
+      "parts": 5,
+      "characters": 794
+    },
+    {
+      "id": "moutai-revenue-2023",
+      "located_evidence": true,
+      "parts": 5,
+      "characters": 794
+    },
+    {
+      "id": "moutai-profit-2024",
+      "located_evidence": true,
+      "parts": 4,
+      "characters": 711
+    },
+    {
+      "id": "moutai-cash-2024",
+      "located_evidence": true,
+      "parts": 5,
+      "characters": 820
+    },
+    {
+      "id": "pingan-revenue-2024",
+      "located_evidence": true,
+      "parts": 5,
+      "characters": 191
+    },
+    {
+      "id": "pingan-profit-2024",
+      "located_evidence": true,
+      "parts": 5,
+      "characters": 215
+    },
+    {
+      "id": "pingan-npl-2024",
+      "located_evidence": true,
+      "parts": 5,
+      "characters": 189
+    }
+  ],
+  "application_fixture_checks": [
+    {
+      "document_id": "moutai-2024",
+      "functional_fixture_cases": 5,
+      "fixture_passed": 5,
+      "task_version": "source-evidence-ids-v2",
+      "evidence_mode": "document-bm25-source-spans-v1",
+      "scorer_version": "public-fact-citation-v1"
+    },
+    {
+      "document_id": "pingan-2024",
+      "functional_fixture_cases": 5,
+      "fixture_passed": 5,
+      "task_version": "source-evidence-ids-v2",
+      "evidence_mode": "document-bm25-source-spans-v1",
+      "scorer_version": "public-fact-citation-v1"
+    }
+  ],
+  "saved_eps": {
+    "id": "cmb-2024-fact-06",
+    "strict_contract": false,
+    "raw_value": "5.66",
+    "raw_unit": "元/股",
+    "unit_note": {
+      "policy_version": "financial-unit-labels-v1",
+      "status": "equivalent",
+      "reason": "eps_per_share",
+      "model_unit": "元/股",
+      "reference_unit": "元",
+      "scope": "label_equivalence_only_not_rescore"
+    }
+  },
+  "legacy_registered_files_unchanged": 52
+}

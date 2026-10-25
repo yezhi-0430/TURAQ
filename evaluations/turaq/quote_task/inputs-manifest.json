@@ -1,0 +1,15 @@
+{
+  "kind": "offline_mechanism_inputs_not_new_model_outputs",
+  "source_fixture_sha256": "5b705fac1428dca2339327da96c6cc32b96468825fa5919f1eb3ddba67d911f8",
+  "expanded_fixture_rows": [
+    "pingan-revenue-2024",
+    "pingan-npl-2024"
+  ],
+  "cached_parent_sha256": "a8e29557e3437ba61bceafa2ee11a69741dffa37ec7df18e1fd294f234feba79",
+  "cached_transformation": "remove citation start/end only; all other proposal fields unchanged; runner records server rule overrides separately",
+  "files": {
+    "fixture-proposals.json": "387878a230d2f2672402160867c9953599f2c1e23fe01b0ae433b4d43dc21ea5",
+    "injected-rewritten-proposals.json": "389c6cf43990c55028d43a18f715e25127c8523ff1ba9fcf8b2b12d4ff42e0f9",
+    "cached-baseline-proposals.json": "fcd8a78897340c6ecb66f4e312df4d3caa1533fbbe4d5ac685af5e7de33cd996"
+  }
+}

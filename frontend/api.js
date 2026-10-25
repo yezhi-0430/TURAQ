@@ -39,6 +39,7 @@
      const retryAfter=response.headers?.get('Retry-After');
      const error=Object.assign(Error(typeof data?.detail==='string'?data.detail:'请求未完成（HTTP '+response.status+'）。'),{status:response.status,retryAfter});
      if(url==='/api/v1/agent/chat'&&response.status===504&&data?.partial?.status==='incomplete')error.partial=data.partial;
+     if(url==='/api/analysis/evaluate'&&[429,503,504].includes(response.status)&&data?.partial?.state==='incomplete')error.partial=data.partial;
      if(response.status===429)error.message += retryAfter ? ' 请在 '+retryAfter+' 秒后重试。' : ' 请稍后重试。';
      if(response.status===401&&!auth)change({...session,user:null,csrf_token:null});
      throw error;

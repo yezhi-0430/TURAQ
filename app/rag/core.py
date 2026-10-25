@@ -13,6 +13,7 @@ import hashlib
 from .embeddings import get_embedding_service
 from .parsers import DocumentParser
 from .chunker import TextChunker
+from .scoring import cosine_similarity
 
 
 class RAGSystem:
@@ -74,7 +75,8 @@ class RAGSystem:
             print(f"  - 文档解析完成，共 {len(text)} 字符")
 
             # 2. 文本分段
-            chunks = self.chunker.chunk(text, strategy=chunk_strategy)
+            chunk_rows = self.chunker.chunk_with_metadata(text, strategy=chunk_strategy)
+            chunks = [row['text'] for row in chunk_rows]
             print(f"  - 文本分段完成，共 {len(chunks)} 个块")
 
             # 3. 生成向量
@@ -100,6 +102,9 @@ class RAGSystem:
                 # 合并用户提供的元数据
                 if metadata:
                     chunk_metadata.update(metadata)
+
+                chunk_metadata.update({key: value for key, value in chunk_rows[i].items()
+                                       if key not in {'text', 'source'}})
 
                 metadatas.append(chunk_metadata)
                 ids.append(f"{doc_id}_chunk_{i}")
@@ -153,7 +158,8 @@ class RAGSystem:
                 doc_id = self._generate_doc_id(text[:100])
 
             # 分段
-            chunks = self.chunker.chunk(text, strategy='smart')
+            chunk_rows = self.chunker.chunk_with_metadata(text, strategy='smart')
+            chunks = [row['text'] for row in chunk_rows]
 
             # 生成向量
             embeddings = self.embedding_service.embed_documents(chunks)
@@ -172,6 +178,9 @@ class RAGSystem:
 
                 if metadata:
                     chunk_metadata.update(metadata)
+
+                chunk_metadata.update({key: value for key, value in chunk_rows[i].items()
+                                       if key not in {'text', 'source'}})
 
                 metadatas.append(chunk_metadata)
                 ids.append(f"{doc_id}_chunk_{i}")
@@ -223,17 +232,23 @@ class RAGSystem:
             results = self.collection.query(
                 query_embeddings=[query_embedding],
                 n_results=n_results,
-                where=filter_metadata
+                where=filter_metadata,
+                include=['documents', 'metadatas', 'distances', 'embeddings'],
             )
 
             # 格式化结果
             formatted_results = []
             if results['documents'] and results['documents'][0]:
                 for i in range(len(results['documents'][0])):
+                    vectors = results.get('embeddings')
+                    vector = (vectors[0][i] if vectors is not None and len(vectors)
+                              and vectors[0] is not None and i < len(vectors[0]) else None)
                     formatted_results.append({
                         'text': results['documents'][0][i],
                         'metadata': results['metadatas'][0][i] if results['metadatas'] else {},
                         'distance': results['distances'][0][i] if results['distances'] else None,
+                        'similarity': cosine_similarity(query_embedding, vector),
+                        'similarity_metric': 'cosine',
                     })
 
             return {

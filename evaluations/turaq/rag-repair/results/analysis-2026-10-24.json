@@ -1,0 +1,212 @@
+{
+  "scope": "post-run analysis; raw result, gold and scorer unchanged",
+  "all_frozen_files_unchanged": true,
+  "source_audit": {
+    "pages": 48,
+    "chunks": 132,
+    "every_chunk_is_bounded_original_slice": true,
+    "non_whitespace_character_coverage": true,
+    "old_business_index_modified": false
+  },
+  "summary": {
+    "evidence": {
+      "denominator": 14,
+      "at1": 1,
+      "at3": 3
+    },
+    "median_retrieval_seconds": 0.07100000000000001,
+    "retrieval_errors": null,
+    "all_cases": {
+      "requested": 20,
+      "scored": 9,
+      "passed": 8,
+      "missing": [],
+      "task_or_scoring_errors": 11,
+      "integrity_ok": false
+    },
+    "facts": {
+      "requested": 14,
+      "scored": 3,
+      "passed": 2,
+      "missing": [],
+      "task_or_scoring_errors": 11,
+      "integrity_ok": false
+    },
+    "boundaries": {
+      "requested": 6,
+      "scored": 6,
+      "passed": 6,
+      "missing": [],
+      "task_or_scoring_errors": 0,
+      "integrity_ok": true
+    },
+    "program_only_boundaries": 5
+  },
+  "usage": {
+    "attempts": 15,
+    "request_chars": 59814,
+    "total_tokens": 30612,
+    "known_total_tokens": 30612,
+    "unknown_usage_attempts": 0,
+    "cache_hits": 0,
+    "cost": null
+  },
+  "prior_engines": {
+    "chroma_bge": {
+      "fact_cases_requested": 14,
+      "evidence_at1": 0,
+      "evidence_at3": 0,
+      "median_query_seconds": 0.3473,
+      "answer_evaluation_run": true,
+      "fact_answers_passed": 0,
+      "fact_answer_errors": 0,
+      "boundary_cases_requested": 6,
+      "boundary_cases_passed": 5,
+      "provider_answer_attempts": 0,
+      "provider_answer_tokens_known": 0,
+      "local_embedding_tokens": null
+    },
+    "lexical": {
+      "fact_cases_requested": 14,
+      "evidence_at1": 6,
+      "evidence_at3": 9,
+      "median_query_seconds": 0.00885,
+      "answer_evaluation_run": false
+    },
+    "openviking": {
+      "fact_cases_requested": 14,
+      "evidence_at1": 3,
+      "evidence_at3": 7,
+      "median_query_seconds": 0.37005,
+      "answer_evaluation_run": true,
+      "fact_answers_passed": 5,
+      "fact_answer_errors": 8,
+      "boundary_cases_requested": 6,
+      "boundary_cases_passed": 6,
+      "provider_answer_attempts": 15,
+      "provider_answer_tokens_known": 44944,
+      "local_embedding_tokens": "not_applicable"
+    }
+  },
+  "validation_errors": [
+    {
+      "id": "moutai-revenue-2024",
+      "error": "ValueError",
+      "status": "insufficient",
+      "reason_code": null,
+      "classification": "inconsistent model abstention: missing reason_code"
+    },
+    {
+      "id": "moutai-revenue-2023",
+      "error": "ValueError",
+      "status": "insufficient",
+      "reason_code": null,
+      "classification": "inconsistent model abstention: missing reason_code"
+    },
+    {
+      "id": "moutai-profit-2024",
+      "error": "ValueError",
+      "status": "insufficient",
+      "reason_code": null,
+      "classification": "inconsistent model abstention: missing reason_code"
+    },
+    {
+      "id": "pingan-profit-2024",
+      "error": "ValueError",
+      "status": "insufficient",
+      "reason_code": null,
+      "classification": "inconsistent model abstention: missing reason_code"
+    },
+    {
+      "id": "moutai23-revenue-2023",
+      "error": "ValueError",
+      "status": "insufficient",
+      "reason_code": null,
+      "classification": "inconsistent model abstention: missing reason_code"
+    },
+    {
+      "id": "moutai23-revenue-2022",
+      "error": "ValueError",
+      "status": "insufficient",
+      "reason_code": null,
+      "classification": "inconsistent model abstention: missing reason_code"
+    },
+    {
+      "id": "moutai23-profit-2023",
+      "error": "ValueError",
+      "status": "insufficient",
+      "reason_code": null,
+      "classification": "inconsistent model abstention: missing reason_code"
+    },
+    {
+      "id": "moutai23-profit-2022-adjusted",
+      "error": "ValueError",
+      "status": "insufficient",
+      "reason_code": null,
+      "classification": "inconsistent model abstention: missing reason_code"
+    },
+    {
+      "id": "moutai23-cash-2023",
+      "error": "ValueError",
+      "status": "insufficient",
+      "reason_code": null,
+      "classification": "inconsistent model abstention: missing reason_code"
+    },
+    {
+      "id": "moutai23-assets-2023",
+      "error": "ValueError",
+      "status": "insufficient",
+      "reason_code": null,
+      "classification": "inconsistent model abstention: missing reason_code"
+    },
+    {
+      "id": "moutai23-revenue-2023q3",
+      "error": "ValueError",
+      "status": "insufficient",
+      "reason_code": null,
+      "classification": "inconsistent model abstention: missing reason_code"
+    }
+  ],
+  "scored_failures": [
+    {
+      "id": "pingan-npl-2024",
+      "scores": {
+        "abstention": true,
+        "evidence": true,
+        "identity": true,
+        "value": false,
+        "contract": false
+      },
+      "output": {
+        "status": "supported",
+        "symbol": "000001.SZ",
+        "metric": "不良贷款率",
+        "period": "2024-12-31",
+        "value": "1.06%",
+        "unit": "%",
+        "reason_code": null,
+        "citations": [
+          {
+            "document_id": "pingan-2024",
+            "page": 16,
+            "start": 465,
+            "end": 487,
+            "quote": "不良贷款率  1.06%  1.06%  -"
+          }
+        ]
+      }
+    }
+  ],
+  "interpretation": {
+    "model_accuracy_not_established": true,
+    "program_only_boundaries": 5,
+    "model_evaluated_boundaries": 1,
+    "blind_held_out_test": false,
+    "automatic_promotion": false
+  },
+  "post_review_fix": {
+    "unicode_signs_and_fraction_only_decimals": true,
+    "frozen_corpus_chunks_unchanged": true,
+    "additional_provider_calls": 0
+  }
+}

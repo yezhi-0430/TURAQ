@@ -1,0 +1,39 @@
+{
+  "verified_at": "2026-10-24T03:53:46.570772+00:00",
+  "status": "cloud_connection_verified_with_synthetic_metadata",
+  "smoke_report_sha256": "d2811cebd57c5ccb79ab89c280b4024da6948dddc5599d6ffa028ddeedfb3159",
+  "sdk_version": "5.0.4",
+  "trace_id": "f3f2746701f64469a5b30e6aa0748792",
+  "trace_url": "https://cloud.langfuse.com/project/cmvlusm890004ad0eispxslza/traces/f3f2746701f64469a5b30e6aa0748792",
+  "verified": [
+    "project authentication",
+    "production metadata adapter queue and sink",
+    "remote observations readback",
+    "synthetic token usage",
+    "three remote experiment scores"
+  ],
+  "synthetic_only": true,
+  "model_calls": 0,
+  "credentials_in_report": false,
+  "tests": {
+    "isolated_unit_after_sdk_install": 572,
+    "existing_warnings": 3,
+    "targeted_after_launcher_fix": 13,
+    "launcher_regressions_added": 2
+  },
+  "checks": {
+    "ruff": "passed for launcher and tests",
+    "compileall": "passed for launcher and tests",
+    "diff_check": "passed; existing README CRLF notice only"
+  },
+  "runtime": {
+    "existing_backend": false,
+    "existing_frontend": false,
+    "backend_launcher_loads_env_file": true,
+    "business_service_started_or_restarted": false
+  },
+  "limits": [
+    "Synthetic trace verifies connection, not business research quality or billing",
+    "Application must be started to generate ongoing business traces"
+  ]
+}

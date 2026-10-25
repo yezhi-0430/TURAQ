@@ -1,0 +1,399 @@
+{
+  "midea-2024-fact-01": {
+    "status": "supported",
+    "value": "407149600",
+    "unit": "千元",
+    "anchor": {
+      "document_id": "midea-2024",
+      "page": 9,
+      "start": 458,
+      "end": 469,
+      "quote": "407,149,600"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "midea-2024",
+        "page": 9,
+        "start": 458,
+        "end": 469,
+        "quote": "407,149,600"
+      }
+    ],
+    "annotation": "Transcribed against rendered physical pages; same-author annotation, independent reviewer requested; frozen before retrieval. Garbled extracted labels retained for CMB."
+  },
+  "midea-2024-fact-02": {
+    "status": "supported",
+    "value": "372037280",
+    "unit": "千元",
+    "anchor": {
+      "document_id": "midea-2024",
+      "page": 9,
+      "start": 471,
+      "end": 482,
+      "quote": "372,037,280"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "midea-2024",
+        "page": 9,
+        "start": 471,
+        "end": 482,
+        "quote": "372,037,280"
+      }
+    ],
+    "annotation": "Transcribed against rendered physical pages; same-author annotation, independent reviewer requested; frozen before retrieval. Garbled extracted labels retained for CMB."
+  },
+  "midea-2024-fact-03": {
+    "status": "supported",
+    "value": "38537237",
+    "unit": "千元",
+    "anchor": {
+      "document_id": "midea-2024",
+      "page": 9,
+      "start": 523,
+      "end": 533,
+      "quote": "38,537,237"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "midea-2024",
+        "page": 9,
+        "start": 523,
+        "end": 533,
+        "quote": "38,537,237"
+      },
+      {
+        "document_id": "midea-2024",
+        "page": 10,
+        "start": 400,
+        "end": 410,
+        "quote": "38,537,237"
+      }
+    ],
+    "annotation": "Transcribed against rendered physical pages; same-author annotation, independent reviewer requested; frozen before retrieval. Garbled extracted labels retained for CMB."
+  },
+  "midea-2024-fact-04": {
+    "status": "supported",
+    "value": "60511572",
+    "unit": "千元",
+    "anchor": {
+      "document_id": "midea-2024",
+      "page": 9,
+      "start": 658,
+      "end": 668,
+      "quote": "60,511,572"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "midea-2024",
+        "page": 9,
+        "start": 658,
+        "end": 668,
+        "quote": "60,511,572"
+      }
+    ],
+    "annotation": "Transcribed against rendered physical pages; same-author annotation, independent reviewer requested; frozen before retrieval. Garbled extracted labels retained for CMB."
+  },
+  "midea-2024-fact-05": {
+    "status": "supported",
+    "value": "604351853",
+    "unit": "千元",
+    "anchor": {
+      "document_id": "midea-2024",
+      "page": 10,
+      "start": 9,
+      "end": 20,
+      "quote": "604,351,853"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "midea-2024",
+        "page": 10,
+        "start": 9,
+        "end": 20,
+        "quote": "604,351,853"
+      }
+    ],
+    "annotation": "Transcribed against rendered physical pages; same-author annotation, independent reviewer requested; frozen before retrieval. Garbled extracted labels retained for CMB."
+  },
+  "midea-2024-fact-06": {
+    "status": "supported",
+    "value": "5.44",
+    "unit": "元/股",
+    "anchor": {
+      "document_id": "midea-2024",
+      "page": 9,
+      "start": 714,
+      "end": 718,
+      "quote": "5.44"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "midea-2024",
+        "page": 9,
+        "start": 714,
+        "end": 718,
+        "quote": "5.44"
+      }
+    ],
+    "annotation": "Transcribed against rendered physical pages; same-author annotation, independent reviewer requested; frozen before retrieval. Garbled extracted labels retained for CMB."
+  },
+  "midea-2024-fact-07": {
+    "status": "supported",
+    "value": "21.29",
+    "unit": "%",
+    "anchor": {
+      "document_id": "midea-2024",
+      "page": 9,
+      "start": 791,
+      "end": 797,
+      "quote": "21.29%"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "midea-2024",
+        "page": 9,
+        "start": 791,
+        "end": 797,
+        "quote": "21.29%"
+      }
+    ],
+    "annotation": "Transcribed against rendered physical pages; same-author annotation, independent reviewer requested; frozen before retrieval. Garbled extracted labels retained for CMB."
+  },
+  "midea-2024-fact-08": {
+    "status": "supported",
+    "value": "101700575",
+    "unit": "千元",
+    "anchor": {
+      "document_id": "midea-2024",
+      "page": 10,
+      "start": 762,
+      "end": 773,
+      "quote": "101,700,575"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "midea-2024",
+        "page": 10,
+        "start": 762,
+        "end": 773,
+        "quote": "101,700,575"
+      }
+    ],
+    "annotation": "Transcribed against rendered physical pages; same-author annotation, independent reviewer requested; frozen before retrieval. Garbled extracted labels retained for CMB."
+  },
+  "cmb-2024-fact-01": {
+    "status": "supported",
+    "value": "337488",
+    "unit": "百万元",
+    "anchor": {
+      "document_id": "cmb-2024",
+      "page": 14,
+      "start": 140,
+      "end": 147,
+      "quote": "337,488"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "cmb-2024",
+        "page": 14,
+        "start": 140,
+        "end": 147,
+        "quote": "337,488"
+      }
+    ],
+    "annotation": "Transcribed against rendered physical pages; same-author annotation, independent reviewer requested; frozen before retrieval. Garbled extracted labels retained for CMB."
+  },
+  "cmb-2024-fact-02": {
+    "status": "supported",
+    "value": "339123",
+    "unit": "百万元",
+    "anchor": {
+      "document_id": "cmb-2024",
+      "page": 14,
+      "start": 149,
+      "end": 156,
+      "quote": "339,123"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "cmb-2024",
+        "page": 14,
+        "start": 149,
+        "end": 156,
+        "quote": "339,123"
+      }
+    ],
+    "annotation": "Transcribed against rendered physical pages; same-author annotation, independent reviewer requested; frozen before retrieval. Garbled extracted labels retained for CMB."
+  },
+  "cmb-2024-fact-03": {
+    "status": "supported",
+    "value": "148391",
+    "unit": "百万元",
+    "anchor": {
+      "document_id": "cmb-2024",
+      "page": 14,
+      "start": 307,
+      "end": 314,
+      "quote": "148,391"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "cmb-2024",
+        "page": 14,
+        "start": 307,
+        "end": 314,
+        "quote": "148,391"
+      },
+      {
+        "document_id": "cmb-2024",
+        "page": 19,
+        "start": 1118,
+        "end": 1125,
+        "quote": "148,391"
+      }
+    ],
+    "annotation": "Transcribed against rendered physical pages; same-author annotation, independent reviewer requested; frozen before retrieval. Garbled extracted labels retained for CMB."
+  },
+  "cmb-2024-fact-04": {
+    "status": "supported",
+    "value": "447023",
+    "unit": "百万元",
+    "anchor": {
+      "document_id": "cmb-2024",
+      "page": 14,
+      "start": 412,
+      "end": 419,
+      "quote": "447,023"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "cmb-2024",
+        "page": 14,
+        "start": 412,
+        "end": 419,
+        "quote": "447,023"
+      }
+    ],
+    "annotation": "Transcribed against rendered physical pages; same-author annotation, independent reviewer requested; frozen before retrieval. Garbled extracted labels retained for CMB."
+  },
+  "cmb-2024-fact-05": {
+    "status": "supported",
+    "value": "12152036",
+    "unit": "百万元",
+    "anchor": {
+      "document_id": "cmb-2024",
+      "page": 15,
+      "start": 153,
+      "end": 163,
+      "quote": "12,152,036"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "cmb-2024",
+        "page": 15,
+        "start": 153,
+        "end": 163,
+        "quote": "12,152,036"
+      },
+      {
+        "document_id": "cmb-2024",
+        "page": 26,
+        "start": 755,
+        "end": 765,
+        "quote": "12,152,036"
+      }
+    ],
+    "annotation": "Transcribed against rendered physical pages; same-author annotation, independent reviewer requested; frozen before retrieval. Garbled extracted labels retained for CMB."
+  },
+  "cmb-2024-fact-06": {
+    "status": "supported",
+    "value": "5.66",
+    "unit": "元",
+    "anchor": {
+      "document_id": "cmb-2024",
+      "page": 14,
+      "start": 521,
+      "end": 525,
+      "quote": "5.66"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "cmb-2024",
+        "page": 14,
+        "start": 521,
+        "end": 525,
+        "quote": "5.66"
+      }
+    ],
+    "annotation": "Transcribed against rendered physical pages; same-author annotation, independent reviewer requested; frozen before retrieval. Garbled extracted labels retained for CMB."
+  },
+  "cmb-2024-fact-07": {
+    "status": "supported",
+    "value": "14.49",
+    "unit": "%",
+    "anchor": {
+      "document_id": "cmb-2024",
+      "page": 14,
+      "start": 872,
+      "end": 877,
+      "quote": "14.49"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "cmb-2024",
+        "page": 14,
+        "start": 872,
+        "end": 877,
+        "quote": "14.49"
+      }
+    ],
+    "annotation": "Transcribed against rendered physical pages; same-author annotation, independent reviewer requested; frozen before retrieval. Garbled extracted labels retained for CMB."
+  },
+  "cmb-2024-fact-08": {
+    "status": "supported",
+    "value": "79764",
+    "unit": "百万元",
+    "anchor": {
+      "document_id": "cmb-2024",
+      "page": 15,
+      "start": 1493,
+      "end": 1499,
+      "quote": "79,764"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "cmb-2024",
+        "page": 15,
+        "start": 1493,
+        "end": 1499,
+        "quote": "79,764"
+      }
+    ],
+    "annotation": "Transcribed against rendered physical pages; same-author annotation, independent reviewer requested; frozen before retrieval. Garbled extracted labels retained for CMB."
+  },
+  "boundary-future_period": {
+    "status": "insufficient",
+    "reason_code": "period_not_present"
+  },
+  "boundary-before_publication": {
+    "status": "insufficient",
+    "reason_code": "not_yet_public"
+  },
+  "boundary-wrong_security": {
+    "status": "insufficient",
+    "reason_code": "wrong_security"
+  },
+  "boundary-wrong_report": {
+    "status": "insufficient",
+    "reason_code": "sources_unavailable"
+  },
+  "boundary-other_owner": {
+    "status": "insufficient",
+    "reason_code": "sources_unavailable"
+  },
+  "boundary-withdrawn": {
+    "status": "insufficient",
+    "reason_code": "sources_unavailable"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-23",
+  "review": "independent read-only reviewer plus author reproductions",
+  "unit": {
+    "passed": 500,
+    "warnings": 3,
+    "command": ".venv/Scripts/python.exe -m pytest tests/unit --confcutdir=tests/unit -o addopts='' -q --tb=short"
+  },
+  "admission_access": {
+    "passed": 29,
+    "warnings": 3
+  },
+  "frontend": {
+    "passed": 70,
+    "command": "node --test tests/frontend/*.test.mjs"
+  },
+  "targeted_eval_compare": {
+    "passed": 19
+  },
+  "mechanism_baseline": {
+    "scorer": "contract-v2",
+    "requested": 7,
+    "passed": 7
+  },
+  "self_comparison": {
+    "accepted": true,
+    "decision": "no_mechanism_regression"
+  },
+  "artificial_fault_injection": {
+    "not_a_model_run": true,
+    "accepted": false,
+    "regressed": [
+      "tool-calculate-v1"
+    ],
+    "observed_exit_code": 1
+  },
+  "sdk": "5.0.4 real SDK, all HTTP mocked, local span exporter passed",
+  "static_checks": "scoped Ruff, compileall, git diff --check passed",
+  "real_model_quality": "not_run",
+  "paid_model_calls": 0,
+  "external_langfuse": "not_run",
+  "postgres_full_integration": "not_run"
+}

@@ -1,0 +1,11 @@
+{
+  "url": "https://static.cninfo.com.cn/finalpage/2025-04-30/1223421123.PDF",
+  "issuer_direct_pdf_http_status": 403,
+  "published_date": "2025-04-29",
+  "publication_basis": "Issuer official annual-results announcement dated2025-04-29; downloaded CNINFO dissemination copy dated2025-04-30",
+  "pdf_sha256": "a82a81e52f52da3cd1b7f38ded08625dc18e3d4522b15d3ef76bf921e54c1f43",
+  "parser_version": "pypdf-standard-cid-v2",
+  "parse_seconds": 26.015,
+  "warnings": [],
+  "page_count": 270
+}

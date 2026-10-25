@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     database_password: SecretStr
     dashscope_api_key: SecretStr | None = None
     settings_encryption_key: SecretStr | None = None
+    openviking_enabled: bool = False
+    openviking_url: str = "http://127.0.0.1:1934"
+    openviking_root_key: SecretStr | None = None
     paper_max_accounts: int = Field(default=10, ge=1, le=100)
     model_provider: Literal["fake", "qwen"] = "fake"
     model_name: str = Field(default="qwen-plus", min_length=1, max_length=120)

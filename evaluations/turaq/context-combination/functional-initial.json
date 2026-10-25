@@ -1,0 +1,84 @@
+{
+  "state": "failed",
+  "checks": {
+    "other_actor_has_no_preferences": true,
+    "public_fact_retrieval": false,
+    "excluded_contexts_empty": true,
+    "native_other_account_cannot_read_page": true,
+    "preferences_survive_restart": true,
+    "public_pages_survive_restart": true,
+    "explicit_clear_confirmed": true,
+    "frozen_method_files_unchanged": true
+  },
+  "retrieval": [
+    {
+      "id": "moutai-revenue-2024",
+      "mode": "openviking_files",
+      "evidence_parts": 5,
+      "eligible_pages": 3
+    },
+    {
+      "id": "moutai-revenue-2023",
+      "mode": "openviking_files",
+      "evidence_parts": 5,
+      "eligible_pages": 3
+    },
+    {
+      "id": "moutai-profit-2024",
+      "mode": "local_fallback",
+      "evidence_parts": 4,
+      "eligible_pages": 3
+    },
+    {
+      "id": "moutai-cash-2024",
+      "mode": "local_fallback",
+      "evidence_parts": 5,
+      "eligible_pages": 3
+    },
+    {
+      "id": "pingan-revenue-2024",
+      "mode": "openviking_files",
+      "evidence_parts": 5,
+      "eligible_pages": 4
+    },
+    {
+      "id": "pingan-profit-2024",
+      "mode": "local_fallback",
+      "evidence_parts": 5,
+      "eligible_pages": 4
+    },
+    {
+      "id": "pingan-npl-2024",
+      "mode": "openviking_files",
+      "evidence_parts": 5,
+      "eligible_pages": 4
+    },
+    {
+      "id": "future-period",
+      "mode": "openviking_files",
+      "evidence_parts": 5,
+      "eligible_pages": 3
+    },
+    {
+      "id": "before-publication",
+      "mode": "server_exclusion_rule",
+      "evidence_parts": 0,
+      "eligible_pages": 0
+    },
+    {
+      "id": "wrong-security",
+      "mode": "server_exclusion_rule",
+      "evidence_parts": 0,
+      "eligible_pages": 0
+    }
+  ],
+  "provider_calls": 0,
+  "model_accuracy_run": false,
+  "frozen_files": 52,
+  "initialization_model_requests_rejected_before_restart": 9,
+  "initialization_model_requests_rejected_after_restart": 0,
+  "native_version": "0.5.2",
+  "service_ready": true,
+  "preference_data": "synthetic typed preference cleared after verification",
+  "scope": "exact-known public report selected pages; not full-corpus or semantic search"
+}

@@ -1,0 +1,26 @@
+{
+  "fresh": {
+    "cases": 14,
+    "requests_captured_without_HTTP": 9,
+    "expected_request_chars": 31031,
+    "program_only_passed": [
+      "boundary-before_publication",
+      "boundary-wrong_security",
+      "boundary-wrong_report",
+      "boundary-other_owner",
+      "boundary-withdrawn"
+    ]
+  },
+  "regression": {
+    "cases": 22,
+    "requests_captured_without_HTTP": 17,
+    "expected_request_chars": 59762,
+    "program_only_passed": [
+      "boundary-before_publication",
+      "boundary-wrong_security",
+      "boundary-wrong_report",
+      "boundary-other_owner",
+      "boundary-withdrawn"
+    ]
+  }
+}

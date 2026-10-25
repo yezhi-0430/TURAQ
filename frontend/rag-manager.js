@@ -240,12 +240,14 @@
                 } else {
                     let html = '';
                     data.results.forEach((item, index) => {
-                        const similarity = ((1 - item.distance) * 100).toFixed(1);
+                        const similarity = Number.isFinite(item.similarity)
+                            && item.similarity >= -1 && item.similarity <= 1
+                            ? `${(item.similarity * 100).toFixed(1)}%` : '未知';
                         html += `
                             <div class="result-item">
                                 <div class="result-text">${item.text}</div>
                                 <div class="result-meta">
-                                    <span class="similarity">相似度: ${similarity}%</span>
+                                    <span class="similarity">余弦相似度: ${similarity}</span>
                                     ${item.metadata.filename ? `<span>文件: ${item.metadata.filename}</span>` : ''}
                                     ${item.metadata.stock_code ? `<span>股票: ${item.metadata.stock_code}</span>` : ''}
                                     ${item.metadata.category ? `<span>分类: ${getCategoryName(item.metadata.category)}</span>` : ''}

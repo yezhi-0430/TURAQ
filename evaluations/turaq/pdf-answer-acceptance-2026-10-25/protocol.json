@@ -1,0 +1,81 @@
+{
+  "created_at": "2026-10-24T16:51:58.040663+00:00",
+  "authorization": "User continued after real model/quota notice",
+  "model": "qwen-plus",
+  "order": [
+    "fresh",
+    "regression"
+  ],
+  "groups": {
+    "fresh": {
+      "cases": 14,
+      "max_actual_calls": 9,
+      "scope": "Yili first live-answer run; same-author references; first32physical pages; retrieval already examined"
+    },
+    "regression": {
+      "cases": 22,
+      "max_actual_calls": 17,
+      "scope": "Known Midea+CMB repair regression; first32physical pages/report"
+    }
+  },
+  "budget_per_group": {
+    "max_gate_calls": 24,
+    "max_request_chars": 220000,
+    "max_output_tokens": 1024,
+    "seconds": 480,
+    "per_request_seconds": 30,
+    "retries": 0
+  },
+  "fixed_task_total_call_ceiling": 26,
+  "combined_request_char_ceiling": 440000,
+  "combined_seconds_ceiling": 960,
+  "required_scoring": "unchanged public-fact-citation-v1; all cases stay in denominators",
+  "automatic_promotion": false,
+  "langfuse_export": false,
+  "files": {
+    "app/pdf_cmap.py": "62335d94039c86fc7a99d19e20bb7fdb3f603c27f2973ac3f14a96d37b7f321a",
+    "app/pdf_text_quality.py": "419a8cc27d5a3dc32852e35066352aa6d3089989764f926c07a49565e172c184",
+    "app/pdf_cmap_validation.py": "395809e8999f57f6694d8375aa363c9f9170a88b0f2381a54eed48d89ef40afb",
+    "app/document_parser.py": "0635f2b33b4b6e318fda21dd6fa6294ef69f1a2ec7d08beb52a9ce4068394b86",
+    "app/analysis/quality.py": "ba24fed7d52fe8e3621ad680d151b38ac598d3487fb8dcd24994b41c104ddff1",
+    "app/disclosures.py": "ed9d340365814028fad399863adc8bf5519579c2906d6ec226cf6e7c449705fc",
+    "app/unseen_report_validation.py": "51bb3afba5a333374d191dd5a903d13e9b642b903a5f3e20f039ab1fd4d4fce2",
+    "scripts/run_unseen_report_eval.py": "694dea93c9ad955ad2dcde1dd6c1a94b8f56c9e8ddad871cd774619da3ba5855",
+    "scripts/run_pdf_cmap_validation.py": "4d1697193005f059a9b64a133c9f7711d33130394f71f86883c8c7f7b4223dc3",
+    "scripts/run_table_hybrid_eval.py": "5be45bdaf3c4056fa33724377f645bf76da255abe6b6b8fefc4417125703187a",
+    "scripts/run_rag_repair_eval.py": "add6a88106b19ed583c87c72d5bb9374426247cf2a8ce76087671e45850b04e6",
+    "app/rag/hybrid.py": "c432773459b1625417727c183c6bf3a500abfd1e7f1779cc2651ad56050872d4",
+    "app/rag/table_chunks.py": "2b0671a9490834e542e3f6d10db995c9436e9db2a165d311b8a3549bdca1f232",
+    "app/rag/chunker.py": "ee9dab6b65dd0c668f04ca2169cdd179f90105ef7727a9cb666ba7613d37eabd",
+    "app/rag/scoring.py": "630b125cb1814823909c7914a277652be18bb003c47ad6572e90616c1a7d8b0e",
+    "app/rag/embeddings.py": "64bfc2c51e9f274676a35ae94160819be2ec5c4b454a1bb6e306870328d08ab1",
+    "app/openviking_benchmark.py": "349a99a73eaa9dde7bbd529cd8c1e7ef3a329bb5340f06c8288a42c60cfae8d8",
+    "app/report_evidence_eval.py": "abf2c64e899445cec6be028e6eba270cefb976765ad970a2db0e57797b972caf",
+    "app/report_fact_task.py": "729982cfcd884b116e99651a849b2044bf9749ee9eb9e01c7133c099ba940acb",
+    "pyproject.toml": "09468f5a01b8aea1f4660c8433eca1a04d2ffcf8cb7c658d8892410437d6190e",
+    "evaluations/turaq/pdf-cmap-v2/fresh/acquisition.json": "7ac628fae85f3a3448041b4326428b7e35b537c0e4f1b05579e8f8757a138630",
+    "evaluations/turaq/pdf-cmap-v2/fresh/annotation.json": "3016814fda46d28ed652400e988122f48bead9990100f9d7cfd061db1e5d7bc6",
+    "evaluations/turaq/pdf-cmap-v2/fresh/cases.json": "b3891306b97d50955f896a2ab714a124879b84eb0188ed4f5950e4956d843d46",
+    "evaluations/turaq/pdf-cmap-v2/fresh/documents.json": "f37f6fb87e5f11476b19376e41ec757430132873ef95a56642b80d7c49f9baeb",
+    "evaluations/turaq/pdf-cmap-v2/fresh/fixture_answers.json": "d9de97da79e0bd3f05cb08b6fcde078a220f935c58d25406524e7ab822b5ea40",
+    "evaluations/turaq/pdf-cmap-v2/fresh/gold.json": "294a1c69023f09bf2bd48bb844841ea263feb3987004dc32f0c4f2ff2233e7cd",
+    "evaluations/turaq/pdf-cmap-v2/fresh/manifest.json": "63e4e57bfd8e5202349c5835a86fbdb4b05eecb2eefb14123f0b5a22dec3f583",
+    "evaluations/turaq/pdf-cmap-v2/fresh/sources/yili-2024.pages.json": "83eba3d6a9a535d0a1bfe27ce3210e644266218551afda9d303e1656ec6d8279",
+    "evaluations/turaq/pdf-cmap-v2/fresh/sources/yili-2024.pdf": "a82a81e52f52da3cd1b7f38ded08625dc18e3d4522b15d3ef76bf921e54c1f43",
+    "evaluations/turaq/pdf-cmap-v2/protocol.json": "49f186a25023b136475192a96efc68900185589bbfd530092cdc481c89ba728f",
+    "evaluations/turaq/pdf-cmap-v2/method-freeze.json": "42b2d3f469230b1f2764c4819b6138b1cd10467b56eb8f0f85806bed1877255e",
+    "evaluations/turaq/pdf-cmap-v2/results/fresh-2026-10-24-v1.json": "a219ae8fc32ea465ed2396d66135cb339acd50a5569c6090a5b1178b4fb6ae19",
+    "evaluations/turaq/pdf-cmap-v2/regression/cases.json": "12b0ebc37cc12a8bd5d99d4d8a52f0106f838160aa98aabc3615041010218dd1",
+    "evaluations/turaq/pdf-cmap-v2/regression/derivation.json": "1e4a39d3cfbcf739d5d946045071ce4edcb4225ed18634325c9328ce43a8343f",
+    "evaluations/turaq/pdf-cmap-v2/regression/documents.json": "b96bd520beb0d0be14b05c99cea4ae3d4f1dabc892c4741aed763a9d126b8704",
+    "evaluations/turaq/pdf-cmap-v2/regression/fixture_answers.json": "6c41372450f6c9da058a3bf7cf8753fa5d4b6059c42036ee1b37f9530aa7fde3",
+    "evaluations/turaq/pdf-cmap-v2/regression/gold.json": "c6d39f7e4f503634f91574bcec74c0a559be91eda3e3b59eb716809f596f006b",
+    "evaluations/turaq/pdf-cmap-v2/regression/manifest.json": "60e7d9f750b2a54b8f613a7e23e423084e7e282ce1ee09b7c6bb92908f9997b0",
+    "evaluations/turaq/pdf-cmap-v2/regression/sources/cmb-2024.pages.json": "4307631c3fbb8fa24271ae500d53bdff0ed8f7cfd0b3adb5997163ec0182b6a8",
+    "evaluations/turaq/pdf-cmap-v2/regression/sources/cmb-2024.pdf": "ab50c8147d378586a01d622f9da3d56aa85644d961cecf1a8570f3414a5b9586",
+    "evaluations/turaq/pdf-cmap-v2/regression/sources/midea-2024.pages.json": "45d779b359d93480ff27a7e892b44042a9f9894028599206d23fb7393d861d2e",
+    "evaluations/turaq/pdf-cmap-v2/regression/sources/midea-2024.pdf": "b17a9b9b84bca1d2a4e4a3cadc5dd5ba5c85e3f1fd2d758acd3315b5b040ecd9",
+    "evaluations/turaq/pdf-cmap-v2/results/regression-2026-10-24-v1.json": "fb7f9d9eb8b3195b2cc464bbe238e71c946c9af0991e85a446b63556c9ff7de7",
+    "evaluations/turaq/pdf-answer-acceptance-2026-10-25/run.py": "1eac5a27e679e3bc66a115dc532ddf19989ef09c27554488ad9d3c7ae6725b31"
+  }
+}

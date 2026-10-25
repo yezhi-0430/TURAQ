@@ -1,0 +1,65 @@
+{
+  "scope": "post-run analysis only; original measurements unchanged",
+  "result_sha256": "cf07961bd93fa475fcc879d52a24bf7c8abdeeee1fd85626293fff94928ed588",
+  "engines": {
+    "chroma_bge": {
+      "fact_cases_requested": 14,
+      "evidence_at1": 0,
+      "evidence_at3": 0,
+      "median_query_seconds": 0.3473,
+      "answer_evaluation_run": true,
+      "fact_answers_passed": 0,
+      "fact_answer_errors": 0,
+      "boundary_cases_requested": 6,
+      "boundary_cases_passed": 5,
+      "provider_answer_attempts": 0,
+      "provider_answer_tokens_known": 0,
+      "local_embedding_tokens": null
+    },
+    "lexical": {
+      "fact_cases_requested": 14,
+      "evidence_at1": 6,
+      "evidence_at3": 9,
+      "median_query_seconds": 0.00885,
+      "answer_evaluation_run": false
+    },
+    "openviking": {
+      "fact_cases_requested": 14,
+      "evidence_at1": 3,
+      "evidence_at3": 7,
+      "median_query_seconds": 0.37005,
+      "answer_evaluation_run": true,
+      "fact_answers_passed": 5,
+      "fact_answer_errors": 8,
+      "boundary_cases_requested": 6,
+      "boundary_cases_passed": 6,
+      "provider_answer_attempts": 15,
+      "provider_answer_tokens_known": 44944,
+      "local_embedding_tokens": "not_applicable"
+    }
+  },
+  "provider_attempts_all_runs": 76,
+  "known_provider_tokens_all_runs": 84177,
+  "unknown_provider_usage_attempts": 1,
+  "provider_total_tokens": null,
+  "monetary_cost": null,
+  "automatic_promotion": false,
+  "openviking_provider_embedding_tokens_all_runs": 37919,
+  "openviking_background_chat_tokens_known": 1314,
+  "chroma_raw_evidence_at3_without_gate": 1,
+  "lifecycle": {
+    "synthetic_only": true,
+    "appended_correction_rejected": true,
+    "after_correction_old_page_blocked": {
+      "chroma": true,
+      "openviking": true
+    },
+    "deleted_direct_read_status": 404,
+    "chroma_native_delete_success": true,
+    "after_deletion_old_page_blocked": {
+      "chroma": true,
+      "openviking": true
+    },
+    "application_excludes_withdrawn_page": true
+  }
+}

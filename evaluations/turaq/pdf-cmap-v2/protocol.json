@@ -1,0 +1,88 @@
+{
+  "version": "pdf-cmap-v2-plan",
+  "original_parser_sha256": "dc39632593138d403a5df89cb12c6d268246acb0f29679fcc26760ff0a257438",
+  "known_corpus": "evaluations/turaq/unseen-reports",
+  "fresh_issuer": {
+    "id": "yili-2024",
+    "symbol": "600887.SH",
+    "report_period": "2024",
+    "selected_pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32
+    ]
+  },
+  "factual_specs": [
+    {
+      "metric": "营业收入",
+      "period": "2024"
+    },
+    {
+      "metric": "营业收入",
+      "period": "2023"
+    },
+    {
+      "metric": "归母净利润",
+      "period": "2024"
+    },
+    {
+      "metric": "经营活动现金流量净额",
+      "period": "2024"
+    },
+    {
+      "metric": "总资产",
+      "period": "2024-12-31"
+    },
+    {
+      "metric": "基本每股收益",
+      "period": "2024"
+    },
+    {
+      "metric": "加权平均净资产收益率",
+      "period": "2024"
+    },
+    {
+      "metric": "营业收入",
+      "period": "2024Q3"
+    }
+  ],
+  "retriever_sha256": {
+    "app/rag/hybrid.py": "c432773459b1625417727c183c6bf3a500abfd1e7f1779cc2651ad56050872d4",
+    "app/rag/table_chunks.py": "2b0671a9490834e542e3f6d10db995c9436e9db2a165d311b8a3549bdca1f232",
+    "app/rag/chunker.py": "ee9dab6b65dd0c668f04ca2169cdd179f90105ef7727a9cb666ba7613d37eabd",
+    "app/rag/scoring.py": "630b125cb1814823909c7914a277652be18bb003c47ad6572e90616c1a7d8b0e",
+    "app/report_evidence_eval.py": "abf2c64e899445cec6be028e6eba270cefb976765ad970a2db0e57797b972caf",
+    "app/report_fact_task.py": "729982cfcd884b116e99651a849b2044bf9749ee9eb9e01c7133c099ba940acb"
+  },
+  "model_calls": 0,
+  "scope": "Known64page repair regression plus fresh32page issuer after final parser freeze; do not claim known set blind."
+}

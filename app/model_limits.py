@@ -1,6 +1,5 @@
 """Database-shared rolling budgets and fenced, bounded model request leases."""
 
-import asyncio
 import logging
 import math
 import time
@@ -8,7 +7,6 @@ from collections.abc import Iterator
 from datetime import timedelta
 from uuid import uuid4
 
-import httpx
 from fastapi import Depends, HTTPException, Request
 from sqlalchemy import event, func, select, text, update
 from sqlalchemy.dialects.postgresql import insert as pg_insert
@@ -20,16 +18,14 @@ from app.auth.models import ModelBudget
 from app.auth.service import aware, digest, utcnow
 from app.auth.throttle import RateLimited, reserve
 from app.config import Settings
+from app.model_http import ModelDeadlineExceeded as ModelDeadlineExceeded
+from app.model_http import deadline_post as deadline_post
 from app.user_settings.runtime import get_runtime_policy, get_runtime_settings
 
 logger = logging.getLogger(__name__)
 
 
 class LimitsUnavailable(Exception):
-    pass
-
-
-class ModelDeadlineExceeded(Exception):
     pass
 
 
@@ -134,6 +130,9 @@ class Admission:
         self.remaining()
         if db.bind.dialect.name == "postgresql":
             bind_database_deadline(db, self.remaining, max_seconds=max_seconds)
+
+    def post(self, *args, **kwargs):
+        return deadline_post(*args, **kwargs)
 
     def before_attempt(self, *, now=None):
         self.remaining()
@@ -272,38 +271,6 @@ def bind_model(client, admission, *, purpose="default"):
     return BoundedClient()
 
 
-def deadline_post(url, headers, payload, timeout, *, transport=None, deadline=None):
-    """Cancel the actual async HTTP stream, close it, then return to the sync loop.
-
-    No abandoned worker or background HTTP request survives a timeout. The lease is
-    released only after asyncio.run has completed cancellation and transport cleanup.
-    """
-    async def send():
-        remaining = min(timeout, deadline - time.monotonic()) if deadline else timeout
-        if remaining <= 0:
-            raise ModelDeadlineExceeded("模型请求超时")
-        async with asyncio.timeout(remaining), httpx.AsyncClient(
-            timeout=remaining, transport=transport, trust_env=False, follow_redirects=False
-        ) as client:
-            async with client.stream("POST", url, headers=headers, json=payload) as response:
-                chunks = []
-                size = 0
-                async for chunk in response.aiter_bytes():
-                    size += len(chunk)
-                    if size > 1048576:
-                        raise ModelDeadlineExceeded("模型响应超出限制")
-                    chunks.append(chunk)
-                # aiter_bytes already decoded the body; discard wire encoding/framing.
-                decoded_headers = response.headers.copy()
-                for name in ("content-encoding", "content-length", "transfer-encoding"):
-                    decoded_headers.pop(name, None)
-                return httpx.Response(response.status_code, headers=decoded_headers,
-                                      content=b"".join(chunks))
-
-    try:
-        return asyncio.run(send())
-    except TimeoutError as exc:
-        raise ModelDeadlineExceeded("模型请求超时") from exc
 
 
 def read_limit(factory, key, count):

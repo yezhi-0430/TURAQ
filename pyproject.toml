@@ -19,10 +19,12 @@ dependencies = [
     "email-validator>=2.2,<3",
     "apscheduler>=3.10,<4.0",
     "pypdf>=6.1,<7",
+    "pdfminer.six==20260107",
     "cryptography>=44,<47",
 ]
 
 [project.optional-dependencies]
+observability = ["langfuse==5.0.4"]
 dev = [
     "pytest>=8.3,<9.0",
     "ruff>=0.11,<1.0",

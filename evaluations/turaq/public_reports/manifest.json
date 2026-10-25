@@ -1,0 +1,31 @@
+{
+  "version": "public-report-evidence-v1",
+  "source_kind": "official_public_annual_reports",
+  "files": {
+    "documents.json": "c62af375870dee9988083931d792f213c10a46b8fc1cab23ffd9bb607f9641ab",
+    "cases.json": "01cea81b76e576ec6bb3b90c6879102faf3b7dfc78fa24cfc39059a2e1e6f6f8",
+    "gold.json": "d473004325b6e89e5e0a9ed59c10f8d91c3fd2f8add892c6d64d0ff317eddcee",
+    "fixture_answers.json": "5b705fac1428dca2339327da96c6cc32b96468825fa5919f1eb3ddba67d911f8",
+    "sources/moutai-2024.pdf": "5299f4940e2ce4e91084b73dc457d558b9d335fa76fbfee6227e4254eb7f4a30",
+    "sources/moutai-2024.pages.json": "fa3fa8e7b6b675638975e551faf55a211e75f7fce8635c0e5c968b472ae98182",
+    "sources/pingan-2024.pdf": "e88d8e6a8a4e83dc77501cfcf6dec687aa1b1407cd5c2937c0894da50bd0e397",
+    "sources/pingan-2024.pages.json": "02a36e60a13b7e3813401383fd26e611d92428607edb53730956cda50c4859ba",
+    "review/moutai-page5.png": "9d963ed6bab194abaa29f45beddc2ff2512290f836e363bfee26b32e789c1cc9",
+    "review/pingan-page16.png": "9e5cf62d22540301ddbdcb39754d55f5a7156fe3e884de8f5cbd58909127b356",
+    "review/pingan-page17.png": "645ded81ad02c919ead9f173aaeaf18bf59401dcfe453345a621f79fa2858bce",
+    "review/pingan-page19.png": "38711e6c8707dd81cb1b59d6ce0dc604a4fd325777dcfb91d993748d80b9af61"
+  },
+  "expected_ids": [
+    "moutai-revenue-2024",
+    "moutai-revenue-2023",
+    "moutai-profit-2024",
+    "moutai-cash-2024",
+    "pingan-revenue-2024",
+    "pingan-profit-2024",
+    "pingan-npl-2024",
+    "future-period",
+    "before-publication",
+    "wrong-security"
+  ],
+  "annotation_status": "single-author visually verified; independent reviewer confirmed primary anchors; added alternatives manually visually checked; not held-out"
+}

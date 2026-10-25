@@ -124,22 +124,18 @@ sudo systemctl enable docker
 
 ---
 
-## 方案 4：纯静态前端托管
+## 前端构建与托管
 
-如果你只想展示前端界面（不需要后端功能），可以将 `frontend/standalone.html` 部署到：
+当前页面入口为 `frontend/index.html`。在项目根目录构建：
 
-### GitHub Pages (免费)
-1. 创建 `docs` 文件夹，复制 HTML 文件
-2. 在 GitHub 仓库设置中启用 Pages
-3. 访问：`https://username.github.io/repo-name`
+```powershell
+npm ci --prefix frontend
+npm run build --prefix frontend
+```
 
-### Vercel / Netlify (免费)
-1. 注册账号并连接 GitHub
-2. 选择 `frontend` 目录作为发布目录
-3. 自动部署，获得 HTTPS 域名
+将生成的 `frontend/dist/` 作为静态目录提供，并在同一 HTTPS 站点把 `/api/` 转发到后端；该目录的 `index.html` 为首页。账号 Cookie、Origin 和 CSRF 检查需要前后端使用一致的站点配置。具体本地启动与代理设置见 [前端说明](frontend/README.md)。
 
-**优点**: 完全免费，自动 HTTPS，全球 CDN  
-**缺点**: 无法调用后端 API（除非单独部署后端）
+旧版独立演示页面已经移除。仅托管静态文件无法完成当前需要后端的登录、研究和交易流程。
 
 ---
 

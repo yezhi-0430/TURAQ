@@ -1,0 +1,56 @@
+{
+  "verified_at": "2026-10-24T16:01:31.564768+00:00",
+  "experiment_labels": "2026-10-24 retained from preregistration; completion may be2026-10-25Asia/Shanghai",
+  "method_and_archive_unchanged": true,
+  "raw_run_inputs_still_unchanged": true,
+  "source_pdf_and_corpus_manifests_valid": true,
+  "history": {
+    "method_and_archive_unchanged": true,
+    "all_3_corpus_manifests_valid": true,
+    "historical_corpus_results_and_reports_verified": 14,
+    "earlier_baseline_results_verified": 4,
+    "secret_pattern_scan": {
+      "files": 63,
+      "findings": []
+    },
+    "current_runtime_dependencies": "pip check: no broken requirements"
+  },
+  "unit_tests": {
+    "passed": 725,
+    "warnings": 3,
+    "seconds": 49.56,
+    "command": ".venv/Scripts/python.exe -X utf8 -m pytest tests/unit --confcutdir=tests/unit -o addopts='' -q",
+    "evidence": "Executed after final code fixes in this task, before method freeze; source unchanged since freeze"
+  },
+  "targeted_regressions": {
+    "passed": 33,
+    "red_green": true
+  },
+  "independent_review": {
+    "reviewers": 1,
+    "important_found": 3,
+    "important_fixed_red_green": 3,
+    "critical": 0,
+    "deferred_minors": []
+  },
+  "new_python_ruff": "passed before freeze",
+  "python_compile": "passed before freeze",
+  "dependency_check": "No broken requirements found",
+  "secret_pattern_scan": {
+    "files": 69,
+    "findings": [],
+    "scope": "text/code/reference/results patterns; no PDF binaries or .env output"
+  },
+  "model_evaluation_run": false,
+  "provider_attempts": 0,
+  "model_answer_accuracy": null,
+  "business_index_migrated": false,
+  "frontend_changed_in_this_task": false,
+  "artifacts": {
+    "evaluations/turaq/pdf-cmap-v2/results/regression-2026-10-24-v1.json": "fb7f9d9eb8b3195b2cc464bbe238e71c946c9af0991e85a446b63556c9ff7de7",
+    "evaluations/turaq/pdf-cmap-v2/results/fresh-2026-10-24-v1.json": "a219ae8fc32ea465ed2396d66135cb339acd50a5569c6090a5b1178b4fb6ae19",
+    "evaluations/turaq/pdf-cmap-v2/results/analysis-2026-10-24.json": "d4096753e37b73b921c08a0689a2d49bdaa20e519dbc8998627ad92ebe78ecb9",
+    "docs/research/2026-10-24-pdf-cmap-results.md": "72db7bc73ea583e284c2d4a0fef3eb9e8fc4f35bc967e2bc312d9e054a063943",
+    "tests/unit/test_pdf_cmap_quality.py": "21631237411ff2b64ef261bb6221e5c220a3bf0e24a6a8e7b6af6ed4d863d9fe"
+  }
+}

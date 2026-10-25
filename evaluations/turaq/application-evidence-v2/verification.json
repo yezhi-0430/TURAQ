@@ -1,0 +1,71 @@
+{
+  "verified_at": "2026-10-25T07:11:44.022302+00:00",
+  "scope": "Controlled application integration; isolated fixtures, no new live model score",
+  "unit_tests": {
+    "passed": 786,
+    "warnings": 3,
+    "seconds": 27.05
+  },
+  "auth_limits_deadline_access": {
+    "passed": 29,
+    "warnings": 3,
+    "seconds": 9.77
+  },
+  "frontend_tests": 84,
+  "vite_build": "passed",
+  "asset_and_js_syntax": "passed",
+  "ruff": "passed",
+  "compile": "passed",
+  "selected_public_fact_evidence": "7/7",
+  "functional_fixture_cases": 10,
+  "new_live_model_evaluation": false,
+  "provider_attempts": 0,
+  "cost": null,
+  "old_registered_files_unchanged": 52,
+  "strict_scorer_gold_raw_results_unchanged": true,
+  "unit_note_changes_strict_scores": false,
+  "application_route": "source-evidence-ids-v2",
+  "selection_mode": "document-bm25-source-spans-v1",
+  "historical_cli_quality_not_transferred": true,
+  "services_restarted": false,
+  "deployed": false,
+  "secret_scan": {
+    "files": 10,
+    "findings": []
+  },
+  "independent_review": {
+    "reviewers": 1,
+    "critical": 0,
+    "important": 0,
+    "minor": 1,
+    "deferred_minors": [
+      {
+        "file": "docs/research/2026-10-25-application-evidence-integration-results.md",
+        "line": 11,
+        "issue": "No selected lexical fragments implies no model call; positive BM25 is not semantic relevance certification",
+        "status": "deferred documentation wording"
+      }
+    ],
+    "declined_to_judge": [
+      "Preset fixtures/sourcecoverage do not establish live model accuracy or23/24quality transfer",
+      "No production activation/deployment/provider accounting/operational latency acceptance",
+      "Historical52hashes checked by executor, not independently recomputed by reviewer",
+      "Retrieval beyond two frozenPDFs, including year-only matches/period confusion/missingmetrics, not established",
+      "Dedup means rejecting>=80percent body overlap, not complete zero-character overlap",
+      "Preexisting eager RAGpackage imports remain; no embedding instance/DBclient/index write, main app already importsRAGrouter",
+      "Unrelated existing code and entire prior scorer/v2design not re-audited"
+    ]
+  },
+  "artifacts": {
+    "app/analysis/evidence.py": "2732a485e35257f8748e6d873d2486e26445f6f73ea6a489ab6def4488a7ecc8",
+    "app/analysis/units.py": "d9d4c243d0c3edaf21ac3b059f2178bfc92461481fa7211f1e4bdc1959955d62",
+    "app/analysis/evaluation.py": "8dfe868b06b235797571c9a729d66b202401763f279dfda0bae95bc17f330598",
+    "frontend/analysis-workbench.js": "02d49437f77f04f9634d2b57462414f079004ac15626e03b13f500de469a9ad8",
+    "tests/unit/test_analysis_evidence_integration.py": "bede01b8e9e5a021e6b4580f7b6dc25df9d0ae66cd9f37acecccfc07ba39b099",
+    "tests/unit/test_analysis_workbench.py": "ff9429d4eb7a1172a05c4206aa097500632c49c688cf5dbaa151b725b48990ee",
+    "tests/frontend/analysis-workbench.test.mjs": "f84ad84add4ae4dccc9ba5ee87f10e1c29c7ad44a80125b0eea983cadf2d84cd",
+    "docs/implementation/2026-10-25-application-evidence-integration.md": "537e7cbc5a0d2a7a3ef5f8fc049443d2b9f1aa06aeada6e43889618b9a5f73d1",
+    "docs/research/2026-10-25-application-evidence-integration-results.md": "12aff836e3160f0965dc78d0a32a8334bb2908a0a40d25c36840d6d85fca3cb8",
+    "evaluations/turaq/application-evidence-v2/functional-verification.json": "2e92d7832b4aa467e54e618cefa3b2868742f762205d7ad9e4c3d48aa6523208"
+  }
+}

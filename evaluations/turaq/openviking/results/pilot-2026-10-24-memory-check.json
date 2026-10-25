@@ -1,0 +1,148 @@
+{
+  "state": "completed",
+  "openviking_version": "0.5.2",
+  "resource_pages": 7,
+  "service_ready": true,
+  "model_calls_authorized": true,
+  "metric": "gold evidence-page coverage@3; not answer accuracy",
+  "comparison": "independent lexical baseline; not production Chroma/BGE",
+  "retrieval_eligible": 7,
+  "lexical_baseline": [
+    {
+      "id": "moutai-revenue-2024",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "moutai-revenue-2023",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "moutai-profit-2024",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "moutai-cash-2024",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "pingan-revenue-2024",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "pingan-profit-2024",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "pingan-npl-2024",
+      "evidence_retrieved": true
+    },
+    {
+      "id": "future-period",
+      "evidence_retrieved": null
+    },
+    {
+      "id": "before-publication",
+      "evidence_retrieved": null
+    },
+    {
+      "id": "wrong-security",
+      "evidence_retrieved": null
+    }
+  ],
+  "resumed_workspace": "openviking-pilot-2026-10-24-cached",
+  "memory": {
+    "retrieved": 1,
+    "preference_found": true,
+    "indexing_waited": true,
+    "queue_errors": 0,
+    "new_session_created": true,
+    "persisted_from_previous_run": true,
+    "synthetic_only": true
+  },
+  "usage": {
+    "attempts": 8,
+    "request_chars": 17763,
+    "total_tokens": 7724,
+    "known_total_tokens": 7724,
+    "unknown_usage_attempts": 0,
+    "cache_hits": 1,
+    "cost": null,
+    "records": [
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 138,
+          "total_tokens": 138
+        },
+        "elapsed_seconds": 0.365
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 699,
+          "total_tokens": 699
+        },
+        "elapsed_seconds": 0.216
+      },
+      {
+        "kind": "chat",
+        "status": 200,
+        "usage": {
+          "total_tokens": 2427,
+          "completion_tokens": 979,
+          "prompt_tokens": 1448
+        },
+        "elapsed_seconds": 22.036
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 158,
+          "total_tokens": 158
+        },
+        "elapsed_seconds": 0.217
+      },
+      {
+        "kind": "chat",
+        "status": 200,
+        "usage": {
+          "total_tokens": 2061,
+          "completion_tokens": 822,
+          "prompt_tokens": 1239
+        },
+        "elapsed_seconds": 18.827
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 1251,
+          "total_tokens": 1251
+        },
+        "elapsed_seconds": 0.271
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 129,
+          "total_tokens": 129
+        },
+        "elapsed_seconds": 0.202
+      },
+      {
+        "kind": "embedding",
+        "status": 200,
+        "usage": {
+          "prompt_tokens": 861,
+          "total_tokens": 861
+        },
+        "elapsed_seconds": 0.234
+      }
+    ]
+  },
+  "services_stopped_after_experiment": true
+}

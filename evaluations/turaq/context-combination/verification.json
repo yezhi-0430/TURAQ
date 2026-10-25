@@ -1,0 +1,43 @@
+{
+  "state": "completed",
+  "unit": {
+    "passed": 814,
+    "warnings": 3,
+    "seconds": 45.82,
+    "confcutdir": "tests/unit"
+  },
+  "auth": {
+    "passed": 30,
+    "warnings": 3,
+    "seconds": 12.87,
+    "confcutdir": "tests/auth"
+  },
+  "frontend": {
+    "passed": 87,
+    "build": "Vite 5.4.21 success",
+    "new_script_bundled": true
+  },
+  "native_checks": 10,
+  "frozen_method_files_unchanged": 52,
+  "external_provider_calls": 0,
+  "new_model_accuracy_run": false,
+  "independent_review": {
+    "critical": 0,
+    "important": 2,
+    "important_fixed": 2,
+    "minor_deferred": 1,
+    "repeat_review": false
+  },
+  "services": {
+    "backend_port": 8888,
+    "frontend_port": 3000,
+    "native_port": 1934,
+    "blocking_gateway_port": 1935
+  },
+  "limitations": [
+    "Native file mode only; no semantic index or session extraction",
+    "Known public registry selected pages only; no private uploads",
+    "Clear resets current preferences; native version history remains",
+    "Non-ASCII malformed guard proof edge case is recorded and deferred"
+  ]
+}

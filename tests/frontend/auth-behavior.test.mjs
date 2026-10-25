@@ -4,6 +4,18 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 function load(files, fetch, sessionStorage){const context={window:{sessionStorage},console,AbortController,setTimeout,clearTimeout,fetch,URL,document:undefined};vm.createContext(context);for(const file of files){if(fs.existsSync(file))vm.runInContext(fs.readFileSync(file,'utf8'),context);}return context.window;}
 const response=(data,status=200,headers={})=>({ok:status<400,status,json:async()=>data,headers:{get:key=>headers[key]??null}});
+
+test('analysis runtime quota and deadlines retain partial results with original denominator',async()=>{
+ for(const status of [429,503,504]){
+  const partial={state:'incomplete',requested:5,scored:2,passed:1,cases:[]};
+  const api=load(['frontend/api.js'],async url=>url.endsWith('/session')
+   ?response({user:{id:1},csrf_token:'csrf'})
+   :response({detail:'评测未完成',partial},status)).apiClient;
+  await api.bootstrap();
+  await assert.rejects(api.request('/api/analysis/evaluate',{method:'POST',body:{source_sha256:'a'.repeat(64)}}),
+   error=>error.status===status&&error.partial?.requested===5&&error.partial?.passed===1);
+ }
+});
 test('private requests require a bootstrapped login and never call private fetch anonymously',async()=>{const calls=[];const w=load(['frontend/api.js'],async url=>{calls.push(url);return response({user:null,csrf_token:'anon'});});assert.equal(typeof w.createAPIClient,'function');const api=w.createAPIClient();await api.bootstrap();await assert.rejects(api.request('/watchlists'),e=>e.status===401);assert.deepEqual(calls,['/api/v1/auth/session']);});
 test('authenticated JSON writes use same-origin credentials and current CSRF',async()=>{const calls=[];const w=load(['frontend/api.js'],async(url,opts)=>{calls.push([url,opts]);return response(url.endsWith('/session')?{user:{id:1,email:'a@example.test'},csrf_token:'csrf-a'}:{id:3});});assert.equal(typeof w.createAPIClient,'function');const api=w.createAPIClient();await api.bootstrap();await api.request('/watchlists',{method:'POST',body:{name:'A'}});assert.equal(calls[1][0],'/api/v1/watchlists');assert.equal(calls[1][1].credentials,'same-origin');assert.equal(calls[1][1].headers['X-CSRF-Token'],'csrf-a');assert.equal(calls[1][1].body,'{"name":"A"}');await assert.rejects(api.request('http://localhost/private'));});
 test('401 invalidates private state; stale responses from another account are discarded',async()=>{let finish;let session={user:{id:1},csrf_token:'a'};const w=load(['frontend/api.js'],async url=>url.endsWith('/session')?response(session):url.endsWith('/late')?new Promise(r=>finish=r):response({detail:'expired'},401));assert.equal(typeof w.createAPIClient,'function');const api=w.createAPIClient();await api.bootstrap();let invalidated=0;api.subscribe(()=>invalidated++);const late=api.request('/late');await assert.rejects(api.request('/watchlists'),e=>e.status===401);assert.equal(api.session.user,null);assert.equal(invalidated,1);session={user:{id:2},csrf_token:'b'};await api.bootstrap();finish(response({private:'A'}));await assert.rejects(late,e=>e.name==='StaleResponseError');});

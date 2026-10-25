@@ -19,11 +19,13 @@ TURAQ 是一个面向个人 A 股研究场景的全栈 AI 应用。项目以自�
 | 整理风险 | 分组/单股分析任务、结构化结论、分析历史和跟踪状态 |
 | 模拟操作 | 模拟账户、委托与成交、持仓估值、收益和风险指标 |
 | 管理工作台 | 个人偏好、账号会话、模型配置、调用额度与管理审计 |
+| 核验与追踪 | 财报事实评测、证据 ID、Langfuse 元数据与 OpenViking 文件上下文 |
 
 ## 内容导航
 
 - [界面预览](#界面预览)
 - [功能介绍](#功能介绍)
+- [Langfuse 与 OpenViking](#langfuse-与-openviking)
 - [典型使用流程](#典型使用流程)
 - [技术架构](#技术架构)
 - [本地运行](#本地运行)
@@ -103,7 +105,9 @@ TURAQ 是一个面向个人 A 股研究场景的全栈 AI 应用。项目以自�
 
 仓库包含独立的 RAG 知识库模块，支持文本、PDF、Word 文档解析、文本分块、向量化、Chroma 存储与语义检索。`knowledge/` 保存财务指标、交易规则、风险管理、行业分析和财报阅读等知识文档，可以通过脚本重新导入本地索引。
 
-财报分析接口支持上传 PDF，尝试抽取资产、负债、营收、净利润、经营现金流等指标，计算财务比率，并结合规则和知识库生成风险说明。这个上传演示路径在 PDF 解析失败时会回退到固定样例数据，因此回退结果只能用于流程演示，不能作为上传财报的真实分析结论；它与公开披露原文阅读任务分别实现。
+财报分析接口支持上传 PDF，尝试抽取资产、负债、营收、净利润、经营现金流等指标，计算财务比率并展示规则检查、来源位置及缺失项。解析失败会明确报错；资料不足时不生成安全评分。演示数据通过单独入口提供，并明确标记来源。冻结样本可显式运行模型评测，评测分与财务规则分分别展示；它与公开披露原文阅读任务分别实现。
+
+模型评测先从授权原文中选择片段，再让模型返回证据 ID，由服务端还原原文页序与位置并严格评分。单位写法等价会单独解释，不修改严格通过率。PDF 解析增加标准 CID 字体映射处理，但不包含 OCR；当前应用金标评测只对精确匹配的已注册公开报告开放。
 
 ### 6. 账号、权限与管理后台
 
@@ -123,12 +127,30 @@ TURAQ 是一个面向个人 A 股研究场景的全栈 AI 应用。项目以自�
 | --- | --- |
 | 工作台偏好 | 默认页面、界面密度、减少动画、自选排序 |
 | 行情与图表 | 自动刷新、刷新间隔、默认图表周期与复权方式 |
-| 研究与风险 | 发送快捷键、研究轮数、默认风险筛选与资料回溯范围 |
+| 研究与风险 | 发送快捷键、研究轮数、默认风险筛选、资料回溯及可选长期研究偏好 |
 | 模拟交易 | 刷新方式、新账户资金与佣金默认值、委托默认类型 |
 | 账号与安全 | 修改密码、查看有效会话、退出其他会话 |
 | 管理员全站配置 | 模型供应商与名称、输出预算、额度、限流、处理超时及变更记录 |
 
 设置支持保存、恢复默认、个人 JSON 导入与导出，并使用版本号检查防止旧页面覆盖新配置。管理员模型密钥更新使用服务端加密保存，响应、导出和审计不包含密钥原文。
+
+## Langfuse 与 OpenViking
+
+两者与现有系统组合使用，职责如下：
+
+| 组件 | 当前用途 | 边界 |
+| --- | --- | --- |
+| 现有应用 | 登录权限、证券与披露时间过滤、证据排序、原文核验、模型额度和严格评分 | 财务规则分与模型事实准确率分别展示 |
+| Langfuse | 可选导出模型尝试、运行状态、提供商 token 用量和评测计数 | 默认关闭；不发送提示、回答、文档正文或用户身份；未知费用保留为空 |
+| OpenViking 0.5.2 | 原生文件存储、文件检索，以及主动保存的研究偏好 | 仅专用本机文件模式；未启用语义向量检索、自动摘要或聊天记忆提取 |
+
+Langfuse Cloud 已完成真实认证、合成元数据写入和服务端回查。仪表盘的 Scores 总数表示评分记录数量，实际准确率应结合单次评测的 `passed / requested`、各案例结果和完整性状态理解，不能把记录数当作满分制分值。
+
+OpenViking 首批只保存原有茅台、平安两份固定公开报告的 **7 个授权页面**。原生检索结果须与当前原文完全一致，再交由现有证据机制处理；服务离线、页面内容变化或检索不可用时回退本地选择。私人上传文件不会自动写入此存储。
+
+登录后进入 **系统设置 → 研究与风险 → 长期研究偏好**，可主动保存回答详略、已核实页序引用和原表单位关注选项，下次研究读取本账号偏好。该卡片有独立保存、刷新、清除按钮；清除重置当前偏好，不代表物理擦除原生版本历史。
+
+真实本机服务的重启、账号隔离、原文变更及离线回退已完成验证，没有为此调用云模型。实现和限制见 [OpenViking 使用说明](docs/openviking-context.md)、[组合接入验收](docs/research/2026-10-25-openviking-combination-results.md) 和 [评测资料入口](evaluations/turaq/README.md)。
 
 ## 典型使用流程
 
@@ -152,6 +174,8 @@ flowchart TD
     AUTH --> PAPER[模拟账户 · 委托 · 成交 · 估值]
     AUTH --> SETTINGS[自选管理 · 个人与全站设置]
     API --> RAG[独立知识库与财报模块]
+    AUTH --> CONTEXT[可选 OpenViking · 文件上下文与主动保存偏好]
+    RAG --> CONTEXT
     AGENT --> MODEL[Qwen / 隔离测试模型]
     RISK --> MODEL
     AGENT --> PUBLIC[公开行情与披露资料]
@@ -162,6 +186,7 @@ flowchart TD
     PAPER --> DB
     SETTINGS --> DB
     RAG --> VECTOR[(Chroma 本地向量库)]
+    MODEL -. 状态与用量元数据 .-> TRACE[可选 Langfuse]
 ```
 
 | 层次 | 技术与职责 |
@@ -171,6 +196,7 @@ flowchart TD
 | 业务与持久化 | SQLAlchemy、PostgreSQL；账号、自选、风险任务、模拟交易、设置与审计 |
 | 模型与工具 | Qwen 兼容接口、HTTPX、工具 Schema、有限轮数 Agent Loop |
 | 文档与检索 | PDF/Word 解析、Sentence Transformers、Chroma、文本分块与检索 |
+| 上下文与观测 | 隔离安装 OpenViking 0.5.2、可选 Langfuse SDK 5.0.4；文件上下文和受限元数据 |
 | 任务与运行 | APScheduler、Uvicorn、Windows 启动器与独立解析进程 |
 | 质量验证 | Pytest、Python unittest、Node 测试、Ruff、Vite 构建与界面验收记录 |
 
@@ -219,6 +245,8 @@ npm --prefix frontend ci
 | `AUTH_COOKIE_SECURE` | 本地 HTTP 使用 `false`；正式 HTTPS 使用 `true` |
 | `SMTP_*` | 邮箱验证、登录链接与找回密码所需邮件配置 |
 | `SETTINGS_ENCRYPTION_KEY` | 管理员加密更新模型密钥时使用的服务端密钥 |
+| `OPENVIKING_ENABLED` / `OPENVIKING_ROOT_KEY` | 可选本机文件上下文开关与服务端密钥，由专用启动器配置 |
+| `TURAQ_TRACE_ENABLED` / `LANGFUSE_*` | 可选 Langfuse 元数据追踪；配置后需重启后端 |
 
 新数据库可显式创建业务表：
 
@@ -241,7 +269,7 @@ npm --prefix frontend ci
 ```powershell
 $env:SITE_BASE_URL = 'http://localhost:3000'
 $env:AUTH_COOKIE_SECURE = 'false'
-.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8888
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --env-file .env --host 127.0.0.1 --port 8888
 ```
 
 另开终端启动前端：
@@ -254,6 +282,29 @@ npm --prefix frontend run dev
 打开 `http://localhost:3000` 并登录。Vite 将 `/api/` 请求代理到后端，浏览器页面与 API 保持同源；不要直接双击 HTML 文件打开工作台。
 
 已完成依赖和配置的 Windows 环境，可以双击根目录 **`一键启动.bat`** 或 **`start.bat`**，就绪后自动打开页面。**`停止服务.bat`** 用于停止本项目启动的服务。启动器支持健康检查、端口冲突提示与日志记录，说明见 [Windows 启动器](docs/windows-launcher.md)。
+
+### 可选上下文与追踪服务
+
+OpenViking 使用独立环境，避免其依赖改变主应用环境。在 Windows 项目根目录安装并启动：
+
+```powershell
+python -m venv .local-backups/openviking-runtime
+.local-backups/openviking-runtime/Scripts/python.exe -m pip install 'openviking==0.5.2'
+.venv/Scripts/python.exe scripts/launch_context_store.py
+.venv/Scripts/python.exe scripts/launch_context_store.py --status
+# 停止后应用自动回退；不删除保存的资料
+.venv/Scripts/python.exe scripts/launch_context_store.py --stop
+```
+
+现有本地验收环境为 CPython 3.13.12；其他系统与 Python 版本未在本次验证。专用服务使用本机 1934、1935 端口，拒绝模型请求，去除继承代理，存储和密钥位于被 Git 忽略的 `.local-backups/context-store/`。首次启动会更新本机 `.env`；已经运行的后端需要重启以继承环境设置。源码仓库不包含运行环境、密钥或原生数据库。
+
+Langfuse 另行选装：
+
+```powershell
+.venv/Scripts/python.exe -m pip install -e '.[observability]'
+```
+
+在本机 `.env` 中配置 `TURAQ_TRACE_ENABLED=1`、`LANGFUSE_BASE_URL`、`LANGFUSE_PUBLIC_KEY`、`LANGFUSE_SECRET_KEY`，并以 `uvicorn ... --env-file .env` 或现有启动器重启后端。关闭追踪时设 `TURAQ_TRACE_ENABLED=0` 并重启。项目密钥只放本地环境，不提交到 GitHub。
 
 ### 导入本地知识库
 
@@ -287,7 +338,11 @@ npm --prefix frontend run dev
 | `GET /api/v1/paper-trading/accounts/{account_id}/performance` | 查看账户表现 |
 | `GET /api/v1/settings` | 读取当前账号设置 |
 | `POST /api/rag/search` | 检索独立知识库 |
-| `POST /api/analysis/upload` | 财报 PDF 上传演示 |
+| `POST /api/analysis/upload` | 财报 PDF 指标与来源位置分析 |
+| `POST /api/analysis/evaluate` | 精确匹配已注册 PDF 的模型事实评测 |
+| `GET /api/v1/context/preferences` | 读取本账号长期研究偏好及服务状态 |
+| `PUT /api/v1/context/preferences` | 主动保存本账号研究偏好 |
+| `DELETE /api/v1/context/preferences` | 清除当前生效的研究偏好 |
 
 ```text
 TURAQ/
@@ -304,12 +359,16 @@ TURAQ/
 │   ├── risk*.py                # 风险任务、资料阅读与结果历史
 │   ├── paper_trading/          # 模拟账户、规则、成交与表现
 │   ├── user_settings/          # 个人偏好、全站配置与审计
+│   ├── context_store.py        # OpenViking 文件上下文、原文校验和回退
+│   ├── context_api.py          # 本账号研究偏好接口
+│   ├── observability.py        # 有界 Langfuse 元数据导出
 │   ├── rag/                    # 文档解析、分块、向量库与检索
-│   └── analysis/               # 财报指标与风险分析演示
+│   └── analysis/               # 财报指标、证据选择与事实质量评测
 ├── frontend/                   # 工作台页面、脚本、样式与 Vite 配置
 ├── knowledge/                  # 可导入的研究知识文档
 ├── data/                       # 股票目录与数据目录占位
 ├── tests/                      # 后端、前端与集成测试
+├── evaluations/                # 冻结公开样本、版本协议与实验记录
 ├── learning/                   # 独立课堂示例与学习入口
 ├── scripts/                    # 启动、导入、验证与演示工具
 ├── migrations/                 # 数据库迁移脚本
@@ -320,30 +379,33 @@ TURAQ/
 
 ## 测试与验证
 
-2026-10-17 仓库整理时的本地验证结果如下，详细记录见 [整理与验证说明](docs/repository-cleanup-2026-10-17.md)：
+2026-10-25 提交前重新运行了下列隔离测试，历史记录见 [组合接入结果](docs/research/2026-10-25-openviking-combination-results.md)。原生服务一行来自此前实际执行的独立验收；不同范围的通过数不能混作同一套测试成绩。
 
 | 范围 | 验证结果 |
 | --- | --- |
-| 后端单元、认证与集成测试 | 745 项通过 |
-| 前端 Node 行为与资源测试 | 70 项通过 |
-| Day 19 离线课堂测试 | 15 项通过 |
+| 后端隔离单元测试 | 814 项通过 |
+| 完整隔离认证测试（含登录、CSRF、账号和模型额度） | 129 项通过 |
+| 前端 Node 行为与资源测试 | 87 项通过 |
+| 原生 OpenViking 服务验收 | 10 项检查通过，52 个冻结方法文件摘要保持一致 |
 | Vite 生产构建 | 成功 |
 
 项目根目录运行：
 
 ```powershell
+# 测试期间关闭真实追踪和可选原生服务连接；不改变本机 .env。
+$env:TURAQ_TRACE_ENABLED = '0'
+$env:OPENVIKING_ENABLED = 'false'
 .\.venv\Scripts\python.exe -m pytest tests/unit --confcutdir=tests/unit -q -o addopts='' --tb=short
 .\.venv\Scripts\python.exe -m pytest tests/auth --confcutdir=tests/auth -q -o addopts='' --tb=short
-.\.venv\Scripts\python.exe -m pytest tests --ignore=tests/unit --ignore=tests/auth --ignore=tests/frontend -q -o addopts='' --tb=short
 
+npm --prefix frontend run build
 $frontendTests = Get-ChildItem tests/frontend -Filter '*.test.mjs' | ForEach-Object FullName
 node --test @frontendTests
-npm --prefix frontend run build
 
 .\.venv\Scripts\python.exe -X utf8 -m unittest discover -s learning/day19-minimal-agent -p "test_*.py" -v
 ```
 
-后端测试按上述三组隔离夹具运行。认证与集成测试需要独立的 PostgreSQL 测试数据库 `a_share_risk_agent_test`，旧测试库需补齐 `migrations/add_registration_method.sql`。Day 19 课堂示例独立运行，不连接业务数据库或真实模型。
+以上单元与认证套件使用各自隔离夹具，认证测试使用 SQLite。不要直接省略 `--confcutdir` 运行根测试套件：`tests/conftest.py` 会初始化并清空 PostgreSQL 测试表。需要运行旧集成套件时，应先单独准备和核对独立测试数据库 `a_share_risk_agent_test`，旧测试库需补齐 `migrations/add_registration_method.sql`；本次没有运行这一数据库集成套件。Day 19 课堂示例独立运行，不连接业务数据库或真实模型。
 
 这些结果来自已有本地开发环境；真实邮件送达、外部数据源可用性、在线模型行为和正式部署需要在相应环境中分别验证。
 
@@ -369,6 +431,8 @@ npm --prefix frontend run build
 | [历史资料归档](docs/archive/README.md) | 早期探索资料与归档说明 |
 
 ## 开发与数据管理
+
+OpenViking 的组合接入、研究偏好入口和专用本机服务操作见 [OpenViking 上下文说明](docs/openviking-context.md)。当前使用原生文件检索与主动保存偏好，语义索引及自动会话记忆尚未启用。
 
 修改后端代码时可使用 Uvicorn 的 `--reload`；修改活动页面时通过 Vite 查看效果。业务变更配合相应模块测试，前端改动同时检查资源构建和交互状态。贡献代码请创建功能分支并通过 Pull Request 提交。
 

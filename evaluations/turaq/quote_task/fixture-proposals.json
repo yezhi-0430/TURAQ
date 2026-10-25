@@ -1,0 +1,144 @@
+{
+  "moutai-revenue-2024": {
+    "status": "supported",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2024",
+    "value": "170899152276.34",
+    "unit": "元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "moutai-2024",
+        "page": 5,
+        "quote": "170,899,152,276.34"
+      }
+    ]
+  },
+  "moutai-revenue-2023": {
+    "status": "supported",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2023",
+    "value": "147693604994.14",
+    "unit": "元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "moutai-2024",
+        "page": 5,
+        "quote": "147,693,604,994.14"
+      }
+    ]
+  },
+  "moutai-profit-2024": {
+    "status": "supported",
+    "symbol": "600519.SH",
+    "metric": "归母净利润",
+    "period": "2024",
+    "value": "86228146421.62",
+    "unit": "元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "moutai-2024",
+        "page": 5,
+        "quote": "86,228,146,421.62"
+      }
+    ]
+  },
+  "moutai-cash-2024": {
+    "status": "supported",
+    "symbol": "600519.SH",
+    "metric": "经营活动现金流量净额",
+    "period": "2024",
+    "value": "92463692168.43",
+    "unit": "元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "moutai-2024",
+        "page": 5,
+        "quote": "92,463,692,168.43"
+      }
+    ]
+  },
+  "pingan-revenue-2024": {
+    "status": "supported",
+    "symbol": "000001.SZ",
+    "metric": "营业收入",
+    "period": "2024",
+    "value": "146695",
+    "unit": "百万元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "pingan-2024",
+        "page": 16,
+        "quote": "营业收入  146,695  164,699  (10.9%)"
+      }
+    ]
+  },
+  "pingan-profit-2024": {
+    "status": "supported",
+    "symbol": "000001.SZ",
+    "metric": "归母净利润",
+    "period": "2024",
+    "value": "44508",
+    "unit": "百万元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "pingan-2024",
+        "page": 16,
+        "quote": "44,508"
+      }
+    ]
+  },
+  "pingan-npl-2024": {
+    "status": "supported",
+    "symbol": "000001.SZ",
+    "metric": "不良贷款率",
+    "period": "2024-12-31",
+    "value": "1.06",
+    "unit": "%",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "pingan-2024",
+        "page": 16,
+        "quote": "不良贷款率  1.06%  1.06%  -"
+      }
+    ]
+  },
+  "future-period": {
+    "status": "insufficient",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2025",
+    "value": null,
+    "unit": null,
+    "reason_code": "period_not_present",
+    "citations": []
+  },
+  "before-publication": {
+    "status": "insufficient",
+    "symbol": "000001.SZ",
+    "metric": "营业收入",
+    "period": "2024",
+    "value": null,
+    "unit": null,
+    "reason_code": "not_yet_public",
+    "citations": []
+  },
+  "wrong-security": {
+    "status": "insufficient",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2024",
+    "value": null,
+    "unit": null,
+    "reason_code": "wrong_security",
+    "citations": []
+  }
+}

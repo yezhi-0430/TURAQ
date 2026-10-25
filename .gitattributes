@@ -1,0 +1,7 @@
+# Frozen evaluation manifests hash exact bytes, including line endings.
+# Preserve the existing source/fixture bytes on every checkout platform.
+/app/** -text whitespace=cr-at-eol
+/tests/** -text whitespace=cr-at-eol
+/scripts/** -text whitespace=cr-at-eol
+/evaluations/** -text whitespace=cr-at-eol
+/pyproject.toml -text whitespace=cr-at-eol

@@ -1,0 +1,88 @@
+{
+  "tool-calculate-v1": {
+    "status": "completed",
+    "tools": [
+      "success"
+    ],
+    "rounds": 2
+  },
+  "unknown-tool-recovery-v1": {
+    "status": "completed",
+    "tools": [
+      "error",
+      "success"
+    ],
+    "rounds": 3
+  },
+  "invalid-arguments-recovery-v1": {
+    "status": "completed",
+    "tools": [
+      "error",
+      "success"
+    ],
+    "rounds": 3
+  },
+  "round-cap-v1": {
+    "status": "max_rounds_exceeded",
+    "tools": [
+      "success",
+      "success"
+    ],
+    "rounds": 2
+  },
+  "deadline-v1": {
+    "status": "deadline",
+    "tools": [],
+    "rounds": 0
+  },
+  "full-document-lineage-v1": {
+    "status": "ready",
+    "documents": [
+      {
+        "document_id": "aaaaaaaaaaaaaaaaaaaaaaaa",
+        "symbol": "000001.SZ",
+        "report_period": "2025年度",
+        "url": "https://example.invalid/a",
+        "pages": [
+          1,
+          2
+        ]
+      },
+      {
+        "document_id": "bbbbbbbbbbbbbbbbbbbbbbbb",
+        "symbol": "600000.SH",
+        "report_period": "2024年度",
+        "url": "https://example.invalid/b",
+        "pages": [
+          1,
+          2
+        ]
+      }
+    ]
+  },
+  "security-period-source-v1": {
+    "status": "ready",
+    "documents": [
+      {
+        "document_id": "aaaaaaaaaaaaaaaaaaaaaaaa",
+        "symbol": "000001.SZ",
+        "report_period": "2025年度",
+        "url": "https://example.invalid/a",
+        "pages": [
+          1,
+          2
+        ]
+      },
+      {
+        "document_id": "bbbbbbbbbbbbbbbbbbbbbbbb",
+        "symbol": "600000.SH",
+        "report_period": "2024年度",
+        "url": "https://example.invalid/b",
+        "pages": [
+          1,
+          2
+        ]
+      }
+    ]
+  }
+}

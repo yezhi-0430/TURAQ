@@ -213,6 +213,8 @@ def run(stop=False, no_browser=False):
             "-m",
             "uvicorn",
             "app.main:app",
+            "--env-file",
+            str(ROOT / ".env"),
             "--host",
             "127.0.0.1",
             "--port",

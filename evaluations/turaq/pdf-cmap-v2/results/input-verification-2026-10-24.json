@@ -1,0 +1,11 @@
+{
+  "method_and_archive_unchanged": true,
+  "all_3_corpus_manifests_valid": true,
+  "historical_corpus_results_and_reports_verified": 14,
+  "earlier_baseline_results_verified": 4,
+  "secret_pattern_scan": {
+    "files": 63,
+    "findings": []
+  },
+  "current_runtime_dependencies": "pip check: no broken requirements"
+}

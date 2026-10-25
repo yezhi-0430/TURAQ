@@ -1,0 +1,182 @@
+[
+  {
+    "id": "tool-calculate-v1",
+    "input": {
+      "kind": "loop",
+      "prompt": "计算10到9的变化",
+      "replies": [
+        {
+          "tool_calls": [
+            {
+              "id": "call",
+              "type": "function",
+              "function": {
+                "name": "calculate_change",
+                "arguments": "{\"previous_close\": \"10\", \"current_close\": \"9\"}"
+              }
+            }
+          ]
+        },
+        {
+          "content": "下降10%"
+        }
+      ],
+      "max_rounds": 3
+    }
+  },
+  {
+    "id": "unknown-tool-recovery-v1",
+    "input": {
+      "kind": "loop",
+      "prompt": "计算变化，遇错误修正",
+      "replies": [
+        {
+          "tool_calls": [
+            {
+              "id": "call",
+              "type": "function",
+              "function": {
+                "name": "nonexistent",
+                "arguments": "{}"
+              }
+            }
+          ]
+        },
+        {
+          "tool_calls": [
+            {
+              "id": "call",
+              "type": "function",
+              "function": {
+                "name": "calculate_change",
+                "arguments": "{\"previous_close\": \"10\", \"current_close\": \"9\"}"
+              }
+            }
+          ]
+        },
+        {
+          "content": "下降10%"
+        }
+      ],
+      "max_rounds": 4
+    }
+  },
+  {
+    "id": "invalid-arguments-recovery-v1",
+    "input": {
+      "kind": "loop",
+      "prompt": "修正参数后计算",
+      "replies": [
+        {
+          "tool_calls": [
+            {
+              "id": "call",
+              "type": "function",
+              "function": {
+                "name": "calculate_change",
+                "arguments": "{}"
+              }
+            }
+          ]
+        },
+        {
+          "tool_calls": [
+            {
+              "id": "call",
+              "type": "function",
+              "function": {
+                "name": "calculate_change",
+                "arguments": "{\"previous_close\": \"10\", \"current_close\": \"9\"}"
+              }
+            }
+          ]
+        },
+        {
+          "content": "下降10%"
+        }
+      ],
+      "max_rounds": 4
+    }
+  },
+  {
+    "id": "round-cap-v1",
+    "input": {
+      "kind": "loop",
+      "prompt": "停止于轮数上限",
+      "replies": [
+        {
+          "tool_calls": [
+            {
+              "id": "call",
+              "type": "function",
+              "function": {
+                "name": "calculate_change",
+                "arguments": "{\"previous_close\": \"10\", \"current_close\": \"9\"}"
+              }
+            }
+          ]
+        },
+        {
+          "tool_calls": [
+            {
+              "id": "call",
+              "type": "function",
+              "function": {
+                "name": "calculate_change",
+                "arguments": "{\"previous_close\": \"10\", \"current_close\": \"9\"}"
+              }
+            }
+          ]
+        }
+      ],
+      "max_rounds": 2
+    }
+  },
+  {
+    "id": "deadline-v1",
+    "input": {
+      "kind": "loop",
+      "prompt": "期限已过",
+      "replies": [
+        {
+          "tool_calls": [
+            {
+              "id": "call",
+              "type": "function",
+              "function": {
+                "name": "calculate_change",
+                "arguments": "{\"previous_close\": \"10\", \"current_close\": \"9\"}"
+              }
+            }
+          ]
+        }
+      ],
+      "max_rounds": 2,
+      "expired": true
+    }
+  },
+  {
+    "id": "full-document-lineage-v1",
+    "input": {
+      "kind": "reading",
+      "prompt": "逐批阅读合成报告并汇总",
+      "document_ids": [
+        "aaaaaaaaaaaaaaaaaaaaaaaa",
+        "bbbbbbbbbbbbbbbbbbbbbbbb"
+      ],
+      "budget": 800
+    }
+  },
+  {
+    "id": "security-period-source-v1",
+    "input": {
+      "kind": "reading",
+      "prompt": "核对证券期间与出处",
+      "document_ids": [
+        "aaaaaaaaaaaaaaaaaaaaaaaa",
+        "bbbbbbbbbbbbbbbbbbbbbbbb"
+      ],
+      "budget": 1000
+    }
+  }
+]

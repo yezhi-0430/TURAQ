@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-23",
+  "public_documents": 2,
+  "physical_pages": 439,
+  "case_count": 10,
+  "annotation": "single-author, main seven anchors independently visually reviewed; alternatives author visually checked",
+  "targeted_tests": {
+    "passed": 23,
+    "command": ".venv/Scripts/python.exe -m pytest tests/unit/test_report_evidence_eval.py --confcutdir=tests/unit -o addopts='' -q --tb=short"
+  },
+  "unit": {
+    "passed": 523,
+    "warnings": 3
+  },
+  "admission_access": {
+    "passed": 29,
+    "warnings": 3
+  },
+  "frontend": {
+    "passed": 70
+  },
+  "static_checks": "scoped Ruff, compileall and git diff --check passed",
+  "fixture": {
+    "passed": 10,
+    "quality_claim": false
+  },
+  "artificial_bad_unit": {
+    "passed": 9,
+    "accepted": false,
+    "observed_exit_code": 1,
+    "not_model_run": true
+  },
+  "old_mechanism_regression": {
+    "passed": 7,
+    "self_comparison_accepted": true
+  },
+  "paid_model_calls": 0,
+  "real_model_quality": "not_run",
+  "postgres_full_integration": "not_run",
+  "external_langfuse": "not_run",
+  "review_fixes": [
+    "alternative valid citations",
+    "database-free model HTTP transport"
+  ],
+  "live_boundary": "actual Qwen client with MockTransport only; no provider requests"
+}

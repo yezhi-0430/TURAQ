@@ -1,0 +1,9 @@
+{
+  "version": "turaq-synthetic-v1",
+  "origin": "authored synthetic fixtures; not issuer reports",
+  "files": {
+    "cases.json": "1e7f63e8a0ce8c34f1216682df9691b51db7fb48ecbbfb0d3b52f8ccb2964049",
+    "gold.json": "a11cbf83e7dbc7baf2fabc29ad0e36b679b00dcebc7c69f8d3b9585ff2c0ca1c",
+    "documents.json": "a9b9131d4399e2761bbc2fda07036c7fdf0c2f49e020cfc1a1ae7d576c2655bf"
+  }
+}

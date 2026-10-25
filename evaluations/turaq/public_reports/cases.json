@@ -1,0 +1,187 @@
+[
+  {
+    "id": "moutai-revenue-2024",
+    "question": "请按原表单位提取600519.SH 2024的营业收入，标注数值所在PDF页和原文位置。",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2024",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "moutai-2024"
+    ],
+    "context_pages": {
+      "moutai-2024": [
+        1,
+        5,
+        6
+      ]
+    }
+  },
+  {
+    "id": "moutai-revenue-2023",
+    "question": "请按原表单位提取600519.SH 2023的营业收入，标注数值所在PDF页和原文位置。",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2023",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "moutai-2024"
+    ],
+    "context_pages": {
+      "moutai-2024": [
+        1,
+        5,
+        6
+      ]
+    }
+  },
+  {
+    "id": "moutai-profit-2024",
+    "question": "请按原表单位提取600519.SH 2024的归母净利润，标注数值所在PDF页和原文位置。",
+    "symbol": "600519.SH",
+    "metric": "归母净利润",
+    "period": "2024",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "moutai-2024"
+    ],
+    "context_pages": {
+      "moutai-2024": [
+        1,
+        5,
+        6
+      ]
+    }
+  },
+  {
+    "id": "moutai-cash-2024",
+    "question": "请按原表单位提取600519.SH 2024的经营活动现金流量净额，标注数值所在PDF页和原文位置。",
+    "symbol": "600519.SH",
+    "metric": "经营活动现金流量净额",
+    "period": "2024",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "moutai-2024"
+    ],
+    "context_pages": {
+      "moutai-2024": [
+        1,
+        5,
+        6
+      ]
+    }
+  },
+  {
+    "id": "pingan-revenue-2024",
+    "question": "请按原表单位提取000001.SZ 2024的营业收入，标注数值所在PDF页和原文位置。",
+    "symbol": "000001.SZ",
+    "metric": "营业收入",
+    "period": "2024",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "pingan-2024"
+    ],
+    "context_pages": {
+      "pingan-2024": [
+        1,
+        16,
+        17,
+        19
+      ]
+    }
+  },
+  {
+    "id": "pingan-profit-2024",
+    "question": "请按原表单位提取000001.SZ 2024的归母净利润，标注数值所在PDF页和原文位置。",
+    "symbol": "000001.SZ",
+    "metric": "归母净利润",
+    "period": "2024",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "pingan-2024"
+    ],
+    "context_pages": {
+      "pingan-2024": [
+        1,
+        16,
+        17,
+        19
+      ]
+    }
+  },
+  {
+    "id": "pingan-npl-2024",
+    "question": "请按原表单位提取000001.SZ 2024-12-31的不良贷款率，标注数值所在PDF页和原文位置。",
+    "symbol": "000001.SZ",
+    "metric": "不良贷款率",
+    "period": "2024-12-31",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "pingan-2024"
+    ],
+    "context_pages": {
+      "pingan-2024": [
+        1,
+        16,
+        17,
+        19
+      ]
+    }
+  },
+  {
+    "id": "future-period",
+    "question": "只使用提供资料回答600519.SH 2025营业收入；资料不足请拒答。",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2025",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "moutai-2024"
+    ],
+    "context_pages": {
+      "moutai-2024": [
+        1,
+        5,
+        6
+      ]
+    }
+  },
+  {
+    "id": "before-publication",
+    "question": "只使用提供资料回答000001.SZ 2024营业收入；资料不足请拒答。",
+    "symbol": "000001.SZ",
+    "metric": "营业收入",
+    "period": "2024",
+    "as_of": "2025-03-01",
+    "document_ids": [
+      "pingan-2024"
+    ],
+    "context_pages": {
+      "pingan-2024": [
+        1,
+        16,
+        17,
+        19
+      ]
+    }
+  },
+  {
+    "id": "wrong-security",
+    "question": "只使用提供资料回答600519.SH 2024营业收入；资料不足请拒答。",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2024",
+    "as_of": "2025-04-10",
+    "document_ids": [
+      "pingan-2024"
+    ],
+    "context_pages": {
+      "pingan-2024": [
+        1,
+        16,
+        17,
+        19
+      ]
+    }
+  }
+]

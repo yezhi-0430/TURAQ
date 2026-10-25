@@ -1,0 +1,230 @@
+{
+  "yili-2024-fact-01": {
+    "status": "supported",
+    "value": "115393310976.69",
+    "unit": "元",
+    "anchor": {
+      "document_id": "yili-2024",
+      "page": 7,
+      "start": 367,
+      "end": 385,
+      "quote": "115,393,310,976.69"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 367,
+        "end": 385,
+        "quote": "115,393,310,976.69"
+      },
+      {
+        "document_id": "yili-2024",
+        "page": 18,
+        "start": 669,
+        "end": 687,
+        "quote": "115,393,310,976.69"
+      }
+    ],
+    "annotation": "Same-author rendered physical7/8/18/24 review before retrieval; method frozen before acquisition. Numeric column concatenation retained; span hit is not answer correctness."
+  },
+  "yili-2024-fact-02": {
+    "status": "supported",
+    "value": "125758168916.51",
+    "unit": "元",
+    "anchor": {
+      "document_id": "yili-2024",
+      "page": 7,
+      "start": 385,
+      "end": 403,
+      "quote": "125,758,168,916.51"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 385,
+        "end": 403,
+        "quote": "125,758,168,916.51"
+      },
+      {
+        "document_id": "yili-2024",
+        "page": 18,
+        "start": 687,
+        "end": 705,
+        "quote": "125,758,168,916.51"
+      }
+    ],
+    "annotation": "Same-author rendered physical7/8/18/24 review before retrieval; method frozen before acquisition. Numeric column concatenation retained; span hit is not answer correctness."
+  },
+  "yili-2024-fact-03": {
+    "status": "supported",
+    "value": "8452859993.18",
+    "unit": "元",
+    "anchor": {
+      "document_id": "yili-2024",
+      "page": 7,
+      "start": 446,
+      "end": 462,
+      "quote": "8,452,859,993.18"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 446,
+        "end": 462,
+        "quote": "8,452,859,993.18"
+      }
+    ],
+    "annotation": "Same-author rendered physical7/8/18/24 review before retrieval; method frozen before acquisition. Numeric column concatenation retained; span hit is not answer correctness."
+  },
+  "yili-2024-fact-04": {
+    "status": "supported",
+    "value": "21739740393.38",
+    "unit": "元",
+    "anchor": {
+      "document_id": "yili-2024",
+      "page": 7,
+      "start": 606,
+      "end": 623,
+      "quote": "21,739,740,393.38"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 606,
+        "end": 623,
+        "quote": "21,739,740,393.38"
+      },
+      {
+        "document_id": "yili-2024",
+        "page": 18,
+        "start": 957,
+        "end": 974,
+        "quote": "21,739,740,393.38"
+      },
+      {
+        "document_id": "yili-2024",
+        "page": 24,
+        "start": 712,
+        "end": 729,
+        "quote": "21,739,740,393.38"
+      }
+    ],
+    "annotation": "Same-author rendered physical7/8/18/24 review before retrieval; method frozen before acquisition. Numeric column concatenation retained; span hit is not answer correctness."
+  },
+  "yili-2024-fact-05": {
+    "status": "supported",
+    "value": "153718003927.97",
+    "unit": "元",
+    "anchor": {
+      "document_id": "yili-2024",
+      "page": 7,
+      "start": 792,
+      "end": 810,
+      "quote": "153,718,003,927.97"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 792,
+        "end": 810,
+        "quote": "153,718,003,927.97"
+      }
+    ],
+    "annotation": "Same-author rendered physical7/8/18/24 review before retrieval; method frozen before acquisition. Numeric column concatenation retained; span hit is not answer correctness."
+  },
+  "yili-2024-fact-06": {
+    "status": "supported",
+    "value": "1.33",
+    "unit": "元／股",
+    "anchor": {
+      "document_id": "yili-2024",
+      "page": 7,
+      "start": 924,
+      "end": 928,
+      "quote": "1.33"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 924,
+        "end": 928,
+        "quote": "1.33"
+      }
+    ],
+    "annotation": "Same-author rendered physical7/8/18/24 review before retrieval; method frozen before acquisition. Numeric column concatenation retained; span hit is not answer correctness."
+  },
+  "yili-2024-fact-07": {
+    "status": "supported",
+    "value": "15.81",
+    "unit": "%",
+    "anchor": {
+      "document_id": "yili-2024",
+      "page": 7,
+      "start": 1050,
+      "end": 1055,
+      "quote": "15.81"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 1050,
+        "end": 1055,
+        "quote": "15.81"
+      }
+    ],
+    "annotation": "Same-author rendered physical7/8/18/24 review before retrieval; method frozen before acquisition. Numeric column concatenation retained; span hit is not answer correctness."
+  },
+  "yili-2024-fact-08": {
+    "status": "supported",
+    "value": "29037177483.84",
+    "unit": "元",
+    "anchor": {
+      "document_id": "yili-2024",
+      "page": 8,
+      "start": 267,
+      "end": 284,
+      "quote": "29,037,177,483.84"
+    },
+    "allowed_anchors": [
+      {
+        "document_id": "yili-2024",
+        "page": 8,
+        "start": 267,
+        "end": 284,
+        "quote": "29,037,177,483.84"
+      }
+    ],
+    "annotation": "Same-author rendered physical7/8/18/24 review before retrieval; method frozen before acquisition. Numeric column concatenation retained; span hit is not answer correctness."
+  },
+  "boundary-future_period": {
+    "status": "insufficient",
+    "reason_code": "period_not_present"
+  },
+  "boundary-before_publication": {
+    "status": "insufficient",
+    "reason_code": "not_yet_public"
+  },
+  "boundary-wrong_security": {
+    "status": "insufficient",
+    "reason_code": "wrong_security"
+  },
+  "boundary-wrong_report": {
+    "status": "insufficient",
+    "reason_code": "sources_unavailable"
+  },
+  "boundary-other_owner": {
+    "status": "insufficient",
+    "reason_code": "sources_unavailable"
+  },
+  "boundary-withdrawn": {
+    "status": "insufficient",
+    "reason_code": "sources_unavailable"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "version": "pdf-cmap-regression-v2",
+  "expected_ids": [
+    "midea-2024-fact-01",
+    "midea-2024-fact-02",
+    "midea-2024-fact-03",
+    "midea-2024-fact-04",
+    "midea-2024-fact-05",
+    "midea-2024-fact-06",
+    "midea-2024-fact-07",
+    "midea-2024-fact-08",
+    "cmb-2024-fact-01",
+    "cmb-2024-fact-02",
+    "cmb-2024-fact-03",
+    "cmb-2024-fact-04",
+    "cmb-2024-fact-05",
+    "cmb-2024-fact-06",
+    "cmb-2024-fact-07",
+    "cmb-2024-fact-08",
+    "boundary-future_period",
+    "boundary-before_publication",
+    "boundary-wrong_security",
+    "boundary-wrong_report",
+    "boundary-other_owner",
+    "boundary-withdrawn"
+  ],
+  "files": {
+    "cases.json": "12b0ebc37cc12a8bd5d99d4d8a52f0106f838160aa98aabc3615041010218dd1",
+    "derivation.json": "1e4a39d3cfbcf739d5d946045071ce4edcb4225ed18634325c9328ce43a8343f",
+    "documents.json": "b96bd520beb0d0be14b05c99cea4ae3d4f1dabc892c4741aed763a9d126b8704",
+    "fixture_answers.json": "6c41372450f6c9da058a3bf7cf8753fa5d4b6059c42036ee1b37f9530aa7fde3",
+    "gold.json": "c6d39f7e4f503634f91574bcec74c0a559be91eda3e3b59eb716809f596f006b",
+    "sources/cmb-2024.pages.json": "4307631c3fbb8fa24271ae500d53bdff0ed8f7cfd0b3adb5997163ec0182b6a8",
+    "sources/cmb-2024.pdf": "ab50c8147d378586a01d622f9da3d56aa85644d961cecf1a8570f3414a5b9586",
+    "sources/midea-2024.pages.json": "45d779b359d93480ff27a7e892b44042a9f9894028599206d23fb7393d861d2e",
+    "sources/midea-2024.pdf": "b17a9b9b84bca1d2a4e4a3cadc5dd5ba5c85e3f1fd2d758acd3315b5b040ecd9"
+  },
+  "scope": "Known64page parsing regression; same values/questions/PDFs, new extraction coordinates, no blind claim"
+}

@@ -29,6 +29,7 @@ from app.agent_research import ResearchMarketReader
 from app.audit.repository import save_tool_execution
 from app.auth.dependencies import Actor, require_actor
 from app.config import Settings
+from app.context_store import load_preference_message
 from app.database import SessionLocal
 from app.disclosures import DisclosureReader
 from app.llm_client import ModelClient, ModelTimeoutError, create_model_client
@@ -168,6 +169,12 @@ def chat(
         )
 
     try:
+        preference = load_preference_message(
+            admission.settings, actor.id, seconds=min(2, admission.remaining())
+        )
+        if preference:
+            messages.insert(1, preference)
+        admission.remaining()
         # 获取 LLM 客户端
         settings_token = _request_settings.set(admission.settings)
         try:

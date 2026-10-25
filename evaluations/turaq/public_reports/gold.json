@@ -1,0 +1,189 @@
+{
+  "moutai-revenue-2024": {
+    "status": "supported",
+    "value": "170899152276.34",
+    "unit": "元",
+    "anchor": {
+      "document_id": "moutai-2024",
+      "page": 5,
+      "start": 232,
+      "end": 250,
+      "quote": "170,899,152,276.34"
+    },
+    "annotation": "single visual table transcription checked against page image; not blind expert labeling",
+    "allowed_anchors": [
+      {
+        "document_id": "moutai-2024",
+        "page": 5,
+        "start": 232,
+        "end": 250,
+        "quote": "170,899,152,276.34"
+      }
+    ]
+  },
+  "moutai-revenue-2023": {
+    "status": "supported",
+    "value": "147693604994.14",
+    "unit": "元",
+    "anchor": {
+      "document_id": "moutai-2024",
+      "page": 5,
+      "start": 251,
+      "end": 269,
+      "quote": "147,693,604,994.14"
+    },
+    "annotation": "single visual table transcription checked against page image; not blind expert labeling",
+    "allowed_anchors": [
+      {
+        "document_id": "moutai-2024",
+        "page": 5,
+        "start": 251,
+        "end": 269,
+        "quote": "147,693,604,994.14"
+      }
+    ]
+  },
+  "moutai-profit-2024": {
+    "status": "supported",
+    "value": "86228146421.62",
+    "unit": "元",
+    "anchor": {
+      "document_id": "moutai-2024",
+      "page": 5,
+      "start": 309,
+      "end": 326,
+      "quote": "86,228,146,421.62"
+    },
+    "annotation": "single visual table transcription checked against page image; not blind expert labeling",
+    "allowed_anchors": [
+      {
+        "document_id": "moutai-2024",
+        "page": 5,
+        "start": 309,
+        "end": 326,
+        "quote": "86,228,146,421.62"
+      }
+    ]
+  },
+  "moutai-cash-2024": {
+    "status": "supported",
+    "value": "92463692168.43",
+    "unit": "元",
+    "anchor": {
+      "document_id": "moutai-2024",
+      "page": 5,
+      "start": 474,
+      "end": 491,
+      "quote": "92,463,692,168.43"
+    },
+    "annotation": "single visual table transcription checked against page image; not blind expert labeling",
+    "allowed_anchors": [
+      {
+        "document_id": "moutai-2024",
+        "page": 5,
+        "start": 474,
+        "end": 491,
+        "quote": "92,463,692,168.43"
+      }
+    ]
+  },
+  "pingan-revenue-2024": {
+    "status": "supported",
+    "value": "146695",
+    "unit": "百万元",
+    "anchor": {
+      "document_id": "pingan-2024",
+      "page": 16,
+      "start": 114,
+      "end": 121,
+      "quote": "146,695"
+    },
+    "annotation": "single visual table transcription checked against page image; not blind expert labeling",
+    "allowed_anchors": [
+      {
+        "document_id": "pingan-2024",
+        "page": 16,
+        "start": 114,
+        "end": 121,
+        "quote": "146,695"
+      },
+      {
+        "document_id": "pingan-2024",
+        "page": 16,
+        "start": 981,
+        "end": 988,
+        "quote": "146,695"
+      }
+    ]
+  },
+  "pingan-profit-2024": {
+    "status": "supported",
+    "value": "44508",
+    "unit": "百万元",
+    "anchor": {
+      "document_id": "pingan-2024",
+      "page": 16,
+      "start": 153,
+      "end": 159,
+      "quote": "44,508"
+    },
+    "annotation": "single visual table transcription checked against page image; not blind expert labeling",
+    "allowed_anchors": [
+      {
+        "document_id": "pingan-2024",
+        "page": 16,
+        "start": 153,
+        "end": 159,
+        "quote": "44,508"
+      },
+      {
+        "document_id": "pingan-2024",
+        "page": 17,
+        "start": 50,
+        "end": 56,
+        "quote": "44,508"
+      }
+    ]
+  },
+  "pingan-npl-2024": {
+    "status": "supported",
+    "value": "1.06",
+    "unit": "%",
+    "anchor": {
+      "document_id": "pingan-2024",
+      "page": 16,
+      "start": 472,
+      "end": 477,
+      "quote": "1.06%"
+    },
+    "annotation": "single visual table transcription checked against page image; not blind expert labeling",
+    "allowed_anchors": [
+      {
+        "document_id": "pingan-2024",
+        "page": 16,
+        "start": 472,
+        "end": 477,
+        "quote": "1.06%"
+      },
+      {
+        "document_id": "pingan-2024",
+        "page": 19,
+        "start": 1169,
+        "end": 1173,
+        "quote": "1.06"
+      }
+    ]
+  },
+  "future-period": {
+    "status": "insufficient",
+    "reason_code": "period_not_present"
+  },
+  "before-publication": {
+    "status": "insufficient",
+    "reason_code": "not_yet_public"
+  },
+  "wrong-security": {
+    "status": "insufficient",
+    "reason_code": "wrong_security"
+  }
+}

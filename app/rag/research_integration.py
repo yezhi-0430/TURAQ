@@ -6,6 +6,7 @@ RAG 增强的 AI 研究助手
 
 from typing import List, Dict, Any, Optional
 from app.rag.core import get_rag_system
+from app.rag.scoring import relevant_results
 
 
 class RAGEnhancedResearch:
@@ -49,14 +50,12 @@ class RAGEnhancedResearch:
 
             # 过滤低相似度结果
             filtered_results = []
-            for item in result['results']:
-                similarity = 1 - item['distance']
-                if similarity >= min_similarity:
-                    filtered_results.append({
-                        'text': item['text'],
-                        'similarity': similarity,
-                        'metadata': item['metadata']
-                    })
+            for item in relevant_results(result['results'], min_similarity):
+                filtered_results.append({
+                    'text': item['text'],
+                    'similarity': item['similarity'],
+                    'metadata': item['metadata']
+                })
 
             return filtered_results
 

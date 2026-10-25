@@ -1,0 +1,284 @@
+{
+  "scope": "Offline replay only; no schema/quote/value repair, score changes or retries",
+  "by_company": {
+    "yili-2024": {
+      "requested": 8,
+      "scored": 7,
+      "passed": 6,
+      "task_errors": 1,
+      "dimension_passed": {
+        "identity": 7,
+        "value": 6,
+        "evidence": 7,
+        "abstention": 7
+      }
+    },
+    "midea-2024": {
+      "requested": 8,
+      "scored": 8,
+      "passed": 7,
+      "task_errors": 0,
+      "dimension_passed": {
+        "identity": 8,
+        "value": 7,
+        "evidence": 8,
+        "abstention": 8
+      }
+    },
+    "cmb-2024": {
+      "requested": 8,
+      "scored": 8,
+      "passed": 7,
+      "task_errors": 0,
+      "dimension_passed": {
+        "identity": 8,
+        "value": 7,
+        "evidence": 8,
+        "abstention": 8
+      }
+    }
+  },
+  "groups": {
+    "fresh": {
+      "raw_result_sha256": "e31ab9c1244b2d5e7088e90f4d94d54160bf54a6142d5ef7c38b0946acf2c88a",
+      "summary": {
+        "all_cases": {
+          "requested": 14,
+          "scored": 13,
+          "passed": 12,
+          "missing": [],
+          "task_or_scoring_errors": 1,
+          "integrity_ok": false
+        },
+        "facts": {
+          "requested": 8,
+          "scored": 7,
+          "passed": 6,
+          "missing": [],
+          "task_or_scoring_errors": 1,
+          "integrity_ok": false
+        },
+        "boundaries": {
+          "requested": 6,
+          "scored": 6,
+          "passed": 6,
+          "missing": [],
+          "task_or_scoring_errors": 0,
+          "integrity_ok": true
+        },
+        "program_only_boundaries": 5
+      },
+      "usage": {
+        "attempts": 9,
+        "request_chars": 31031,
+        "total_tokens": 15222,
+        "known_total_tokens": 15222,
+        "unknown_usage_attempts": 0,
+        "cache_hits": 0,
+        "cost": null
+      },
+      "provider_elapsed_seconds": 43.183,
+      "replay_matches_saved_results": true
+    },
+    "regression": {
+      "raw_result_sha256": "6f656c15a703d71b6eda9aac9445a23eb4cad5cf71f985aa30fd6697ab7a2410",
+      "summary": {
+        "all_cases": {
+          "requested": 22,
+          "scored": 22,
+          "passed": 20,
+          "missing": [],
+          "task_or_scoring_errors": 0,
+          "integrity_ok": true
+        },
+        "facts": {
+          "requested": 16,
+          "scored": 16,
+          "passed": 14,
+          "missing": [],
+          "task_or_scoring_errors": 0,
+          "integrity_ok": true
+        },
+        "boundaries": {
+          "requested": 6,
+          "scored": 6,
+          "passed": 6,
+          "missing": [],
+          "task_or_scoring_errors": 0,
+          "integrity_ok": true
+        },
+        "program_only_boundaries": 5
+      },
+      "usage": {
+        "attempts": 17,
+        "request_chars": 59762,
+        "total_tokens": 28314,
+        "known_total_tokens": 28314,
+        "unknown_usage_attempts": 0,
+        "cache_hits": 0,
+        "cost": null
+      },
+      "provider_elapsed_seconds": 69.334,
+      "replay_matches_saved_results": true
+    }
+  },
+  "failures": [
+    {
+      "group": "fresh",
+      "id": "yili-2024-fact-03",
+      "metric": "归母净利润",
+      "period": "2024",
+      "scores": {},
+      "replay_error": "ValueError",
+      "error_detail": "unseen quote outside retrieved fragment",
+      "expected": {
+        "value": "8452859993.18",
+        "unit": "元"
+      },
+      "output": null
+    },
+    {
+      "group": "fresh",
+      "id": "yili-2024-fact-04",
+      "metric": "经营活动现金流量净额",
+      "period": "2024",
+      "scores": {
+        "abstention": true,
+        "evidence": true,
+        "identity": true,
+        "value": false,
+        "contract": false
+      },
+      "replay_error": null,
+      "error_detail": null,
+      "expected": {
+        "value": "21739740393.38",
+        "unit": "元"
+      },
+      "output": {
+        "status": "supported",
+        "symbol": "600887.SH",
+        "metric": "经营活动现金流量净额",
+        "period": "2024",
+        "value": "21,739,740,393.38",
+        "unit": "元",
+        "reason_code": null,
+        "citations": [
+          {
+            "document_id": "yili-2024",
+            "page": 7,
+            "start": 591,
+            "end": 666,
+            "quote": "经营活动产生的现金流量净额  21,739,740,393.3818,290,357,650.56  18.86  13,420,320,580.36"
+          },
+          {
+            "document_id": "yili-2024",
+            "page": 24,
+            "start": 697,
+            "end": 751,
+            "quote": "经营活动产生的现金流量净额  21,739,740,393.3818,290,357,650.5618.86"
+          },
+          {
+            "document_id": "yili-2024",
+            "page": 18,
+            "start": 942,
+            "end": 998,
+            "quote": "经营活动产生的现金流量净额  21,739,740,393.3818,290,357,650.56  18.86"
+          }
+        ]
+      }
+    },
+    {
+      "group": "regression",
+      "id": "midea-2024-fact-07",
+      "metric": "加权平均净资产收益率",
+      "period": "2024",
+      "scores": {
+        "abstention": true,
+        "evidence": true,
+        "identity": true,
+        "value": false,
+        "contract": false
+      },
+      "replay_error": null,
+      "error_detail": null,
+      "expected": {
+        "value": "21.29",
+        "unit": "%"
+      },
+      "output": {
+        "status": "supported",
+        "symbol": "000333.SZ",
+        "metric": "加权平均净资产收益率",
+        "period": "2024",
+        "value": "21.29%",
+        "unit": "%",
+        "reason_code": null,
+        "citations": [
+          {
+            "document_id": "midea-2024",
+            "page": 9,
+            "start": 752,
+            "end": 794,
+            "quote": "加权平均净资产收益率  21.29%  22.23%  -0.94%  22.21%"
+          }
+        ]
+      }
+    },
+    {
+      "group": "regression",
+      "id": "cmb-2024-fact-06",
+      "metric": "基本每股收益",
+      "period": "2024",
+      "scores": {
+        "abstention": true,
+        "evidence": true,
+        "identity": true,
+        "value": false,
+        "contract": false
+      },
+      "replay_error": null,
+      "error_detail": null,
+      "expected": {
+        "value": "5.66",
+        "unit": "元"
+      },
+      "output": {
+        "status": "supported",
+        "symbol": "600036.SH",
+        "metric": "基本每股收益",
+        "period": "2024",
+        "value": "5.66",
+        "unit": "人民币元",
+        "reason_code": null,
+        "citations": [
+          {
+            "document_id": "cmb-2024",
+            "page": 14,
+            "start": 413,
+            "end": 454,
+            "quote": "归属于本行普通股股东的基本每股收益 (1) 5.66 5.63 0.53 5.26"
+          }
+        ]
+      }
+    }
+  ],
+  "aggregate": {
+    "facts_requested": 24,
+    "facts_scored": 23,
+    "facts_passed": 20,
+    "task_errors": 1,
+    "model_future_requested": 2,
+    "model_future_passed": 2,
+    "program_boundaries_requested": 10,
+    "program_boundaries_passed": 10,
+    "attempts": 26,
+    "request_chars": 90793,
+    "known_total_tokens": 43536,
+    "unknown_usage_attempts": 0,
+    "cost": null
+  },
+  "all_registered_inputs_unchanged": true,
+  "automatic_promotion": false,
+  "readiness": "Not ready for automatic business adoption; strict format/quote failures retained"
+}

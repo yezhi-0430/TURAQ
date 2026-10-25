@@ -1,0 +1,40 @@
+{
+  "version": "unseen-reports-prefix-v1",
+  "expected_ids": [
+    "midea-2024-fact-01",
+    "midea-2024-fact-02",
+    "midea-2024-fact-03",
+    "midea-2024-fact-04",
+    "midea-2024-fact-05",
+    "midea-2024-fact-06",
+    "midea-2024-fact-07",
+    "midea-2024-fact-08",
+    "cmb-2024-fact-01",
+    "cmb-2024-fact-02",
+    "cmb-2024-fact-03",
+    "cmb-2024-fact-04",
+    "cmb-2024-fact-05",
+    "cmb-2024-fact-06",
+    "cmb-2024-fact-07",
+    "cmb-2024-fact-08",
+    "boundary-future_period",
+    "boundary-before_publication",
+    "boundary-wrong_security",
+    "boundary-wrong_report",
+    "boundary-other_owner",
+    "boundary-withdrawn"
+  ],
+  "files": {
+    "annotations.json": "be94738a248f0a3b5cad5a0f51205080a1034e2ab47b9915828731b91f2b0200",
+    "cases.json": "12b0ebc37cc12a8bd5d99d4d8a52f0106f838160aa98aabc3615041010218dd1",
+    "documents.json": "cb7c725254d5756f742133663563b73d77363787a9da1c898e7797f7f84b2261",
+    "fixture_answers.json": "fa1eb89219d89ddb978ec554b9effd1b85c43d3c3f67948cd5303f238b5d3cfb",
+    "gold.json": "5e49adc8c63d45ce3cd7eb953bb9d9ceefc32ad57900285bdf7433371e4bdbca",
+    "protocol.json": "91dc281be9782d4faebd47e9de69f4d644c8c94bddaa8d44a8af596255f32421",
+    "sources/cmb-2024.pages.json": "d96e5e11b239002f1ff07c1e6af34da37e1a983a804ebd77b046d1b841e51d1b",
+    "sources/cmb-2024.pdf": "ab50c8147d378586a01d622f9da3d56aa85644d961cecf1a8570f3414a5b9586",
+    "sources/midea-2024.pages.json": "67ad1093a65c0a2fbd4a3440bf8214c6ffc49b937b9a80694ac7a424660b46c7",
+    "sources/midea-2024.pdf": "b17a9b9b84bca1d2a4e4a3cadc5dd5ba5c85e3f1fd2d758acd3315b5b040ecd9"
+  },
+  "scope": "2 new issuers; fixed physical pages1..32 each;16facts+6boundaries; frozen method/labels before first retrieval; same-author references not double blind"
+}

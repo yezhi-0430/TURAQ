@@ -1,0 +1,30 @@
+{
+  "version": "pdf-cmap-fresh-yili-v2",
+  "expected_ids": [
+    "yili-2024-fact-01",
+    "yili-2024-fact-02",
+    "yili-2024-fact-03",
+    "yili-2024-fact-04",
+    "yili-2024-fact-05",
+    "yili-2024-fact-06",
+    "yili-2024-fact-07",
+    "yili-2024-fact-08",
+    "boundary-future_period",
+    "boundary-before_publication",
+    "boundary-wrong_security",
+    "boundary-wrong_report",
+    "boundary-other_owner",
+    "boundary-withdrawn"
+  ],
+  "files": {
+    "acquisition.json": "7ac628fae85f3a3448041b4326428b7e35b537c0e4f1b05579e8f8757a138630",
+    "annotation.json": "3016814fda46d28ed652400e988122f48bead9990100f9d7cfd061db1e5d7bc6",
+    "cases.json": "b3891306b97d50955f896a2ab714a124879b84eb0188ed4f5950e4956d843d46",
+    "documents.json": "f37f6fb87e5f11476b19376e41ec757430132873ef95a56642b80d7c49f9baeb",
+    "fixture_answers.json": "d9de97da79e0bd3f05cb08b6fcde078a220f935c58d25406524e7ab822b5ea40",
+    "gold.json": "294a1c69023f09bf2bd48bb844841ea263feb3987004dc32f0c4f2ff2233e7cd",
+    "sources/yili-2024.pages.json": "83eba3d6a9a535d0a1bfe27ce3210e644266218551afda9d303e1656ec6d8279",
+    "sources/yili-2024.pdf": "a82a81e52f52da3cd1b7f38ded08625dc18e3d4522b15d3ef76bf921e54c1f43"
+  },
+  "scope": "Fresh issuer after final method freeze; 32physical pages, same-author visual reference, retrieval only"
+}

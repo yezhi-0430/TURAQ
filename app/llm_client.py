@@ -1,5 +1,6 @@
+from collections import deque
 from collections.abc import Mapping, Sequence
-from copy import copy
+from copy import copy, deepcopy
 from typing import Protocol
 
 import httpx
@@ -77,9 +78,13 @@ class QwenModelClient:
         self.chat_url = f"{base_url.rstrip('/')}/chat/completions"
         self.admission = None
         self.output_tokens = None
+        self.attempt_usage = deque(maxlen=256)
 
     def with_admission(self, admission, *, purpose="default"):
         client = copy(self)
+        if not hasattr(admission, "model_attempt_usage"):
+            admission.model_attempt_usage = deque(maxlen=256)
+        client.attempt_usage = admission.model_attempt_usage
         client.admission = admission
         client.output_tokens = {
             "agent": admission.settings.agent_max_output_tokens,
@@ -115,30 +120,48 @@ class QwenModelClient:
                                     "max_tokens": self.output_tokens or 1024}
         if tools is not None:
             payload.update({"tools": tools, "tool_choice": "auto"})
+        from app.observability import emit
+
         for attempt in range(2):
+            usage = None
+            status = "error"
+            sent = False
             try:
                 headers = {"Authorization": f"Bearer {self.api_key}"}
                 if self.admission is not None:
-                    from app.model_limits import deadline_post
+                    from app.model_http import deadline_post
 
                     timeout = self.admission.before_attempt()
                     # MockTransport is an explicit isolated test transport, never live HTTP.
                     transport = self.http_client._transport
-                    response = deadline_post(
+                    sent = True
+                    response = getattr(self.admission, "post", deadline_post)(
                         self.chat_url, headers, payload, timeout,
                         deadline=self.admission.attempt_deadline,
                         transport=transport if isinstance(transport, httpx.MockTransport) else None,
                     )
                 else:
+                    sent = True
                     response = self.http_client.post(
                         self.chat_url, headers=headers, json=payload, timeout=10.0,
                     )
+                try:
+                    raw_usage = response.json().get("usage")
+                    usage = deepcopy(raw_usage) if isinstance(raw_usage, dict) else None
+                except (ValueError, AttributeError):
+                    pass
+                status = "ok" if not response.is_error else "error"
                 break
             except httpx.ConnectError as exc:
                 if attempt == 1:
                     raise ModelConnectionError("模型连接失败") from exc
             except httpx.TimeoutException as exc:
                 raise ModelTimeoutError("模型请求超时") from exc
+            finally:
+                if sent:
+                    record = dict(attempt=attempt + 1, status=status, usage=usage, cost=None)
+                    self.attempt_usage.append(record)
+                    emit("model_attempt", **record)
 
         if response.status_code == 401:
             raise ModelAuthenticationError("模型接口鉴权失败")
@@ -153,7 +176,7 @@ class QwenModelClient:
             raise ModelResponseError("模型响应格式无效")
         if choice.get("finish_reason") == "length":
             raise ModelOutputTruncatedError("模型输出达到长度上限，结果未完整生成")
-        return message
+        return {**message, "usage": usage}
 
 
 def create_model_client(

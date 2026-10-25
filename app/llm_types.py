@@ -15,6 +15,7 @@ class ToolCall(BaseModel):
 
 
 class ToolReply(BaseModel):
+    usage: dict[str, object] | None = Field(default=None, exclude=True)
     content: str | None = Field(default=None, strict=True)
     tool_calls: list[ToolCall] = Field(default_factory=list)
 

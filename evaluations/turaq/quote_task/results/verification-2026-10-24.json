@@ -1,0 +1,77 @@
+{
+  "verified_at": "2026-10-24T03:34:00.919191+00:00",
+  "live_file_sha256": "add2b8512c6d61d87231b421b81f5167e4103fe890474b5dbe62cd3d9adadc49",
+  "live_contract": {
+    "passed": 9,
+    "requested": 10,
+    "scored": 10,
+    "acceptance_ok": false
+  },
+  "evidence_supported_cases": {
+    "passed": 7,
+    "requested": 7,
+    "exact_citations": 8
+  },
+  "remaining_failure": {
+    "id": "pingan-npl-2024",
+    "dimension": "value",
+    "raw_value": "1.06%",
+    "unit": "%",
+    "silently_corrected": false
+  },
+  "provider_attempts": 8,
+  "server_abstentions": 2,
+  "provider_usage": {
+    "prompt_tokens": 26794,
+    "completion_tokens": 1382,
+    "total_tokens": 28176
+  },
+  "cached_input_tokens": 512,
+  "cost": null,
+  "model_requested": "qwen-plus",
+  "model_resolved": null,
+  "raw_to_final_changes": "only server-generated citation coordinates for 8 model proposals",
+  "task_fingerprints": {
+    "task_code": "729982cfcd884b116e99651a849b2044bf9749ee9eb9e01c7133c099ba940acb",
+    "runner_code": "45d1c5fc05a82c45c50a57e53e47f44f0d59815ae31b69b50ca04e91f47c8a04",
+    "prompt": "5be7b4d9dc825638a64e5cfa7bcaa9cf47f3cc4dae371075558d1d0e08e901c8",
+    "proposal_schema": "3fe01cbc59bc4d5c02f9d12169e1cb90f0908d3ecbea35172e2c0e329054b3b8",
+    "scorer_code": "abf2c64e899445cec6be028e6eba270cefb976765ad970a2db0e57797b972caf",
+    "corpus": "99f812b633dc4e7e6d321d78e9e6dd8fd4f0de9ec12e49ceb1d4877a077f0d56"
+  },
+  "original_baseline_and_replay_unchanged": true,
+  "tests": {
+    "targeted_passed": 23,
+    "isolated_unit_passed": 572,
+    "existing_warnings": 3,
+    "command": ".venv/Scripts/python.exe -m pytest tests/unit --confcutdir=tests/unit -q -o addopts=",
+    "exit_code": 0
+  },
+  "static_checks": {
+    "ruff": "passed on 4 new files",
+    "compileall": "passed on 4 new files",
+    "tracked_diff_check": "passed"
+  },
+  "independent_code_review": {
+    "agent": "quote_generation_review",
+    "result": "no important issues; 22 targeted tests independently passed"
+  },
+  "independent_live_audit": {
+    "agent": "quote_generation_review",
+    "result": "regrade, raw transformation, context hashes, exact quotes, source rules and usage independently matched; percent format failure preserved"
+  },
+  "result_hashes": {
+    "cached-baseline-new-rules-2026-10-24.json": "24539262340f94bddf0c89eb0e6e79df9338250e4070ba263a7c47b8d6f9dfbf",
+    "fixture-2026-10-24.json": "b9477f39e8c833f0de646b55cf5802592d24f3a8ebc0aedfb0fb8123e69edea1",
+    "live-quote-only-2026-10-24.json": "add2b8512c6d61d87231b421b81f5167e4103fe890474b5dbe62cd3d9adadc49",
+    "rejected-rewritten-2026-10-24.json": "b880b87a17b0e2f7a4d34b399b2f76505d1d608815b7bebab20168c31fdee463"
+  },
+  "not_run": [
+    "additional paid reruns",
+    "production API integration",
+    "deployment",
+    "held-out evaluation",
+    "provider bill verification"
+  ],
+  "automatic_promotion": false
+}

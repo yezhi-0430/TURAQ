@@ -1,0 +1,40 @@
+{
+  "state": "incomplete",
+  "corpus_fingerprint": "7b9cfe9c87246acd5ac619b2a3c5ca417b5eac8cc009246f19a0a134642562f5",
+  "requested": 20,
+  "resource_pages": 48,
+  "task_version": "quote-only-server-location-v1",
+  "live": true,
+  "automatic_promotion": false,
+  "comparison_scope": "3 reports / 48 selected pages; BGE512 vs Qwen1024; system comparison",
+  "chroma_similarity_gate": "existing research wrapper: 1-distance >= 0.5",
+  "cost": null,
+  "prior_provider_attempts": 13,
+  "resumed_workspace": "openviking-pilot-2026-10-24-memory-check",
+  "service_ready": true,
+  "chroma_index": {
+    "reused_pages": 48,
+    "indexed_pages": 0
+  },
+  "chroma_setup_seconds": 18.419,
+  "engines": {
+    "chroma_bge": [],
+    "lexical": [],
+    "openviking": []
+  },
+  "stage": "verify_import:moutai-2024",
+  "usage": {
+    "attempts": 0,
+    "request_chars": 0,
+    "total_tokens": null,
+    "known_total_tokens": 0,
+    "unknown_usage_attempts": 0,
+    "cache_hits": 0,
+    "cost": null,
+    "records": []
+  },
+  "services_stopped_after_experiment": true,
+  "error_type": "RuntimeError",
+  "error_code": null,
+  "error_message": null
+}

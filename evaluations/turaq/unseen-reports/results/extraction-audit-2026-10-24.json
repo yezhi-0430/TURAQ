@@ -1,0 +1,59 @@
+{
+  "method": "Counts on original pypdf layout text; no repair/OCR/new source selection",
+  "companies": {
+    "midea-2024": {
+      "pdf_sha256": "b17a9b9b84bca1d2a4e4a3cadc5dd5ba5c85e3f1fd2d758acd3315b5b040ecd9",
+      "physical_pages": 295,
+      "indexed_prefix_pages": 32,
+      "prefix_characters": 35413,
+      "table_pages": [
+        {
+          "physical_page": 9,
+          "text_characters": 872,
+          "han_characters": 407,
+          "numeric_tokens": 41
+        },
+        {
+          "physical_page": 10,
+          "text_characters": 988,
+          "han_characters": 409,
+          "numeric_tokens": 47
+        }
+      ]
+    },
+    "cmb-2024": {
+      "pdf_sha256": "ab50c8147d378586a01d622f9da3d56aa85644d961cecf1a8570f3414a5b9586",
+      "physical_pages": 369,
+      "indexed_prefix_pages": 32,
+      "prefix_characters": 40412,
+      "table_pages": [
+        {
+          "physical_page": 14,
+          "text_characters": 1012,
+          "han_characters": 0,
+          "numeric_tokens": 92
+        },
+        {
+          "physical_page": 15,
+          "text_characters": 2318,
+          "han_characters": 0,
+          "numeric_tokens": 183
+        },
+        {
+          "physical_page": 19,
+          "text_characters": 1204,
+          "han_characters": 0,
+          "numeric_tokens": 93
+        },
+        {
+          "physical_page": 26,
+          "text_characters": 1102,
+          "han_characters": 0,
+          "numeric_tokens": 65
+        }
+      ]
+    }
+  },
+  "visual_check": "Midea9/10 and CMB14/15/19/26 rendered and independently reviewed. CMB table Chinese labels render normally but have zero extracted Han characters.",
+  "root_cause_scope": "Observed extraction failure; a specific font/ToUnicode dependency cause has not been isolated. No claim that installing a font package alone fixes it."
+}

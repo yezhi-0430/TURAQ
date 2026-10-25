@@ -1,0 +1,32 @@
+{
+  "verified_at": "2026-10-24T03:50:27.235514+00:00",
+  "sdk_version": "5.0.4",
+  "host": "cloud.langfuse.com",
+  "synthetic_only": true,
+  "model_calls": 0,
+  "auth_ok": true,
+  "remote_verified": true,
+  "cost": null,
+  "trace_id": "f3f2746701f64469a5b30e6aa0748792",
+  "adapter_export": {
+    "enabled": true,
+    "drained": true,
+    "dropped": 0,
+    "failed": 0,
+    "pending": 0
+  },
+  "observation_count": 3,
+  "generation_observation_id": "6e2ec1386c6da7d7",
+  "synthetic_usage": {
+    "input": 3,
+    "output": 2,
+    "total": 5
+  },
+  "remote_scores": {
+    "requested": 1.0,
+    "passed": 1.0,
+    "scored": 1.0
+  },
+  "trace_url": "https://cloud.langfuse.com/project/cmvlusm890004ad0eispxslza/traces/f3f2746701f64469a5b30e6aa0748792",
+  "adapter_code_sha256": "6cb01ad81db7b5bf5a1760928f077a8f77eb6d0c6bef28e81c186c799141ca07"
+}

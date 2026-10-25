@@ -1,0 +1,206 @@
+{
+  "yili-2024-fact-01": {
+    "status": "supported",
+    "symbol": "600887.SH",
+    "metric": "营业收入",
+    "period": "2024",
+    "value": "115393310976.69",
+    "unit": "元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 367,
+        "end": 385,
+        "quote": "115,393,310,976.69"
+      }
+    ]
+  },
+  "yili-2024-fact-02": {
+    "status": "supported",
+    "symbol": "600887.SH",
+    "metric": "营业收入",
+    "period": "2023",
+    "value": "125758168916.51",
+    "unit": "元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 385,
+        "end": 403,
+        "quote": "125,758,168,916.51"
+      }
+    ]
+  },
+  "yili-2024-fact-03": {
+    "status": "supported",
+    "symbol": "600887.SH",
+    "metric": "归母净利润",
+    "period": "2024",
+    "value": "8452859993.18",
+    "unit": "元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 446,
+        "end": 462,
+        "quote": "8,452,859,993.18"
+      }
+    ]
+  },
+  "yili-2024-fact-04": {
+    "status": "supported",
+    "symbol": "600887.SH",
+    "metric": "经营活动现金流量净额",
+    "period": "2024",
+    "value": "21739740393.38",
+    "unit": "元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 606,
+        "end": 623,
+        "quote": "21,739,740,393.38"
+      }
+    ]
+  },
+  "yili-2024-fact-05": {
+    "status": "supported",
+    "symbol": "600887.SH",
+    "metric": "总资产",
+    "period": "2024-12-31",
+    "value": "153718003927.97",
+    "unit": "元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 792,
+        "end": 810,
+        "quote": "153,718,003,927.97"
+      }
+    ]
+  },
+  "yili-2024-fact-06": {
+    "status": "supported",
+    "symbol": "600887.SH",
+    "metric": "基本每股收益",
+    "period": "2024",
+    "value": "1.33",
+    "unit": "元／股",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 924,
+        "end": 928,
+        "quote": "1.33"
+      }
+    ]
+  },
+  "yili-2024-fact-07": {
+    "status": "supported",
+    "symbol": "600887.SH",
+    "metric": "加权平均净资产收益率",
+    "period": "2024",
+    "value": "15.81",
+    "unit": "%",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "yili-2024",
+        "page": 7,
+        "start": 1050,
+        "end": 1055,
+        "quote": "15.81"
+      }
+    ]
+  },
+  "yili-2024-fact-08": {
+    "status": "supported",
+    "symbol": "600887.SH",
+    "metric": "营业收入",
+    "period": "2024Q3",
+    "value": "29037177483.84",
+    "unit": "元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "yili-2024",
+        "page": 8,
+        "start": 267,
+        "end": 284,
+        "quote": "29,037,177,483.84"
+      }
+    ]
+  },
+  "boundary-future_period": {
+    "status": "insufficient",
+    "symbol": "600887.SH",
+    "metric": "营业收入",
+    "period": "2026",
+    "value": null,
+    "unit": null,
+    "reason_code": "period_not_present",
+    "citations": []
+  },
+  "boundary-before_publication": {
+    "status": "insufficient",
+    "symbol": "600887.SH",
+    "metric": "营业收入",
+    "period": "2024",
+    "value": null,
+    "unit": null,
+    "reason_code": "not_yet_public",
+    "citations": []
+  },
+  "boundary-wrong_security": {
+    "status": "insufficient",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2024",
+    "value": null,
+    "unit": null,
+    "reason_code": "wrong_security",
+    "citations": []
+  },
+  "boundary-wrong_report": {
+    "status": "insufficient",
+    "symbol": "600887.SH",
+    "metric": "营业收入",
+    "period": "2024",
+    "value": null,
+    "unit": null,
+    "reason_code": "sources_unavailable",
+    "citations": []
+  },
+  "boundary-other_owner": {
+    "status": "insufficient",
+    "symbol": "600887.SH",
+    "metric": "营业收入",
+    "period": "2024",
+    "value": null,
+    "unit": null,
+    "reason_code": "sources_unavailable",
+    "citations": []
+  },
+  "boundary-withdrawn": {
+    "status": "insufficient",
+    "symbol": "600887.SH",
+    "metric": "营业收入",
+    "period": "2024",
+    "value": null,
+    "unit": null,
+    "reason_code": "sources_unavailable",
+    "citations": []
+  }
+}

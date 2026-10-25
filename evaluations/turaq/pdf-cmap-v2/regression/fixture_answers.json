@@ -1,0 +1,350 @@
+{
+  "midea-2024-fact-01": {
+    "status": "supported",
+    "symbol": "000333.SZ",
+    "metric": "营业收入",
+    "period": "2024",
+    "value": "407149600",
+    "unit": "千元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "midea-2024",
+        "page": 9,
+        "start": 437,
+        "end": 448,
+        "quote": "407,149,600"
+      }
+    ]
+  },
+  "midea-2024-fact-02": {
+    "status": "supported",
+    "symbol": "000333.SZ",
+    "metric": "营业收入",
+    "period": "2023",
+    "value": "372037280",
+    "unit": "千元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "midea-2024",
+        "page": 9,
+        "start": 450,
+        "end": 461,
+        "quote": "372,037,280"
+      }
+    ]
+  },
+  "midea-2024-fact-03": {
+    "status": "supported",
+    "symbol": "000333.SZ",
+    "metric": "归母净利润",
+    "period": "2024",
+    "value": "38537237",
+    "unit": "千元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "midea-2024",
+        "page": 9,
+        "start": 501,
+        "end": 511,
+        "quote": "38,537,237"
+      }
+    ]
+  },
+  "midea-2024-fact-04": {
+    "status": "supported",
+    "symbol": "000333.SZ",
+    "metric": "经营活动现金流量净额",
+    "period": "2024",
+    "value": "60511572",
+    "unit": "千元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "midea-2024",
+        "page": 9,
+        "start": 634,
+        "end": 644,
+        "quote": "60,511,572"
+      }
+    ]
+  },
+  "midea-2024-fact-05": {
+    "status": "supported",
+    "symbol": "000333.SZ",
+    "metric": "总资产",
+    "period": "2024-12-31",
+    "value": "604351853",
+    "unit": "千元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "midea-2024",
+        "page": 10,
+        "start": 9,
+        "end": 20,
+        "quote": "604,351,853"
+      }
+    ]
+  },
+  "midea-2024-fact-06": {
+    "status": "supported",
+    "symbol": "000333.SZ",
+    "metric": "基本每股收益",
+    "period": "2024",
+    "value": "5.44",
+    "unit": "元/股",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "midea-2024",
+        "page": 9,
+        "start": 689,
+        "end": 693,
+        "quote": "5.44"
+      }
+    ]
+  },
+  "midea-2024-fact-07": {
+    "status": "supported",
+    "symbol": "000333.SZ",
+    "metric": "加权平均净资产收益率",
+    "period": "2024",
+    "value": "21.29",
+    "unit": "%",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "midea-2024",
+        "page": 9,
+        "start": 764,
+        "end": 770,
+        "quote": "21.29%"
+      }
+    ]
+  },
+  "midea-2024-fact-08": {
+    "status": "supported",
+    "symbol": "000333.SZ",
+    "metric": "营业收入",
+    "period": "2024Q3",
+    "value": "101700575",
+    "unit": "千元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "midea-2024",
+        "page": 10,
+        "start": 738,
+        "end": 749,
+        "quote": "101,700,575"
+      }
+    ]
+  },
+  "cmb-2024-fact-01": {
+    "status": "supported",
+    "symbol": "600036.SH",
+    "metric": "营业收入",
+    "period": "2024",
+    "value": "337488",
+    "unit": "百万元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "cmb-2024",
+        "page": 14,
+        "start": 135,
+        "end": 142,
+        "quote": "337,488"
+      }
+    ]
+  },
+  "cmb-2024-fact-02": {
+    "status": "supported",
+    "symbol": "600036.SH",
+    "metric": "营业收入",
+    "period": "2023",
+    "value": "339123",
+    "unit": "百万元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "cmb-2024",
+        "page": 14,
+        "start": 143,
+        "end": 150,
+        "quote": "339,123"
+      }
+    ]
+  },
+  "cmb-2024-fact-03": {
+    "status": "supported",
+    "symbol": "600036.SH",
+    "metric": "归母净利润",
+    "period": "2024",
+    "value": "148391",
+    "unit": "百万元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "cmb-2024",
+        "page": 14,
+        "start": 278,
+        "end": 285,
+        "quote": "148,391"
+      }
+    ]
+  },
+  "cmb-2024-fact-04": {
+    "status": "supported",
+    "symbol": "600036.SH",
+    "metric": "经营活动现金流量净额",
+    "period": "2024",
+    "value": "447023",
+    "unit": "百万元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "cmb-2024",
+        "page": 14,
+        "start": 371,
+        "end": 378,
+        "quote": "447,023"
+      }
+    ]
+  },
+  "cmb-2024-fact-05": {
+    "status": "supported",
+    "symbol": "600036.SH",
+    "metric": "总资产",
+    "period": "2024-12-31",
+    "value": "12152036",
+    "unit": "百万元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "cmb-2024",
+        "page": 15,
+        "start": 127,
+        "end": 137,
+        "quote": "12,152,036"
+      }
+    ]
+  },
+  "cmb-2024-fact-06": {
+    "status": "supported",
+    "symbol": "600036.SH",
+    "metric": "基本每股收益",
+    "period": "2024",
+    "value": "5.66",
+    "unit": "元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "cmb-2024",
+        "page": 14,
+        "start": 435,
+        "end": 439,
+        "quote": "5.66"
+      }
+    ]
+  },
+  "cmb-2024-fact-07": {
+    "status": "supported",
+    "symbol": "600036.SH",
+    "metric": "加权平均净资产收益率",
+    "period": "2024",
+    "value": "14.49",
+    "unit": "%",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "cmb-2024",
+        "page": 14,
+        "start": 712,
+        "end": 717,
+        "quote": "14.49"
+      }
+    ]
+  },
+  "cmb-2024-fact-08": {
+    "status": "supported",
+    "symbol": "600036.SH",
+    "metric": "营业收入",
+    "period": "2024Q3",
+    "value": "79764",
+    "unit": "百万元",
+    "reason_code": null,
+    "citations": [
+      {
+        "document_id": "cmb-2024",
+        "page": 15,
+        "start": 1213,
+        "end": 1219,
+        "quote": "79,764"
+      }
+    ]
+  },
+  "boundary-future_period": {
+    "status": "insufficient",
+    "symbol": "000333.SZ",
+    "metric": "营业收入",
+    "period": "2026",
+    "value": null,
+    "unit": null,
+    "citations": [],
+    "reason_code": "period_not_present"
+  },
+  "boundary-before_publication": {
+    "status": "insufficient",
+    "symbol": "000333.SZ",
+    "metric": "营业收入",
+    "period": "2024",
+    "value": null,
+    "unit": null,
+    "citations": [],
+    "reason_code": "not_yet_public"
+  },
+  "boundary-wrong_security": {
+    "status": "insufficient",
+    "symbol": "600519.SH",
+    "metric": "营业收入",
+    "period": "2024",
+    "value": null,
+    "unit": null,
+    "citations": [],
+    "reason_code": "wrong_security"
+  },
+  "boundary-wrong_report": {
+    "status": "insufficient",
+    "symbol": "000333.SZ",
+    "metric": "营业收入",
+    "period": "2024",
+    "value": null,
+    "unit": null,
+    "citations": [],
+    "reason_code": "sources_unavailable"
+  },
+  "boundary-other_owner": {
+    "status": "insufficient",
+    "symbol": "000333.SZ",
+    "metric": "营业收入",
+    "period": "2024",
+    "value": null,
+    "unit": null,
+    "citations": [],
+    "reason_code": "sources_unavailable"
+  },
+  "boundary-withdrawn": {
+    "status": "insufficient",
+    "symbol": "000333.SZ",
+    "metric": "营业收入",
+    "period": "2024",
+    "value": null,
+    "unit": null,
+    "citations": [],
+    "reason_code": "sources_unavailable"
+  }
+}

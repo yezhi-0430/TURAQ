@@ -51,3 +51,69 @@ def test_launcher_batch_paths_are_relative_to_script_location():
     assert "launch_turaq.py" in content
     assert "ANTHROPIC_API_KEY" not in content
     assert "--port 8000" not in content
+
+
+def test_backend_loads_project_env_before_import_without_passing_file_to_frontend(
+    tmp_path, monkeypatch
+):
+    from types import SimpleNamespace
+
+    from scripts import launch_turaq as launcher
+
+    (tmp_path / ".env").write_text("TURAQ_TRACE_ENABLED=1\n", encoding="utf-8")
+    vite = tmp_path / "frontend/node_modules/vite/bin/vite.js"
+    vite.parent.mkdir(parents=True)
+    vite.touch()
+    logs = tmp_path / "logs"
+    logs.mkdir()
+    commands = []
+    monkeypatch.setattr(launcher, "ROOT", tmp_path)
+    monkeypatch.setattr(launcher, "LOGS", logs)
+    monkeypatch.setattr(launcher, "port_processes", lambda: [])
+    monkeypatch.setattr(launcher, "prepare_database", lambda: None)
+    monkeypatch.setattr(launcher.shutil, "which", lambda _: "node.exe")
+    monkeypatch.setattr(launcher, "ready", lambda _: True)
+    monkeypatch.setattr(launcher, "read_url", lambda _: b'{"csrf_token":"test"}')
+
+    def spawn(command, **kwargs):
+        commands.append(command)
+        return SimpleNamespace(pid=123, poll=lambda: None)
+
+    monkeypatch.setattr(launcher.subprocess, "Popen", spawn)
+    launcher.run(no_browser=True)
+    assert commands[0][commands[0].index("--env-file") + 1] == str(tmp_path / ".env")
+    assert "--env-file" not in commands[1]
+
+
+def test_uvicorn_env_file_enables_optional_adapter_without_importing_database(tmp_path):
+    import os
+    import subprocess
+    import sys
+
+    env_file = tmp_path / ".env"
+    env_file.write_text(
+        "TURAQ_TRACE_ENABLED=1\nLANGFUSE_BASE_URL=https://example.invalid\n"
+        "LANGFUSE_PUBLIC_KEY=pk-lf-offline\nLANGFUSE_SECRET_KEY=sk-lf-offline\n",
+        encoding="utf-8",
+    )
+    environment = {
+        k: v
+        for k, v in os.environ.items()
+        if k != "TURAQ_TRACE_ENABLED" and not k.startswith("LANGFUSE_")
+    }
+    code = """
+import sys,uvicorn
+uvicorn.Config('test:app',env_file=sys.argv[1])
+from app import observability
+assert observability._exporter is not None
+assert 'app.database' not in sys.modules
+assert 'langfuse' not in sys.modules
+"""
+    result = subprocess.run(
+        [sys.executable, "-c", code, str(env_file)],
+        env=environment,
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+    assert result.returncode == 0, result.stderr
